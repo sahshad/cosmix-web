@@ -1,36 +1,40 @@
 "use client"
 
-import React from "react"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Eye, EyeOff, Check } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
+import { useLogin } from "@/hooks/useLogin"
+import { toast } from "sonner"
+import { extractErrorMessage } from "@/lib/error"
+import { useRouter } from "next/navigation"
 
-export default function SignupPage() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const loginMutation = useLogin()
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    // Simulate signup
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsLoading(false)
-  }
 
-  // Password strength indicators
-  const hasMinLength = password.length >= 8
-  const hasUppercase = /[A-Z]/.test(password)
-  const hasNumber = /[0-9]/.test(password)
+    loginMutation.mutate({
+      email,
+      password,
+    }, {
+      onSuccess: (data) => {
+        toast.success("Login successful")
+        router.push("/")
+      },
+      onError: (error) => {
+        toast.error(extractErrorMessage(error))
+      }
+    })
+  }
 
   return (
     <main className="min-h-screen flex">
@@ -48,32 +52,26 @@ export default function SignupPage() {
           {/* Main Content */}
           <div className="max-w-md">
             <h1 className="font-serif text-5xl text-primary-foreground leading-tight mb-6 text-balance">
-              Begin your journey through the cosmos
+              Where connections meet the cosmos
             </h1>
             <p className="text-primary-foreground/70 text-lg leading-relaxed">
-              Create your account and discover a universe of connections waiting to be made. Your story starts here.
+              Join a community that celebrates authentic connections, meaningful conversations, and shared moments across the universe.
             </p>
           </div>
 
-          {/* Features */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
-                <Check className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="text-primary-foreground/80">Connect with like-minded individuals</span>
+          {/* Footer Stats */}
+          <div className="flex gap-12">
+            <div>
+              <p className="text-primary-foreground text-3xl font-light">2.4M+</p>
+              <p className="text-primary-foreground/60 text-sm">Active users</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
-                <Check className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="text-primary-foreground/80">Share your moments and stories</span>
+            <div>
+              <p className="text-primary-foreground text-3xl font-light">150+</p>
+              <p className="text-primary-foreground/60 text-sm">Countries</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary-foreground/10 flex items-center justify-center">
-                <Check className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="text-primary-foreground/80">Privacy-first, always secure</span>
+            <div>
+              <p className="text-primary-foreground text-3xl font-light">99.9%</p>
+              <p className="text-primary-foreground/60 text-sm">Uptime</p>
             </div>
           </div>
         </div>
@@ -84,7 +82,7 @@ export default function SignupPage() {
         <div className="absolute bottom-40 right-10 w-32 h-32 rounded-full border border-primary-foreground/10" />
       </div>
 
-      {/* Right Panel - Signup Form */}
+      {/* Right Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
@@ -97,8 +95,8 @@ export default function SignupPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <h2 className="font-serif text-4xl text-foreground mb-2">Create account</h2>
-            <p className="text-muted-foreground">Start your cosmic journey today</p>
+            <h2 className="font-serif text-4xl text-foreground mb-2">Welcome back</h2>
+            <p className="text-muted-foreground">Enter your credentials to access your account</p>
           </div>
 
           {/* Social Login */}
@@ -139,23 +137,8 @@ export default function SignupPage() {
             </span>
           </div>
 
-          {/* Signup Form */}
+          {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium text-foreground">
-                Full name
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                className="h-12 bg-secondary border-border focus:border-foreground transition-colors"
-                required
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-foreground">
                 Email address
@@ -165,23 +148,28 @@ export default function SignupPage() {
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="h-12 bg-secondary border-border focus:border-foreground transition-colors"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium text-foreground">
+                  Password
+                </Label>
+                <Link href="/forgot-password" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a strong password"
+                  placeholder="Enter your password"
                   value={password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="h-12 bg-secondary border-border focus:border-foreground transition-colors pr-12"
                   required
                 />
@@ -194,82 +182,44 @@ export default function SignupPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              
-              {/* Password Requirements */}
-              {password.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center ${hasMinLength ? 'bg-green-500' : 'bg-muted'}`}>
-                      {hasMinLength && <Check className="w-3 h-3 text-white" />}
-                    </div>
-                    <span className={`text-sm ${hasMinLength ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      At least 8 characters
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center ${hasUppercase ? 'bg-green-500' : 'bg-muted'}`}>
-                      {hasUppercase && <Check className="w-3 h-3 text-white" />}
-                    </div>
-                    <span className={`text-sm ${hasUppercase ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      One uppercase letter
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center ${hasNumber ? 'bg-green-500' : 'bg-muted'}`}>
-                      {hasNumber && <Check className="w-3 h-3 text-white" />}
-                    </div>
-                    <span className={`text-sm ${hasNumber ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      One number
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Terms Checkbox */}
-            <div className="flex items-start gap-3">
-              <Checkbox
-                id="terms"
-                checked={acceptTerms}
-                onCheckedChange={(checked: boolean) => setAcceptTerms(checked)}
-                className="mt-0.5"
-              />
-              <Label htmlFor="terms" className="text-sm text-muted-foreground font-normal leading-relaxed cursor-pointer">
-                I agree to the{" "}
-                <Link href="/terms" className="text-foreground underline underline-offset-2 hover:no-underline">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="text-foreground underline underline-offset-2 hover:no-underline">
-                  Privacy Policy
-                </Link>
-              </Label>
             </div>
 
             <Button
               type="submit"
               className="w-full h-12 text-base font-medium"
-              disabled={isLoading || !acceptTerms}
+              disabled={loginMutation.isPending}
             >
-              {isLoading ? (
+              {loginMutation.isPending ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Creating account...
+                  Signing in...
                 </span>
               ) : (
-                "Create account"
+                "Sign in"
               )}
             </Button>
           </form>
 
-          {/* Sign In Link */}
+          {/* Sign Up Link */}
           <p className="mt-8 text-center text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/" className="text-foreground font-medium hover:underline underline-offset-4">
-              Sign in
+            {"Don't have an account? "}
+            <Link href="/signup" className="text-foreground font-medium hover:underline underline-offset-4">
+              Create one
+            </Link>
+          </p>
+
+          {/* Terms */}
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+              Privacy Policy
             </Link>
           </p>
         </div>
