@@ -1,35 +1,49 @@
+import { User } from '@/types';
 import { create } from 'zustand';
-
-type User = {
-  id: number;
-  email: string;
-  role: string;
-};
+import { devtools } from "zustand/middleware";
 
 type AuthState = {
-  user: User | null;
+  user: Partial<User> | null;
   isAuthenticated: boolean;
   token: string | null;
-  setUser: (user: User, token: string) => void;
+  isLoading: boolean;
+  setUser: (user: Partial<User>) => void;
+  setToken: (token: string) => void;
+  setIsAuthenticated: (v: boolean) => void;
+  setLoading: (v: boolean) => void;
   logout: () => void;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  token: null,
+export const useAuthStore = create<AuthState>()(
+  devtools((set) => ({
+    user: null,
+    isAuthenticated: false,
+    token: null,
+    isLoading: false,
 
-  setUser: (user, token) =>
-    set({
-      user,
-      token,
-      isAuthenticated: true,
-    }),
+    setUser: (newUser) => {
+      set((state) => ({
+        user: {
+          ...state.user,
+          ...Object.fromEntries(
+            Object.entries(newUser).filter(([_, v]) => v !== null && v !== undefined)
+          ),
+        },
+      }));
+    },
+    setToken: (token) => set({ token }),
+    setIsAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
+    setLoading: (v: boolean) => set({ isLoading: v }),
 
-  logout: () =>
-    set({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-    }),
-}));
+    logout: () =>
+      set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      }),
+  }),
+    {
+      name: "auth-store",
+    }
+  )
+);

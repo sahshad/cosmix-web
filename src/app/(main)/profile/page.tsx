@@ -6,11 +6,13 @@ import {
     MapPin,
     Link as LinkIcon,
     Edit2,
-    MessageCircle,
-    Share,
     MoreHorizontal,
-    Heart,
-    Share2,
+    ArrowLeft,
+    CheckCircle2,
+    Briefcase,
+    TrendingUp,
+    Users,
+    Images,
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -23,66 +25,83 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { PostCard, PostData } from '@/components/internal/post-card';
+import Link from 'next/link';
+import FollowButton from '@/components/internal/follow-button';
 
 const userProfile = {
     name: 'Sarah Johnson',
     handle: '@sarahjohnson',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
-    banner: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=400&fit=crop',
-    bio: 'Product Designer & Digital Creative | Coffee enthusiast ☕ | Based in San Francisco',
+    banner: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop',
+    bio: 'Product Designer & Digital Creative. Building the future of social experiences at Cosmix 🌌. Coffee enthusiast ☕ | Explorer 🗺️',
     location: 'San Francisco, CA',
-    website: 'sarahjohnson.design',
+    website: 'sarah.design',
     joinDate: 'Joined March 2023',
     followers: 12543,
     following: 854,
     posts: 287,
     isFollowing: false,
-    isMe: true // Assuming this is the logged-in user for now since it was under /profile
+    isMe: true,
+    verified: true,
+    occupation: 'Lead Designer'
 };
 
 const userPosts = [
     {
-        id: 1,
-        content: 'Just finished redesigning my portfolio website. Excited to share it with everyone!',
-        timestamp: '3 days ago',
-        likes: 128,
-        replies: 12,
+        id: 101,
+        author: {
+            name: 'Sarah Johnson',
+            handle: '@sarahjohnson',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
+            verified: true,
+        },
+        content: 'Just finished redesigning the Cosmix profile experience. We wanted something that felt more professional, airy, and mature. What do you think about the new feed? ✨',
+        media: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop',
+        timestamp: '3h ago',
+        likes: 1242,
+        replies: 89,
+        reposts: 156,
+        liked: true,
+    },
+    {
+        id: 102,
+        author: {
+            name: 'Sarah Johnson',
+            handle: '@sarahjohnson',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
+            verified: true,
+        },
+        content: 'Architecture is not about space but about time. Every design we build at Cosmix is a commitment to the user\'s future. 🛠️',
+        media: null,
+        timestamp: '1d ago',
+        likes: 856,
+        replies: 42,
         reposts: 23,
         liked: false,
     },
     {
-        id: 2,
-        content:
-            'Design tip: Always test your color contrast with real users. Accessibility matters! 🎨',
-        timestamp: '1 week ago',
-        likes: 456,
-        replies: 67,
-        reposts: 145,
+        id: 103,
+        author: {
+            name: 'Sarah Johnson',
+            handle: '@sarahjohnson',
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
+            verified: true,
+        },
+        content: 'Early morning creativity boost. Sometimes all you need is a fresh perspective and a good cup of coffee. 🪴',
+        media: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop',
+        timestamp: '2d ago',
+        likes: 2103,
+        replies: 156,
+        reposts: 342,
         liked: true,
-    },
-    {
-        id: 3,
-        content:
-            'Working on a new design system. The component library is coming along nicely. Thread 🧵',
-        timestamp: '2 weeks ago',
-        likes: 234,
-        replies: 28,
-        reposts: 56,
-        liked: false,
     },
 ];
 
 export default function ProfilePage() {
-    const [isFollowing, setIsFollowing] = useState(userProfile.isFollowing);
-    const [followers, setFollowers] = useState(userProfile.followers);
-    const [posts, setPosts] = useState(userPosts);
+    const [posts, setPosts] = useState<PostData[]>(userPosts as PostData[]);
 
-    const handleFollow = () => {
-        setIsFollowing(!isFollowing);
-        setFollowers(isFollowing ? followers - 1 : followers + 1);
-    };
-
-    const handleLike = (postId: number) => {
+    const handleLike = (postId: number | string) => {
         setPosts(
             posts.map((post) =>
                 post.id === postId
@@ -97,192 +116,224 @@ export default function ProfilePage() {
     };
 
     return (
-        <div className="flex w-full">
-            <div className="flex-1 bg-background">
-                <div className="max-w-2xl mx-auto border-r border-border min-h-screen">
-                    {/* Header */}
-                    <div className="sticky top-0 backdrop-blur bg-background/80 border-b border-border z-10 px-6 py-4">
-                        <div className="flex items-center gap-4">
-                            <Button variant="ghost" size="sm">
-                                ←
-                            </Button>
-                            <div>
-                                <h1 className="text-xl font-serif font-semibold text-foreground">
-                                    {userProfile.name}
-                                </h1>
-                                <p className="text-sm text-muted-foreground">{userProfile.posts} posts</p>
-                            </div>
-                        </div>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto animate-fade-in-up">
 
+            {/* Left Column - Main Profile & Feed */}
+            <div className="space-y-6">
+
+                {/* Profile Header Card */}
+                <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2.5rem] bg-card overflow-hidden">
                     {/* Banner */}
-                    <div className="relative h-48 bg-secondary overflow-hidden">
+                    <div className="relative h-44 sm:h-56 bg-secondary overflow-hidden group">
                         <img
-                            src={userProfile.banner || "/placeholder.svg"}
-                            alt="Banner"
-                            className="w-full h-full object-cover"
+                            src={userProfile.banner}
+                            alt="Profile Banner"
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     </div>
 
-                    {/* Profile Info */}
-                    <div className="px-6">
-                        <div className="flex items-start justify-between -mt-12 mb-4">
-                            <Avatar className="h-32 w-32 border-4 border-background">
-                                <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
-                                <AvatarFallback>{userProfile.name[0]}</AvatarFallback>
-                            </Avatar>
-                            <div className="mt-4">
+                    {/* Profile Meta Section */}
+                    <div className="px-8 relative pb-8">
+                        <div className="flex justify-between items-end -mt-14 sm:-mt-16 mb-6">
+                            <div className="relative">
+                                <Avatar className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl rounded-[2.5rem] overflow-hidden bg-background">
+                                    <AvatarImage src={userProfile.avatar} alt={userProfile.name} className="object-cover" />
+                                    <AvatarFallback className="text-3xl">{userProfile.name[0]}</AvatarFallback>
+                                </Avatar>
+                                <div className="absolute bottom-2 right-2 h-6 w-6 bg-[#11a657] border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
+                            </div>
+                            <div className="pb-2">
                                 {userProfile.isMe ? (
-                                    <Button variant="outline" className="rounded-full border-border bg-transparent">
+                                    <Button className="rounded-2xl border-border bg-foreground text-background hover:bg-foreground/90 font-bold px-6 h-11 transition-all shadow-lg active:scale-95 text-sm">
+                                        <Edit2 className="h-4 w-4 mr-2" />
                                         Edit Profile
                                     </Button>
                                 ) : (
-                                    !isFollowing ? (
-                                        <Button
-                                            onClick={handleFollow}
-                                            className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full"
-                                        >
-                                            Follow
-                                        </Button>
-                                    ) : (
-                                        <Button variant="outline" onClick={handleFollow} className="rounded-full border-border bg-transparent">
-                                            Following
-                                        </Button>
-                                    )
+                                    <Button className="rounded-2xl bg-[#2d7af1] text-white hover:bg-[#1e5bba] font-bold px-8 h-11 transition-all shadow-lg active:scale-95 text-sm">
+                                        Follow
+                                    </Button>
                                 )}
                             </div>
                         </div>
 
-                        <div className="mb-4">
-                            <h1 className="text-2xl font-serif font-semibold text-foreground">
-                                {userProfile.name}
-                            </h1>
-                            <p className="text-muted-foreground">{userProfile.handle}</p>
-                        </div>
-
-                        <p className="text-foreground mb-4 leading-relaxed">{userProfile.bio}</p>
-
-                        <div className="flex flex-wrap gap-4 mb-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4" />
-                                {userProfile.location}
+                        <div className="space-y-4">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-xl font-bold tracking-tight text-foreground">
+                                        {userProfile.name}
+                                    </h2>
+                                    {userProfile.verified && (
+                                        <CheckCircle2 className="h-4 w-4 text-[#2d7af1] fill-[#2d7af1]/10" />
+                                    )}
+                                </div>
+                                <p className="text-muted-foreground font-bold text-sm">{userProfile.handle}</p>
                             </div>
-                            <a href="#" className="flex items-center gap-2 text-accent hover:underline">
-                                <LinkIcon className="h-4 w-4" />
-                                {userProfile.website}
-                            </a>
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" />
-                                {userProfile.joinDate}
+
+                            <p className="text-[14px] leading-relaxed text-foreground/80 max-w-xl font-medium">
+                                {userProfile.bio}
+                            </p>
+
+                            <div className="flex flex-wrap gap-y-2 gap-x-5">
+                                <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <MapPin className="h-3.5 w-3.5 text-[#f84b4b]" />
+                                    <span className="text-[12px] font-bold">{userProfile.location}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <LinkIcon className="h-3.5 w-3.5 text-[#11a657]" />
+                                    <a href={`https://${userProfile.website}`} target="_blank" className="text-[12px] font-bold hover:underline text-[#11a657]">
+                                        {userProfile.website}
+                                    </a>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-muted-foreground">
+                                    <Calendar className="h-3.5 w-3.5 text-[#f8b301]" />
+                                    <span className="text-[12px] font-bold">{userProfile.joinDate}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-8 pt-2">
+                                <button className="flex items-center gap-1.5 group">
+                                    <span className="text-base font-bold text-foreground group-hover:underline">
+                                        {userProfile.following.toLocaleString()}
+                                    </span>
+                                    <span className="text-[13px] font-bold text-muted-foreground uppercase tracking-wider">Following</span>
+                                </button>
+                                <button className="flex items-center gap-1.5 group">
+                                    <span className="text-base font-bold text-foreground group-hover:underline">
+                                        {userProfile.followers.toLocaleString()}
+                                    </span>
+                                    <span className="text-[13px] font-bold text-muted-foreground uppercase tracking-wider">Followers</span>
+                                </button>
                             </div>
                         </div>
-
-                        <div className="flex gap-8 text-sm mb-6">
-                            <button className="hover:text-foreground transition">
-                                <span className="font-semibold text-foreground">{userProfile.following}</span>
-                                <span className="text-muted-foreground"> Following</span>
-                            </button>
-                            <button className="hover:text-foreground transition">
-                                <span className="font-semibold text-foreground">{followers}</span>
-                                <span className="text-muted-foreground"> Followers</span>
-                            </button>
-                        </div>
-
-                        <Separator className="bg-border" />
                     </div>
+                </Card>
 
-                    {/* Tabs */}
+                {/* Tabs & Content Feed */}
+                <div className="space-y-6">
                     <Tabs defaultValue="posts" className="w-full">
-                        <TabsList className="w-full rounded-none border-b border-border bg-transparent p-0 h-auto">
+                        <TabsList className="w-full h-14 rounded-3xl border border-border/40 bg-card/50 backdrop-blur-sm flex justify-around p-1 shadow-sm">
                             <TabsTrigger
                                 value="posts"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent px-4 py-4"
+                                className="flex-1 h-full rounded-2xl data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-[#2d7af1] font-bold text-[13px] uppercase tracking-wider transition-all"
                             >
                                 Posts
                             </TabsTrigger>
                             <TabsTrigger
                                 value="replies"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent px-4 py-4"
+                                className="flex-1 h-full rounded-2xl data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-[#2d7af1] font-bold text-[13px] uppercase tracking-wider transition-all"
                             >
                                 Replies
                             </TabsTrigger>
                             <TabsTrigger
                                 value="likes"
-                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent px-4 py-4"
+                                className="flex-1 h-full rounded-2xl data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-[#2d7af1] font-bold text-[13px] uppercase tracking-wider transition-all"
                             >
                                 Likes
                             </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="posts" className="space-y-1 mt-0">
+                        <TabsContent value="posts" className="space-y-6 mt-6">
                             {posts.map((post) => (
-                                <div key={post.id} className="border-b border-border hover:bg-secondary/50 transition-colors p-6 cursor-pointer">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <p className="font-semibold text-foreground">{userProfile.name}</p>
-                                            <p className="text-muted-foreground text-sm">{userProfile.handle} · {post.timestamp}</p>
-                                        </div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="sm" className="text-muted-foreground">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>Share</DropdownMenuItem>
-                                                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div>
-
-                                    <p className="text-foreground mb-4 leading-normal">{post.content}</p>
-
-                                    <div className="flex gap-4 text-sm text-muted-foreground border-t border-b border-border py-3 mb-3">
-                                        <span>{post.replies} replies</span>
-                                        <span>{post.reposts} reposts</span>
-                                        <span>{post.likes} likes</span>
-                                    </div>
-
-                                    <div className="flex justify-between text-muted-foreground max-w-xs">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="flex-1 hover:text-accent hover:bg-accent/10"
-                                        >
-                                            <MessageCircle className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="flex-1 hover:text-green-500 hover:bg-green-500/10"
-                                        >
-                                            <Share2 className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => handleLike(post.id)}
-                                            className={`flex-1 ${post.liked
-                                                    ? 'text-red-500 bg-red-500/10'
-                                                    : 'hover:text-red-500 hover:bg-red-500/10'
-                                                }`}
-                                        >
-                                            <Heart className={`h-4 w-4 ${post.liked ? 'fill-current' : ''}`} />
-                                        </Button>
-                                    </div>
-                                </div>
+                                <PostCard
+                                    key={post.id}
+                                    post={post}
+                                    onLike={handleLike}
+                                />
                             ))}
                         </TabsContent>
-
-                        <TabsContent value="replies" className="p-6 text-center text-muted-foreground">
-                            No replies yet
+                        <TabsContent value="replies" className="p-12 text-center text-muted-foreground font-bold text-sm uppercase tracking-widest bg-card rounded-[2.5rem] shadow-sm">
+                            No cosmic replies yet.
                         </TabsContent>
-
-                        <TabsContent value="likes" className="p-6 text-center text-muted-foreground">
-                            No liked posts
+                        <TabsContent value="likes" className="p-12 text-center text-muted-foreground font-bold text-sm uppercase tracking-widest bg-card rounded-[2.5rem] shadow-sm">
+                            No cosmic likes yet.
                         </TabsContent>
                     </Tabs>
                 </div>
+            </div>
+
+            {/* Right Column - Utilizing Space */}
+            <div className="space-y-8 hidden lg:block">
+
+                {/* Photo Grid - Utilizing extra space */}
+                <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+                    <h2 className="text-[11px] font-black text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-[0.2em]">
+                        <div className="bg-[#11a657]/10 p-1.5 rounded-lg">
+                            <Images className="h-4 w-4 text-[#11a657]" />
+                        </div>
+                        Glimpses of Cosmos
+                    </h2>
+                    <div className="grid grid-cols-3 gap-2">
+                        {posts.filter(p => p.media).map(post => (
+                            <div key={post.id} className="aspect-square rounded-xl overflow-hidden group cursor-pointer border border-border/20 shadow-sm relative">
+                                <img src={post.media!} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Gallery item" />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                            </div>
+                        ))}
+                        {/* Placeholders for 3x3 grid */}
+                        <div className="aspect-square rounded-xl bg-secondary/20 border border-border/10 flex items-center justify-center">
+                            <div className="h-4 w-4 rounded-full bg-muted-foreground/10" />
+                        </div>
+                        <div className="aspect-square rounded-xl bg-secondary/20 border border-border/10 flex items-center justify-center">
+                            <div className="h-4 w-4 rounded-full bg-muted-foreground/10" />
+                        </div>
+                    </div>
+                </Card>
+
+                {/* Suggested Users - Consistency with Home Page */}
+                <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+                    <h2 className="text-[11px] font-black text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-[0.2em]">
+                        <div className="bg-[#2d7af1]/10 p-1.5 rounded-lg">
+                            <Users className="h-4 w-4 text-[#2d7af1]" />
+                        </div>
+                        Picks for You
+                    </h2>
+                    <div className="space-y-5">
+                        {[
+                            { name: 'Jane Smith', handle: 'janesmith', avatar: 'jane' },
+                            { name: 'David Park', handle: 'davidpark', avatar: 'david' },
+                        ].map((user) => (
+                            <div key={user.handle} className="flex items-center justify-between gap-3 group">
+                                <div className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer">
+                                    <Avatar className="h-10 w-10 ring-2 ring-transparent group-hover:ring-[#2d7af1]/30 transition-all shadow-sm">
+                                        <AvatarImage
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatar}`}
+                                            alt={user.name}
+                                        />
+                                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="min-w-0">
+                                        <p className="text-[13px] font-bold text-foreground group-hover:underline truncate">{user.name}</p>
+                                        <p className="text-[11px] font-medium text-muted-foreground truncate">@{user.handle}</p>
+                                    </div>
+                                </div>
+                                <FollowButton />
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+
+                {/* Trending - Consistency */}
+                <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+                    <h2 className="text-[11px] font-black text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-[0.2em]">
+                        <div className="bg-[#f8b301]/10 p-1.5 rounded-lg">
+                            <TrendingUp className="h-4 w-4 text-[#f8b301]" />
+                        </div>
+                        Trending in Cosmos
+                    </h2>
+                    <div className="space-y-4">
+                        {[
+                            { tag: 'CosmixDesign', posts: '12K' },
+                            { tag: 'MatureWeb', posts: '8K' },
+                        ].map((trend) => (
+                            <div key={trend.tag} className="group cursor-pointer">
+                                <p className="font-bold text-[13px] text-foreground group-hover:text-[#2d7af1] transition-colors">#{trend.tag}</p>
+                                <p className="text-[11px] font-medium text-muted-foreground mt-0.5">{trend.posts} posts</p>
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+
             </div>
         </div>
     );
