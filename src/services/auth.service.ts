@@ -12,7 +12,7 @@ export const authService = {
     api.post<LoginResponse>('/auth/login', data),
 
   me: () =>
-    api.get<MeResponse>('/user/me'),
+    api.get<MeResponse>('/users/me'),
 
   logout: () =>
     api.post('/auth/logout'),

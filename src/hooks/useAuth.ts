@@ -11,14 +11,14 @@ export function useLogin() {
   const setToken = useAuthStore((s) => s.setToken);
 
   return useMutation<LoginResponse, unknown, LoginRequest>({
-    mutationFn: async (data: LoginRequest) => {
-      const response = await authService.login(data);
+    mutationFn: async (request: LoginRequest) => {
+      const response = await authService.login(request);
       return response.data;
     },
-    onSuccess: (data: LoginResponse) => {
-      setUser(data.user);
+    onSuccess: (response: LoginResponse) => {
+      setUser(response.user);
       setIsAuthenticated(true);
-      setToken(data.access_token);
+      setToken(response.access_token);
     },
   });
 }
@@ -29,35 +29,6 @@ export function useSignup() {
       authService.signup(data),
   });
 }
-
-// export function useMe() {
-//   const setUser = useAuthStore((s) => s.setUser);
-//   const setIsAuthenticated = useAuthStore((s) => s.setIsAuthenticated);
-//   const logout = useAuthStore((s) => s.logout);
-
-//   const query = useQuery<User, Error>({
-//     queryKey: ["me"],
-//     queryFn: async () => {
-//       const response = await authService.me();
-//       return response.data;
-//     },
-//   });
-
-//   useEffect(() => {
-//     if (query.isSuccess && query.data) {
-//       setUser(query.data);
-//       setIsAuthenticated(true);
-//     }
-//   }, [query.isSuccess, query.data, setUser, setIsAuthenticated]);
-
-//   useEffect(() => {
-//     if (query.isError) {
-//       logout();
-//     }
-//   }, [query.isError, logout]);
-
-//   return query;
-// }
 
 export function useMe() {
   return useQuery({

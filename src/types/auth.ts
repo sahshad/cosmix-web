@@ -19,8 +19,7 @@ export type RefreshResponse = {
 }
 
 export type SignupRequest = {
-  first_name: string;
-  last_name: string;
+  display_name: string;
   email: string;
   password: string;
 };

@@ -32,7 +32,6 @@ import {
   useSidebar,
   SidebarMenuBadge,
   SidebarInput,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -46,6 +45,7 @@ import { Separator } from '@/components/ui/separator';
 import { useLogout } from '@/hooks/useAuth';
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useAuthStore } from '@/store/auth.store';
 
 interface NavItem {
   label: string;
@@ -85,38 +85,48 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
-  
+
   const isCollapsed = state === 'collapsed';
 
   const { mutateAsync: logout } = useLogout();
 
-  const handleLogout = async() => {
-   try {
-      await logout();          
-      router.replace("/login");   
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.replace("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
+  const user = useAuthStore(state => state.user);
+  const userName = user?.first_name + " " + user?.last_name;
+  const userHandle = "@" + user?.email;
+
+  console.log("user", user);
+  console.log("userName", userName);
+  console.log("userHandle", userHandle);
+
+  data.user.name = userName;
+  data.user.handle = userHandle;
+
   const renderMenuItems = (items: NavItem[]) => (
     <SidebarMenu className="gap-1.5 px-3">
       {items.map((item) => {
         const Icon = item.icon;
-        const isActive = item.matchAll 
-            ? item.matchAll.includes(pathname) 
-            : pathname === item.href;
-            
+        const isActive = item.matchAll
+          ? item.matchAll.includes(pathname)
+          : pathname === item.href;
+
         return (
           <SidebarMenuItem key={item.href}>
             <SidebarMenuButton
               asChild
               isActive={isActive}
-              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden ${
-                isActive 
-                  ? 'bg-[#2d7af1]/10 text-[#2d7af1] font-semibold' 
+              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
+                  ? 'bg-[#2d7af1]/10 text-[#2d7af1] font-semibold'
                   : 'hover:bg-secondary text-muted-foreground hover:text-foreground font-medium'
-               } ${isCollapsed ? 'justify-center p-0' : ''}`}
+                } ${isCollapsed ? 'justify-center p-0' : ''}`}
               tooltip={item.label}
               onClick={() => setOpenMobile(false)}
             >
@@ -125,9 +135,9 @@ export function AppSidebar() {
                 {isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#2d7af1] rounded-r-full" />
                 )}
-                
+
                 <Icon className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                
+
                 {!isCollapsed && (
                   <>
                     <span className="text-[14px] truncate">{item.label}</span>
@@ -161,51 +171,51 @@ export function AppSidebar() {
         </div>
         {!isCollapsed && (
           <div className="px-2 pb-2">
-             <div className="relative group">
-               <SidebarInput 
-                  placeholder="Search cosmos..." 
-                  className="bg-secondary/40 border-none rounded-xl pl-10 h-10 group-hover:bg-secondary/60 transition-colors"
-                />
-               <Compass className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-[#2d7af1] transition-colors" />
-             </div>
+            <div className="relative group">
+              <SidebarInput
+                placeholder="Search cosmos..."
+                className="bg-secondary/40 border-none rounded-xl pl-10 h-10 group-hover:bg-secondary/60 transition-colors"
+              />
+              <Compass className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-[#2d7af1] transition-colors" />
+            </div>
           </div>
         )}
       </SidebarHeader>
 
       <SidebarContent className="py-2 gap-2 custom-scrollbar">
-         {renderMenuItems(data.navigation)}
+        {renderMenuItems(data.navigation)}
       </SidebarContent>
 
       <SidebarFooter className={`p-4 border-t border-border/40 bg-transparent flex flex-col transition-all duration-300 ${isCollapsed ? 'items-center gap-6' : 'gap-4'}`}>
         <SidebarMenu className={isCollapsed ? 'items-center' : ''}>
           <SidebarMenuItem className={isCollapsed ? '' : 'mb-4'}>
-             {isCollapsed ? (
-               <SidebarMenuButton tooltip="Create Post" className="h-10 w-10 p-0 flex items-center justify-center rounded-xl bg-foreground text-background hover:bg-[#2d7af1] hover:text-white mx-auto shadow-md transition-all">
-                 <Share2 className="h-5 w-5" />
-               </SidebarMenuButton>
-             ) : (
-               <Button className="w-full h-11 rounded-2xl bg-foreground text-background hover:bg-[#2d7af1] hover:text-white shadow-xl hover:-translate-y-0.5 transition-all font-bold text-sm">
-                 <Share2 className="h-4 w-4 mr-2" />
-                 Create Post
-               </Button>
-             )}
+            {isCollapsed ? (
+              <SidebarMenuButton tooltip="Create Post" className="h-10 w-10 p-0 flex items-center justify-center rounded-xl bg-foreground text-background hover:bg-[#2d7af1] hover:text-white mx-auto shadow-md transition-all">
+                <Share2 className="h-5 w-5" />
+              </SidebarMenuButton>
+            ) : (
+              <Button className="w-full h-11 rounded-2xl bg-foreground text-background hover:bg-[#2d7af1] hover:text-white shadow-xl hover:-translate-y-0.5 transition-all font-bold text-sm">
+                <Share2 className="h-4 w-4 mr-2" />
+                Create Post
+              </Button>
+            )}
           </SidebarMenuItem>
         </SidebarMenu>
-        
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className={`rounded-2xl hover:bg-secondary transition-all group flex items-center ${isCollapsed ? 'h-10 w-10 p-0 justify-center' : 'w-full h-14 px-3 gap-3'}`}>
-               <Avatar className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} flex-shrink-0 ring-2 ring-transparent group-hover:ring-[#2d7af1]/30 transition-all`}>
-                  <AvatarImage src={data.user.avatar} alt="User" />
-                  <AvatarFallback className="text-[10px]">SJ</AvatarFallback>
-                </Avatar>
-                {!isCollapsed && (
-                  <div className="text-left min-w-0 flex-1">
-                    <p className="text-sm font-bold text-foreground truncate">{data.user.name}</p>
-                    <p className="text-xs text-muted-foreground truncate font-medium">{data.user.handle}</p>
-                  </div>
-                )}
-                {!isCollapsed && <MoreHorizontal className="h-4 w-4 text-muted-foreground" />}
+              <Avatar className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} flex-shrink-0 ring-2 ring-transparent group-hover:ring-[#2d7af1]/30 transition-all`}>
+                <AvatarImage src={data.user.avatar} alt="User" />
+                <AvatarFallback className="text-[10px]">SJ</AvatarFallback>
+              </Avatar>
+              {!isCollapsed && (
+                <div className="text-left min-w-0 flex-1">
+                  <p className="text-sm font-bold text-foreground truncate">{data.user.name}</p>
+                  <p className="text-xs text-muted-foreground truncate font-medium">{data.user.handle}</p>
+                </div>
+              )}
+              {!isCollapsed && <MoreHorizontal className="h-4 w-4 text-muted-foreground" />}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align={isCollapsed ? "center" : "end"} side={isCollapsed ? "right" : "top"} className="w-64 rounded-2xl p-2 shadow-2xl border-border/40 bg-card z-50">

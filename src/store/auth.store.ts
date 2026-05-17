@@ -34,6 +34,7 @@ export const useAuthStore = create<AuthState>()(
     setToken: (token) => set({ token }),
     setIsAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
     setLoading: (v: boolean) => set({ isLoading: v }),
+    getUser: () => useAuthStore((state) => state.user),
 
     logout: () =>
       set({

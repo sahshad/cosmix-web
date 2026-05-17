@@ -32,64 +32,13 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { PostCard, PostData } from '@/components/internal/post-card';
 import FollowButton from '@/components/internal/follow-button';
+import { uploadToCloudinary } from '@/actions/upload';
+import { postService } from '@/services/post.service';
+import { toast } from 'sonner';
+import { X } from 'lucide-react';
 
-// Sample post data
-const samplePosts = [
-    {
-        id: 1,
-        author: {
-            name: 'Alex Chen',
-            handle: '@alexchen',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex',
-            verified: true,
-        },
-        content:
-            'Just launched my new project! Excited to see what the community thinks about it. Feedback is immensely appreciated. 🚀',
-        media: null,
-        timestamp: '2 hours ago',
-        likes: 342,
-        replies: 28,
-        reposts: 45,
-        views: '12K',
-        liked: false,
-    },
-    {
-        id: 2,
-        author: {
-            name: 'Emma Rodriguez',
-            handle: '@emmarod',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emma',
-            verified: false,
-        },
-        content:
-            'Beautiful sunset from my morning walk. Nature never ceases to amaze me. Who else enjoys early morning hikes? 🌅',
-        media: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop',
-        timestamp: '4 hours ago',
-        likes: 521,
-        replies: 67,
-        reposts: 89,
-        views: '45.2K',
-        liked: true,
-    },
-    {
-        id: 3,
-        author: {
-            name: 'Marcus Lee',
-            handle: '@marcuslee',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=marcus',
-            verified: true,
-        },
-        content:
-            'Reading an amazing book on system design. The concepts are really clicking now. I will post a detailed visual thread mapping out backend architectures tomorrow morning.',
-        media: null,
-        timestamp: '6 hours ago',
-        likes: 289,
-        replies: 45,
-        reposts: 78,
-        views: '8.4K',
-        liked: false,
-    },
-];
+import { useFeed, useLikePost } from '@/hooks/useFeed';
+import { useQueryClient } from '@tanstack/react-query';
 
 // interface Post {
 //     id: number;
@@ -110,58 +59,79 @@ const samplePosts = [
 // }
 
 export default function DashboardPage() {
-    const [posts, setPosts] = useState<PostData[]>(samplePosts);
+    const { data: posts = [], isLoading } = useFeed(1, 20);
+    const { mutate: toggleLike } = useLikePost();
+    const queryClient = useQueryClient();
+
     const [postContent, setPostContent] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [isPosting, setIsPosting] = useState(false);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-    // const handleLike = (postId: number) => {
-    //     setPosts(
-    //         posts.map((post) =>
-    //             post.id === postId
-    //                 ? {
-    //                     ...post,
-    //                     liked: !post.liked,
-    //                     likes: post.liked ? post.likes - 1 : post.likes + 1,
-    //                 }
-    //                 : post
-    //         )
-    //     );
-    // };
-
-    const handleLike = (postId: number | string) => {
-        setPosts(
-            posts.map((post) =>
-                post.id === postId
-                    ? {
-                        ...post,
-                        liked: !post.liked,
-                        likes: post.liked ? post.likes - 1 : post.likes + 1,
-                    }
-                    : post
-            )
-        );
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedFile(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
     };
 
-    const handlePost = () => {
-        if (postContent.trim()) {
-            const newPost: PostData = {
-                id: posts.length + 1,
-                author: {
-                    name: 'Sarah Johnson',
-                    handle: '@sarahjohnson',
-                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
-                    verified: true,
-                },
+    const handleRemoveFile = () => {
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const handleLike = (postId: number | string, isLiked: boolean) => {
+        toggleLike({ id: postId, isLiked });
+    };
+
+    const handlePost = async () => {
+        if (!postContent.trim() && !selectedFile) return;
+
+        setIsPosting(true);
+        let mediaItems = [];
+
+        try {
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                const uploadRes = await uploadToCloudinary(formData);
+                if (uploadRes.success) {
+                    const result = uploadRes.result as any;
+                    mediaItems.push({
+                        public_id: result.public_id,
+                        url: result.secure_url,
+                        type: result.resource_type,
+                        width: result.width,
+                        height: result.height,
+                        duration: result.duration || 0,
+                    });
+                } else {
+                    toast.error('Failed to upload media');
+                    setIsPosting(false);
+                    return;
+                }
+            }
+
+            await postService.createPost({
                 content: postContent,
-                media: null,
-                timestamp: 'now',
-                likes: 0,
-                replies: 0,
-                reposts: 0,
-                views: '0',
-                liked: false,
-            };
-            setPosts([newPost, ...posts]);
+                media: mediaItems,
+            });
+
+            toast.success('Post created successfully!');
+            
+            // Invalidate to fetch new feed
+            queryClient.invalidateQueries({ queryKey: ['feed'] });
+            
             setPostContent('');
+            handleRemoveFile();
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to create post');
+        } finally {
+            setIsPosting(false);
         }
     };
 
@@ -189,21 +159,46 @@ export default function DashboardPage() {
 
                 {/* Create Post Action Area */}
                 <Card className="p-2 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-[3rem] bg-card flex flex-col focus-within:ring-4 ring-[#2d7af1]/10 transition-all duration-300">
-                    <div className="flex px-6 pt-6 pb-4">
+                    <div className="flex px-6 pt-6 pb-2">
                         <Avatar className="h-12 w-12 flex-shrink-0 mr-4 mt-1 ring-2 ring-transparent">
                             <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix" alt="You" />
                             <AvatarFallback>SJ</AvatarFallback>
                         </Avatar>
-                        <Textarea
-                            placeholder="What's sparking your imagination today?"
-                            className="flex-1 min-h-[60px] resize-none border-0 bg-transparent focus-visible:ring-0 text-foreground placeholder-muted-foreground/60 text-[15px] font-medium"
-                            value={postContent}
-                            onChange={(e) => setPostContent(e.target.value)}
-                        />
+                        <div className="flex-1">
+                            <Textarea
+                                placeholder="What's sparking your imagination today?"
+                                className="w-full min-h-[60px] resize-none border-0 bg-transparent focus-visible:ring-0 text-foreground placeholder-muted-foreground/60 text-[15px] font-medium p-0"
+                                value={postContent}
+                                onChange={(e) => setPostContent(e.target.value)}
+                            />
+                            {previewUrl && (
+                                <div className="relative mt-3 mb-2 w-max max-w-full">
+                                    <img src={previewUrl} alt="Preview" className="max-h-[300px] rounded-2xl object-cover" />
+                                    <button 
+                                        onClick={handleRemoveFile}
+                                        className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-sm transition-colors"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className="flex items-center justify-between bg-secondary/40 rounded-[2.5rem] py-2 px-3 m-2">
                         <div className="flex gap-1">
-                            <Button variant="ghost" size="sm" className="h-10 rounded-full text-[#2d7af1] font-bold hover:bg-[#2d7af1]/10 hover:text-[#2d7af1] ">
+                            <input
+                                type="file"
+                                accept="image/*,video/*"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileSelect}
+                            />
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="h-10 rounded-full text-[#2d7af1] font-bold hover:bg-[#2d7af1]/10 hover:text-[#2d7af1] "
+                            >
                                 <ImageIcon className="h-[18px] w-[18px] sm:mr-2" />
                                 <span className="hidden sm:block">Media</span>
                             </Button>
@@ -218,19 +213,29 @@ export default function DashboardPage() {
                         </div>
                         <Button
                             onClick={handlePost}
-                            disabled={!postContent.trim()}
+                            disabled={isPosting || (!postContent.trim() && !selectedFile)}
                             className="bg-[#2d7af1] hover:bg-[#2d7af1]/90 text-white rounded-full px-7 h-10 shadow-lg shadow-[#2d7af1]/30 font-bold transition-all hover:scale-105 active:scale-95"
                         >
-                            Post
+                            {isPosting ? 'Posting...' : 'Post'}
                         </Button>
                     </div>
                 </Card>
 
                 {/* Posts Feed */}
                 <div className="space-y-8">
-                    {posts.map((post) => (
-                        <PostCard key={post.id} onLike={handleLike} post={post} />
-                    ))}
+                    {isLoading ? (
+                        <div className="flex justify-center p-8">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2d7af1]"></div>
+                        </div>
+                    ) : (
+                        posts.map((post: PostData) => (
+                            <PostCard 
+                                key={post.id} 
+                                onLike={() => handleLike(post.id, post.liked)} 
+                                post={post} 
+                            />
+                        ))
+                    )}
                 </div>
             </div>
 

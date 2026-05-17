@@ -9,9 +9,10 @@ import { Separator } from "@/components/ui/separator"
 import { Eye, EyeOff, Sparkles, Moon, Sun } from "lucide-react"
 import { useLogin } from "@/hooks/useAuth"
 import { toast } from "sonner"
-import { extractErrorMessage } from "@/lib/error"
+import { extractApiError } from "@/lib/error"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
+import { ApiErrorResponse, LoginResponse } from "@/types"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -32,8 +33,9 @@ export default function LoginPage() {
         toast.success("Login successful")
         router.replace("/")
       },
-      onError: (error) => {
-        toast.error(extractErrorMessage(error))
+      onError: (error: unknown) => {
+        const apiError = extractApiError(error)
+        toast.error(apiError.message)
       }
     })
   }

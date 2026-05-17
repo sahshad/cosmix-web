@@ -11,7 +11,7 @@ import { Eye, EyeOff, Check, Heart, Moon, Sun } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useSignup } from '@/hooks/useAuth'
 import { toast } from "sonner"
-import { extractErrorMessage } from "@/lib/error"
+import { extractApiError } from "@/lib/error"
 import { useTheme } from "next-themes"
 
 export default function SignupPage() {
@@ -27,13 +27,8 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const nameParts = name.split(" ");
-    const firstName = nameParts[0];
-    const lastName = nameParts.slice(1).join(" ");
-
     signupMutation.mutate({
-      first_name: firstName || name,
-      last_name: lastName || "",
+      display_name: name,
       email,
       password,
     }, {
@@ -41,8 +36,9 @@ export default function SignupPage() {
         toast.success("Signup successful");
         router.replace("/");
       },
-      onError: (error) => {
-        toast.error(extractErrorMessage(error));
+      onError: (error: unknown) => {
+        const apiError = extractApiError(error);
+        toast.error(apiError.message);
       }
     })
   }

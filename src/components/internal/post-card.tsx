@@ -1,11 +1,16 @@
 "use client";
 
-import { BadgeCheck, Bookmark, Heart, MessageCircle, MoreHorizontal, Send, Share2 } from "lucide-react";
+import { BadgeCheck, Bookmark, Heart, MessageCircle, MoreHorizontal, Send, Share2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postService } from "@/services/post.service";
+import { toast } from "sonner";
+import { Input } from "../ui/input";
 
 // import React from 'react';
 // import {
@@ -28,19 +33,20 @@ import { Separator } from "../ui/separator";
 //     DropdownMenuTrigger,
 // } from '@/components/ui/dropdown-menu';
 
-export interface PostAuthor {
-    name: string;
-    handle: string;
+export interface user {
+    display_name: string;
+    username: string;
     avatar: string;
     verified: boolean;
 }
 
 export interface PostData {
     id: number | string;
-    author: PostAuthor;
+    user: user;
     content: string;
     media: string | null;
-    timestamp: string;
+    createdAt: string;
+    updatedAt: string;
     likes: number;
     replies: number;
     reposts: number;
@@ -178,6 +184,30 @@ interface PostCardProps {
 // }
 
 export function PostCard({ post, onLike }: PostCardProps) {
+    const [isCommenting, setIsCommenting] = useState(false);
+    const [commentContent, setCommentContent] = useState("");
+    const queryClient = useQueryClient();
+
+    const { mutate: submitComment, isPending: isSubmittingComment } = useMutation({
+        mutationFn: async (content: string) => {
+            await postService.createComment(post.id, content);
+        },
+        onSuccess: () => {
+            toast.success("Comment added!");
+            setCommentContent("");
+            setIsCommenting(false);
+            queryClient.invalidateQueries({ queryKey: ["feed"] });
+        },
+        onError: () => {
+            toast.error("Failed to add comment.");
+        }
+    });
+
+    const handleCommentSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!commentContent.trim()) return;
+        submitComment(commentContent.trim());
+    };
     
     return (
         <Card key={post.id} className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.05)] rounded-[20px] bg-card overflow-hidden group">
@@ -186,25 +216,25 @@ export function PostCard({ post, onLike }: PostCardProps) {
             <div className="px-6 pt-2 sm:px-8  flex items-center justify-between">
                 <div className="inline-flex items-center gap-3 bg-secondary/40 hover:bg-secondary/60 transition-colors pr-5 p-1.5 rounded-full cursor-pointer">
                     <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                        <AvatarImage src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} />
-                        <AvatarFallback>{post.author.name[0]}</AvatarFallback>
+                        <AvatarImage src={post.user?.avatar || "/placeholder.svg"} alt={post.user.display_name} />
+                        <AvatarFallback>{post.user?.display_name}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col justify-center">
                         <div className="flex items-center gap-1.5 leading-none">
                             <span className="font-bold text-[15px] text-foreground">
-                                {post.author.name}
+                                {post.user?.display_name}
                             </span>
-                            {post.author.verified && (
+                            {post.user.verified && (
                                 <BadgeCheck className="h-[14px] w-[14px] text-[#2d7af1] fill-[#2d7af1]/10" />
                             )}
                         </div>
                         <div className="flex items-center gap-1.5 mt-0.5 leading-none mt-[8px]">
                             <p className="text-muted-foreground font-medium text-[11px]">
-                                {post.author.handle}
+                                {post.user.username}
                             </p>
                             <span className="text-muted-foreground/40 text-[8px]">●</span>
                             <p className="text-muted-foreground font-medium text-[11px]">
-                                {post.timestamp}
+                                {post.createdAt}
                             </p>
                         </div>
                     </div>
@@ -220,8 +250,8 @@ export function PostCard({ post, onLike }: PostCardProps) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="rounded-2xl shadow-xl border-border/40 min-w-[200px] z-50 p-2">
-                        <DropdownMenuItem className="rounded-xl py-2.5 px-4 cursor-pointer font-bold hover:bg-secondary">Unfollow {post.author.handle}</DropdownMenuItem>
-                        <DropdownMenuItem className="rounded-xl py-2.5 px-4 cursor-pointer font-bold hover:bg-secondary">Mute {post.author.handle}</DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-xl py-2.5 px-4 cursor-pointer font-bold hover:bg-secondary">Unfollow {post.user.username}</DropdownMenuItem>
+                        <DropdownMenuItem className="rounded-xl py-2.5 px-4 cursor-pointer font-bold hover:bg-secondary">Mute {post.user.username}</DropdownMenuItem>
                         <Separator className="my-1 bg-border/50" />
                         <DropdownMenuItem className="rounded-xl py-2.5 px-4 cursor-pointer text-[#f84b4b] focus:text-[#f84b4b] focus:bg-[#f84b4b]/10 font-bold">
                             Report Post
@@ -255,14 +285,15 @@ export function PostCard({ post, onLike }: PostCardProps) {
                         <Button
                             variant="ghost"
                             className="h-10 rounded-full px-4 gap-2 text-muted-foreground hover:bg-[#f84b4b]/10 hover:text-[#f84b4b] transition-all font-bold"
-                            // onClick={() => handleLike(post.id)}
+                            onClick={() => onLike?.(post.id)}
                         >
                             <Heart className={`h-[18px] w-[18px] transition-transform ${post.liked ? 'fill-current text-[#f84b4b] scale-110' : ''}`} />
                             <span className={`${post.liked ? 'text-[#f84b4b]' : ''}`}>{post.likes}</span>
                         </Button>
                         <Button
                             variant="ghost"
-                            className="h-10 rounded-full px-4 gap-2 text-muted-foreground hover:bg-[#2d7af1]/10 hover:text-[#2d7af1] transition-all font-bold"
+                            className={`h-10 rounded-full px-4 gap-2 transition-all font-bold ${isCommenting ? 'bg-[#2d7af1]/10 text-[#2d7af1]' : 'text-muted-foreground hover:bg-[#2d7af1]/10 hover:text-[#2d7af1]'}`}
+                            onClick={() => setIsCommenting(!isCommenting)}
                         >
                             <MessageCircle className="h-[18px] w-[18px]" />
                             <span>{post.replies}</span>
@@ -294,6 +325,33 @@ export function PostCard({ post, onLike }: PostCardProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Comment Input Area */}
+            {isCommenting && (
+                <div className="px-6 sm:px-8 pb-6 animate-in slide-in-from-top-2 duration-200">
+                    <Separator className="mb-4 bg-border/50" />
+                    <form onSubmit={handleCommentSubmit} className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8 border border-border shadow-sm">
+                            <AvatarImage src={"https://api.dicebear.com/7.x/avataaars/svg?seed=currentUser"} />
+                            <AvatarFallback>Me</AvatarFallback>
+                        </Avatar>
+                        <Input 
+                            value={commentContent}
+                            onChange={(e) => setCommentContent(e.target.value)}
+                            placeholder="Post your reply..."
+                            className="rounded-full bg-secondary/30 border-none focus-visible:ring-1 focus-visible:ring-[#2d7af1]/50 h-10 px-4"
+                            disabled={isSubmittingComment}
+                        />
+                        <Button 
+                            type="submit" 
+                            disabled={!commentContent.trim() || isSubmittingComment}
+                            className="rounded-full h-10 px-6 font-bold bg-[#2d7af1] hover:bg-[#2d7af1]/90 text-white shadow-md shadow-[#2d7af1]/20 transition-all"
+                        >
+                            {isSubmittingComment ? <Loader2 className="h-4 w-4 animate-spin" /> : "Reply"}
+                        </Button>
+                    </form>
+                </div>
+            )}
 
         </Card>
     );
