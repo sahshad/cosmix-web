@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface MediaItem {
     public_id: string;
     url: string;
@@ -10,18 +12,23 @@ export interface CreatePostRequest {
     media?: MediaItem[];
 }
 
-export interface user {
-    displayName: string;
-    username: string;
-    avatar: string;
-    verified: boolean;
-}
+// export interface User {
+//     display_name: string;
+//     username: string;
+//     avatar: string;
+//     verified: boolean;
+// }
 
 export interface PostResponse {
     id: number;
-    user: user;
+    user: User;
     content: string;
     media?: MediaItem[];
-    created_at: string;
-    updated_at: string;
+    likesCount: number;
+    isLiked: boolean;
+    repostCount: number;
+    isReposted: boolean;
+    commentsCount: number;
+    createdAt: string;
+    updatedAt: string;
 }

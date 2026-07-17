@@ -2,7 +2,7 @@ import React from 'react';
 import { Users } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
-import FollowButton from '@/components/internal/follow-button';
+import { FollowButton } from '@/components/shared';
 
 const suggestedCreators = [
     { name: 'Alex Chen', handle: 'alexchen', avatar: 'alex', bio: 'Frontend Wizard ✨' },

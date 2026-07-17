@@ -12,7 +12,6 @@ import { toast } from "sonner"
 import { extractApiError } from "@/lib/error"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { ApiErrorResponse, LoginResponse } from "@/types"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -41,37 +40,24 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-[#2d7af1]/30">
+    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
 
       {/* Left Panel - Hero Graphic (Uneven Wave Separator) */}
       <div className="hidden lg:flex lg:w-[50%] h-full relative bg-[#f8f9fa] dark:bg-[#090b14] items-center justify-center p-12 overflow-hidden transition-colors duration-500">
           
           {/* Background Layer constrained to this panel */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-100">
-              <div className="absolute top-[-20%] -right-[10%] w-[800px] h-[800px] bg-[#2d7af1]/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
+              <div className="absolute top-[-20%] -right-[10%] w-[800px] h-[800px] bg-vivid-blue/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
               <div className="absolute top-[30%] -left-[10%] w-[600px] h-[600px] bg-[#11a657]/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
               <div className="absolute -bottom-[20%] right-[30%] w-[700px] h-[700px] bg-[#f8b301]/15 rounded-full blur-[140px] transition-all animate-pulse" />
           </div>
 
-          {/* Uneven Wavy Separator SVG */}
-          {/* <div className="absolute top-0 -right-1 h-full w-32 text-background z-20 pointer-events-none translate-x-1/2">
-            <svg viewBox="0 0 100 1000" preserveAspectRatio="none" className="h-full w-full fill-current drop-shadow-[-10px_0_15px_rgba(0,0,0,0.05)] dark:drop-shadow-none">
-              <path d="M0,0 
-                C40,80 10,160 50,240 
-                C80,320 20,400 60,480 
-                C90,560 30,640 70,720 
-                C100,800 40,880 0,1000 
-                L100,1000 L100,0 Z" 
-              />
-            </svg>
-          </div> */}
-
           <div className="relative z-10 w-full max-w-[500px] animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out">
               {/* Glass Card */}
               <div className="relative p-10 rounded-[2.5rem] bg-white/10 dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-[#2d7af1]/10 rounded-full blur-[50px] group-hover:scale-150 transition-transform duration-1000 ease-in-out"></div>
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-vivid-blue/10 rounded-full blur-[50px] group-hover:scale-150 transition-transform duration-1000 ease-in-out"></div>
                   
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#2d7af1] to-[#1e5bba] rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-[#2d7af1]/20">
+                  <div className="w-16 h-16 bg-gradient-to-br from-vivid-blue to-vivid-blue-dark rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-vivid-blue/20">
                       <span className="text-3xl text-white font-black tracking-tighter">C</span>
                   </div>
 
@@ -84,7 +70,7 @@ export default function LoginPage() {
                   
                   {/* Mature Interactive Color Bars */}
                   <div className="mt-10 flex items-center gap-3">
-                      <div className="h-1.5 w-12 group-hover:w-16 bg-[#2d7af1] rounded-full transition-all duration-700 ease-out opacity-80 group-hover:opacity-100" />
+                      <div className="h-1.5 w-12 group-hover:w-16 bg-vivid-blue rounded-full transition-all duration-700 ease-out opacity-80 group-hover:opacity-100" />
                       <div className="h-1.5 w-5 group-hover:w-10 bg-[#11a657] rounded-full transition-all duration-700 ease-out delay-75 opacity-70 group-hover:opacity-100" />
                       <div className="h-1.5 w-5 group-hover:w-8 bg-[#f8b301] rounded-full transition-all duration-700 ease-out delay-150 opacity-60 group-hover:opacity-100" />
                   </div>
@@ -115,7 +101,7 @@ export default function LoginPage() {
           
           {/* Mobile Logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#2d7af1] to-[#1e5bba] flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-vivid-blue to-vivid-blue-dark flex items-center justify-center shadow-md">
               <span className="text-white font-black text-xl tracking-tighter">C</span>
             </div>
             <span className="text-foreground text-2xl font-bold tracking-tight">Cosmix</span>
@@ -129,7 +115,7 @@ export default function LoginPage() {
 
           {/* Social Logins */}
           <div className="flex gap-4 mb-8">
-            <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-[#2d7af1]/40 hover:text-[#2d7af1] text-[14px] font-bold transition-all group rounded-xl" type="button">
+            <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-vivid-blue/40 hover:text-vivid-blue text-[14px] font-bold transition-all group rounded-xl" type="button">
               <svg className="w-[18px] h-[18px] mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -137,12 +123,6 @@ export default function LoginPage() {
                  <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
               Google
-            </Button>
-            <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-foreground/40 text-[14px] font-bold transition-all group rounded-xl" type="button">
-              <svg className="w-[18px] h-[18px] mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                 <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
-              </svg>
-              GitHub
             </Button>
           </div>
           
@@ -167,7 +147,7 @@ export default function LoginPage() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-[#2d7af1]/50 focus:border-[#2d7af1] focus:bg-background transition-all text-[15px] px-4 shadow-none"
+                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-vivid-blue/50 focus:border-vivid-blue focus:bg-background transition-all text-[15px] px-4 shadow-none"
                 required
               />
             </div>
@@ -177,7 +157,7 @@ export default function LoginPage() {
                 <Label htmlFor="password" className="text-[13px] font-bold text-foreground">
                    Password
                 </Label>
-                <Link href="/forgot-password" className="text-[12px] font-black text-[#2d7af1] hover:underline transition-colors">
+                <Link href="/forgot-password" className="text-[12px] font-black text-vivid-blue hover:underline transition-colors">
                   Forgot password?
                 </Link>
               </div>
@@ -188,13 +168,13 @@ export default function LoginPage() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-[#2d7af1]/50 focus:border-[#2d7af1] focus:bg-background transition-all text-[15px] px-4 pr-10 shadow-none"
+                  className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-vivid-blue/50 focus:border-vivid-blue focus:bg-background transition-all text-[15px] px-4 pr-10 shadow-none"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#2d7af1] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-vivid-blue transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -204,7 +184,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 rounded-xl bg-[#2d7af1] hover:bg-[#1e5bba] text-white text-[15px] font-bold transition-all mt-6 shadow-lg shadow-[#2d7af1]/20 hover:shadow-xl hover:shadow-[#2d7af1]/30 hover:-translate-y-0.5"
+              className="w-full h-12 rounded-xl bg-vivid-blue hover:bg-vivid-blue-hover text-white text-[15px] font-bold transition-all mt-6 shadow-lg shadow-vivid-blue/20 hover:shadow-xl hover:shadow-vivid-blue/30 hover:-translate-y-0.5"
               disabled={loginMutation.isPending}
             >
               {loginMutation.isPending ? (
@@ -224,7 +204,7 @@ export default function LoginPage() {
           {/* Sign Up Link */}
           <p className="mt-8 text-center text-[14px] font-medium text-muted-foreground">
              Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-[#2d7af1] font-black hover:underline">
+            <Link href="/signup" className="text-vivid-blue font-black hover:underline">
               Sign up
             </Link>
           </p>

@@ -15,7 +15,7 @@ export function ExploreSidebar() {
                 </h2>
                 <div className="space-y-4">
                     {[
-                        { name: 'Frontend Devs', members: '124K', color: '#2d7af1' },
+                        { name: 'Frontend Devs', members: '124K', color: 'var(--brand-primary)' },
                         { name: 'UI/UX Design', members: '89K', color: '#11a657' },
                         { name: 'Startups', members: '56K', color: '#f8b301' },
                     ].map((community) => (
@@ -54,7 +54,7 @@ export function ExploreSidebar() {
                     ].map((item) => (
                         <div key={item.topic} className="group cursor-pointer">
                             <p className="text-[12px] font-medium text-muted-foreground mb-0.5">{item.category}</p>
-                            <p className="font-bold text-[15px] text-foreground group-hover:text-[#2d7af1] transition-colors">{item.topic}</p>
+                            <p className="font-bold text-[15px] text-foreground group-hover:text-vivid-blue transition-colors">{item.topic}</p>
                         </div>
                     ))}
                 </div>

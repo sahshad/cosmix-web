@@ -49,7 +49,7 @@ export default function SignupPage() {
   const hasNumber = /[0-9]/.test(password)
 
   return (
-    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-[#2d7af1]/30">
+    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
 
       {/* Left Panel - Signup Form */}
       <div className="w-full lg:w-[50%] h-full flex flex-col bg-background relative z-30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -69,14 +69,6 @@ export default function SignupPage() {
         {/* Form Container */}
         <div className="w-full max-w-[500px] mx-auto mt-auto mb-auto flex flex-col pb-10 pt-20 lg:pt-20 lg:pb-16 px-10 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
           
-          {/* Mobile Logo */}
-          {/* <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-[#2d7af1] to-[#1e5bba] flex items-center justify-center shadow-md">
-              <span className="text-white font-black text-xl tracking-tighter">C</span>
-            </div>
-            <span className="text-foreground text-2xl font-bold tracking-tight">Cosmix</span>
-          </div> */}
-
           {/* Header */}
           <div className="mb-6">
             <h2 className="font-bold text-[26px] text-foreground tracking-tight mb-2">Create an account</h2>
@@ -85,7 +77,7 @@ export default function SignupPage() {
 
           {/* Social Logins */}
           <div className="flex gap-4 mb-6">
-            <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-[#2d7af1]/40 hover:text-[#2d7af1] text-[14px] font-bold transition-all group rounded-xl" type="button">
+            <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-vivid-blue/40 hover:text-vivid-blue text-[14px] font-bold transition-all group rounded-xl" type="button">
               <svg className="w-[18px] h-[18px] mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -117,7 +109,7 @@ export default function SignupPage() {
                 placeholder="Jane Doe"
                 value={name}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-[#2d7af1]/50 focus:border-[#2d7af1] focus:bg-background transition-all text-[15px] px-4 shadow-none"
+                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-vivid-blue/50 focus:border-vivid-blue focus:bg-background transition-all text-[15px] px-4 shadow-none"
                 required
               />
             </div>
@@ -132,7 +124,7 @@ export default function SignupPage() {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-[#2d7af1]/50 focus:border-[#2d7af1] focus:bg-background transition-all text-[15px] px-4 shadow-none"
+                className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-vivid-blue/50 focus:border-vivid-blue focus:bg-background transition-all text-[15px] px-4 shadow-none"
                 required
               />
             </div>
@@ -150,13 +142,13 @@ export default function SignupPage() {
                   placeholder="Create a password"
                   value={password}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                  className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-[#2d7af1]/50 focus:border-[#2d7af1] focus:bg-background transition-all text-[15px] px-4 pr-10 shadow-none"
+                  className="h-12 rounded-xl bg-secondary/30 border border-border hover:border-vivid-blue/50 focus:border-vivid-blue focus:bg-background transition-all text-[15px] px-4 pr-10 shadow-none"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#2d7af1] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-vivid-blue transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -166,13 +158,13 @@ export default function SignupPage() {
               {/* Password Requirements */}
               {password.length > 0 && (
                 <div className="mt-2 space-y-1.5 pt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-black pl-1">
-                    <span className={`transition-colors flex items-center ${hasMinLength ? 'text-[#2d7af1]' : 'text-muted-foreground'}`}>
+                    <span className={`transition-colors flex items-center ${hasMinLength ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
                         {hasMinLength ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}8+ chars
                     </span>
-                    <span className={`transition-colors flex items-center ${hasUppercase ? 'text-[#2d7af1]' : 'text-muted-foreground'}`}>
+                    <span className={`transition-colors flex items-center ${hasUppercase ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
                         {hasUppercase ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Uppercase
                     </span>
-                    <span className={`transition-colors flex items-center ${hasNumber ? 'text-[#2d7af1]' : 'text-muted-foreground'}`}>
+                    <span className={`transition-colors flex items-center ${hasNumber ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
                         {hasNumber ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Number
                     </span>
                 </div>
@@ -185,15 +177,15 @@ export default function SignupPage() {
                 id="terms"
                 checked={acceptTerms}
                 onCheckedChange={(checked: boolean) => setAcceptTerms(checked)}
-                className="rounded-[4px] border-border data-[state=checked]:bg-[#2d7af1] data-[state=checked]:text-white data-[state=checked]:border-[#2d7af1] transition-all h-[18px] w-[18px]"
+                className="rounded-[4px] border-border data-[state=checked]:bg-vivid-blue data-[state=checked]:text-white data-[state=checked]:border-vivid-blue transition-all h-[18px] w-[18px]"
               />
               <Label htmlFor="terms" className="text-[13px] text-muted-foreground font-medium leading-relaxed cursor-pointer select-none mt-0.5">
                 I agree to the{" "}
-                <Link href="/terms" className="text-[#2d7af1] font-bold hover:underline">
+                <Link href="/terms" className="text-vivid-blue font-bold hover:underline">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-[#2d7af1] font-bold hover:underline">
+                <Link href="/privacy" className="text-vivid-blue font-bold hover:underline">
                   Privacy Policy
                 </Link>
               </Label>
@@ -201,7 +193,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 rounded-xl bg-[#2d7af1] hover:bg-[#1e5bba] text-white text-[15px] font-bold transition-all mt-4 shadow-lg shadow-[#2d7af1]/20 hover:shadow-xl hover:shadow-[#2d7af1]/25 hover:-translate-y-0.5"
+              className="w-full h-12 rounded-xl bg-vivid-blue hover:bg-vivid-blue-hover text-white text-[15px] font-bold transition-all mt-4 shadow-lg shadow-vivid-blue/20 hover:shadow-xl hover:shadow-vivid-blue/25 hover:-translate-y-0.5"
               disabled={signupMutation.isPending || !acceptTerms}
             >
               {signupMutation.isPending ? (
@@ -221,7 +213,7 @@ export default function SignupPage() {
           {/* Sign In Link */}
           <p className="mt-8 text-center text-[14px] font-medium text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-[#2d7af1] font-black hover:underline">
+            <Link href="/login" className="text-vivid-blue font-black hover:underline">
               Sign in
             </Link>
           </p>
@@ -234,29 +226,16 @@ export default function SignupPage() {
           {/* Background Layer constrained to this panel */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-100">
               <div className="absolute top-[-10%] -left-[10%] w-[800px] h-[800px] bg-[#11a657]/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
-              <div className="absolute top-[40%] -right-[10%] w-[600px] h-[600px] bg-[#2d7af1]/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
+              <div className="absolute top-[40%] -right-[10%] w-[600px] h-[600px] bg-vivid-blue/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
               <div className="absolute -bottom-[20%] left-[30%] w-[700px] h-[700px] bg-[#f8b301]/15 rounded-full blur-[140px] transition-all animate-pulse" />
           </div>
-
-          {/* Uneven Wavy Separator SVG (Mirrored) */}
-          {/* <div className="absolute top-0 -left-1 h-full w-32 text-background z-20 pointer-events-none -translate-x-1/2">
-            <svg viewBox="0 0 100 1000" preserveAspectRatio="none" className="h-full w-full fill-current drop-shadow-[10px_0_15px_rgba(0,0,0,0.05)] dark:drop-shadow-none">
-              <path d="M100,0 
-                C60,80 90,160 50,240 
-                C20,320 80,400 40,480 
-                C10,560 70,640 30,720 
-                C0,800 60,880 100,1000 
-                L0,1000 L0,0 Z" 
-              />
-            </svg>
-          </div> */}
 
           <div className="relative z-10 w-full max-w-[500px] animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out">
               {/* Glass Card */}
               <div className="relative p-10 rounded-[2.5rem] bg-white/10 dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] overflow-hidden group">
                   <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-[#11a657]/15 rounded-full blur-[50px] group-hover:scale-150 transition-transform duration-1000 ease-in-out"></div>
                   
-                  <div className="w-16 h-16 bg-gradient-to-tr from-[#11a657] to-[#1e5bba] rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-[#11a657]/20">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#11a657] to-vivid-blue-dark rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-[#11a657]/20">
                       <Heart className="text-white w-7 h-7 fill-current" />
                   </div>
 
@@ -268,7 +247,7 @@ export default function SignupPage() {
                   {/* Mature Interactive Color Bars */}
                   <div className="mt-10 flex items-center gap-3">
                       <div className="h-1.5 w-6 group-hover:w-10 bg-[#11a657] rounded-full transition-all duration-700 ease-out opacity-70 group-hover:opacity-100" />
-                      <div className="h-1.5 w-14 group-hover:w-16 bg-[#2d7af1] rounded-full transition-all duration-700 ease-out delay-75 opacity-80 group-hover:opacity-100" />
+                      <div className="h-1.5 w-14 group-hover:w-16 bg-vivid-blue rounded-full transition-all duration-700 ease-out delay-75 opacity-80 group-hover:opacity-100" />
                       <div className="h-1.5 w-6 group-hover:w-8 bg-[#f8b301] rounded-full transition-all duration-700 ease-out delay-150 opacity-60 group-hover:opacity-100" />
                   </div>
               </div>

@@ -1,24 +1,26 @@
 export type User = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  user_name: string;
+  id: string;
+  displayName: string;
+  username: string;
   email: string;
-  is_active: boolean;
-  email_verified: boolean;
-  last_login_at: string;
-  created_at: string;
-  updated_at: string;
+  isActive: boolean;
+  isEmailVerified: boolean;
+  isVerified: boolean;
+  avatarUrl: string;
+  lastLoginAt: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UpdateUserRequest = {
-  first_name?: string;
-  last_name?: string;
-  user_name?: string;
+  displayName?: string;
+  username?: string;
   email?: string;
-  is_active?: boolean;
-  email_verified?: boolean;
-  last_login_at?: string;
-  created_at?: string;
-  updated_at?: string;
+  isActive?: boolean;
+  isEmailVerified?: boolean;
+  isVerified?: boolean;
+  avatarUrl?: string;
+  lastLoginAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };

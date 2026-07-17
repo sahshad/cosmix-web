@@ -1,45 +1,67 @@
 import React from 'react';
 import { Compass } from 'lucide-react';
-import { PostCard, PostData } from '@/components/internal/post-card';
+import { PostCard, PostData } from '@/components/post';
 
-const discoverPosts: PostData[] = [
-    {
-        id: 101,
-        author: {
-            name: 'Tech Insider',
-            handle: '@techinsider',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=tech',
-            verified: true,
-        },
-        content: 'Breaking: The new framework just dropped and it completely changes how we build web apps. Thread below 👇',
-        media: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
-        timestamp: '1 hour ago',
-        likes: 1245,
-        replies: 156,
-        reposts: 342,
-        views: '105K',
-        liked: false,
-    },
-    {
-        id: 102,
-        author: {
-            name: 'Design Digest',
-            handle: '@designdigest',
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=design',
-            verified: false,
-        },
-        content: '10 UI patterns that will dominate 2024. A comprehensive guide for product designers.',
-        media: null,
-        timestamp: '3 hours ago',
-        likes: 892,
-        replies: 45,
-        reposts: 120,
-        views: '45K',
-        liked: true,
-    },
-];
+// const discoverPosts: PostData[] = [
+//     {
+//         id: 101,
+//         user: {
+//             id: 'tech_insider',
+//             displayName: 'Tech Insider',
+//             username: '@techinsider',
+//             avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=tech',
+//             isVerified: true,
+//             email: 'tech@cosmix.com',
+//             isActive: true,
+//             isEmailVerified: true,
+//             lastLoginAt: '',
+//             createdAt: '',
+//             updatedAt: '',
+//         },
+//         content: 'Breaking: The new framework just dropped and it completely changes how we build web apps. Thread below 👇',
+//         media: [
+//             {
+//                 public_id: 'media_101',
+//                 url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
+//                 type: 'image',
+//             }
+//         ],
+//         createdAt: '1 hour ago',
+//         updatedAt: '1 hour ago',
+//         likesCount: 1245,
+//         commentsCount: 156,
+//         repostCount: 342,
+//         isLiked: false,
+//         isReposted: false,
+//     },
+//     {
+//         id: 102,
+//         user: {
+//             id: 'design_digest',
+//             displayName: 'Design Digest',
+//             username: '@designdigest',
+//             avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=design',
+//             isVerified: false,
+//             email: 'design@cosmix.com',
+//             isActive: true,
+//             isEmailVerified: true,
+//             lastLoginAt: '',
+//             createdAt: '',
+//             updatedAt: '',
+//         },
+//         content: '10 UI patterns that will dominate 2024. A comprehensive guide for product designers.',
+//         media: undefined,
+//         createdAt: '3 hours ago',
+//         updatedAt: '3 hours ago',
+//         likesCount: 892,
+//         commentsCount: 45,
+//         repostCount: 120,
+//         isLiked: true,
+//         isReposted: false,
+//     },
+// ];
 
-export function ExploreFeed() {
+export function ExploreFeed({posts}: { posts: PostData[]; }) {
     return (
         <div>
             <h2 className="text-lg font-extrabold mb-4 flex items-center gap-2 text-foreground">
@@ -47,8 +69,8 @@ export function ExploreFeed() {
                 Explore Feed
             </h2>
             <div className="space-y-8">
-                {discoverPosts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                {posts.map((post: any) => (
+                    <PostCard key={post.id.low} post={post} />
                 ))}
             </div>
         </div>

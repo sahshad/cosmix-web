@@ -1,25 +1,35 @@
-import { api } from '@/lib/api';
 import {
   SignupRequest,
   LoginRequest,
   MeResponse,
   LoginResponse,
-  RefreshResponse
-} from '@/types';
+  RefreshResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+} from "@/types";
+import { http } from "@/lib/http";
 
 export const authService = {
-  login: (data: LoginRequest) =>
-    api.post<LoginResponse>('/auth/login', data),
+  login: (data: LoginRequest) => http.post<LoginResponse>("/auth/login", data),
 
-  me: () =>
-    api.get<MeResponse>('/users/me'),
+  me: () => http.get<MeResponse>("/users/me"),
 
-  logout: () =>
-    api.post('/auth/logout'),
+  logout: () => http.post("/auth/logout"),
 
-  signup: (data: SignupRequest) =>
-    api.post('/auth/register', data),
+  signup: (data: SignupRequest) => http.post("/auth/register", data),
 
-  refresh: () =>
-    api.get<RefreshResponse>('/auth/refresh'),
+  refresh: () => http.get<RefreshResponse>("/auth/refresh"),
+
+  verifyEmail: (data: VerifyEmailRequest) =>
+    http.post<VerifyEmailResponse>("/auth/verify-email", data),
+
+  forgotPassword: (data: ForgotPasswordRequest) =>
+    http.post<ForgotPasswordResponse>("/auth/forgot-password", data),
+
+  resetPassword: (data: ResetPasswordRequest) =>
+    http.post<ResetPasswordResponse>("/auth/reset-password", data),
 };

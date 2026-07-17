@@ -3,7 +3,7 @@ import { CreatePostRequest, PostResponse } from '@/types/post';
 
 export const postService = {
   createPost: (data: CreatePostRequest) =>
-    api.post<PostResponse>('/posts', data),
+    api.post<any>('/posts', data),
 
   getFeed: (page: number = 1, limit: number = 20) =>
     api.get<any>(`/posts?page=${page}&limit=${limit}`),

@@ -29,3 +29,30 @@ export type AuthUser = {
   email: string;
   role: string;
 };
+
+export type VerifyEmailRequest = {
+  token: string;
+  email: string;
+  password: string;
+};
+
+export type VerifyEmailResponse = {
+  message: string;
+};
+
+export type ForgotPasswordRequest = {
+  email: string;
+};
+
+export type ForgotPasswordResponse = {
+  message: string;
+};
+
+export type ResetPasswordRequest = {
+  token: string;
+  new_password: string;
+};
+
+export type ResetPasswordResponse = {
+  message: string;
+};
