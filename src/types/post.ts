@@ -1,7 +1,7 @@
 import { User } from "./user";
 
 export interface MediaItem {
-    public_id: string;
+    publicId: string;
     url: string;
     type: string;
     duration?: number;

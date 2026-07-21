@@ -28,7 +28,7 @@ export default function SignupPage() {
     e.preventDefault()
 
     signupMutation.mutate({
-      display_name: name,
+      displayName: name,
       email,
       password,
     }, {

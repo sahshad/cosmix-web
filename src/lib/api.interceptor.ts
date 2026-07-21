@@ -51,7 +51,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { access_token: newToken } = await authService.refresh();
+        const { accessToken: newToken } = await authService.refresh();
         useAuthStore.getState().setToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         processQueue(null, newToken);

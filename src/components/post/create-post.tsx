@@ -48,7 +48,7 @@ export function CreatePost() {
         const uploadRes = await uploadToCloudinary(formData);
         if (uploadRes.success) {
           mediaItems.push({
-            public_id: uploadRes.data.publicId,
+            publicId: uploadRes.data.publicId,
             url: uploadRes.data.url,
             type: uploadRes.data.resourceType,
             duration: uploadRes.data.duration || 0,

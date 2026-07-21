@@ -25,7 +25,7 @@ export function useLogin() {
     onSuccess: (response: LoginResponse) => {
       // setUser(response.user);
       setIsAuthenticated(true);
-      setToken(response.access_token);
+      setToken(response.accessToken);
     },
   });
 }

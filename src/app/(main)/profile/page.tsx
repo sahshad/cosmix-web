@@ -31,7 +31,7 @@ const userPosts: PostData[] = [
       'Just finished redesigning the Cosmix profile experience. We wanted something that felt more professional, airy, and mature. What do you think about the new feed? ✨',
     media: [
       {
-        public_id: 'media_101',
+        publicId: 'media_101',
         url: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop',
         type: 'image',
       },
@@ -89,7 +89,7 @@ const userPosts: PostData[] = [
       'Early morning creativity boost. Sometimes all you need is a fresh perspective and a good cup of coffee. 🪴',
     media: [
       {
-        public_id: 'media_103',
+        publicId: 'media_103',
         url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop',
         type: 'image',
       },

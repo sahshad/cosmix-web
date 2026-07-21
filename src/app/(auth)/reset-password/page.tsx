@@ -37,7 +37,7 @@ function ResetPasswordForm() {
     resetPasswordMutation.mutate(
       {
         token,
-        new_password: newPassword,
+        newPassword,
       },
       {
         onSuccess: () => {

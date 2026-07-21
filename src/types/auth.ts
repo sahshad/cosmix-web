@@ -6,7 +6,7 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-  access_token: string;
+  accessToken: string;
   user: Partial<User>;
 }
 
@@ -15,11 +15,11 @@ export type MeResponse = {
 }
 
 export type RefreshResponse = {
-  access_token: string;
+  accessToken: string;
 }
 
 export type SignupRequest = {
-  display_name: string;
+  displayName: string;
   email: string;
   password: string;
 };
@@ -50,7 +50,7 @@ export type ForgotPasswordResponse = {
 
 export type ResetPasswordRequest = {
   token: string;
-  new_password: string;
+  newPassword: string;
 };
 
 export type ResetPasswordResponse = {
