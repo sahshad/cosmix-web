@@ -1,43 +1,3 @@
-// import { api } from './api';
-// import { useAuthStore } from '@/store/auth.store';
-
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = useAuthStore.getState().token;
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     const status = error.response?.status;
-
-//     // 401 – unauthorized
-//     if (status === 401) {
-//       useAuthStore.getState().logout();
-
-//       if (typeof window !== 'undefined') {
-//         window.location.href = '/login';
-//       }
-//     }
-
-//     // 403 – forbidden
-//     if (status === 403) {
-//       console.error('Forbidden');
-//     }
-
-//     // Global error fallback
-//     return Promise.reject(error);
-//   }
-// );
-
 import { authService } from '@/services/auth.service';
 import { api } from './api';
 import { useAuthStore } from '@/store/auth.store';
@@ -47,7 +7,7 @@ let failedQueue: any[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(prom => {
-    if (error) {
+    if (error || !token) {
       prom.reject(error);
     } else {
       prom.resolve(token);
@@ -55,6 +15,11 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
+
+// Requests that must never trigger the refresh flow: the refresh call itself
+// (a 401 here means the session is genuinely gone, not "needs a refresh"),
+// and login/register, whose 401s are credential errors, not expired tokens.
+const AUTH_ENDPOINTS = ['/auth/refresh', '/auth/login', '/auth/register'];
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
@@ -69,8 +34,9 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const status = error.response?.status;
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((url) => originalRequest?.url?.includes(url));
 
-    if (status === 401 && !originalRequest._retry) {
+    if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
         // Queue the request if a refresh is already in progress
         return new Promise((resolve, reject) => {
@@ -85,14 +51,17 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response: any = await authService.refresh();
-        const newToken = response.data.access_token;
+        const { access_token: newToken } = await authService.refresh();
         useAuthStore.getState().setToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         processQueue(null, newToken);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
+        useAuthStore.getState().logout();
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

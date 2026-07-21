@@ -7,22 +7,9 @@ import { ProfileGallery } from './_components/profile-gallery';
 import { TrendingPanel } from '@/components/widgets/trending-panel';
 import { SuggestedUsers } from '@/components/widgets/suggested-users';
 import { PostData } from '@/components/post/post-card';
-
-const userProfile: ProfileData = {
-  name: 'Sarah Johnson',
-  handle: '@sarahjohnson',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix',
-  banner:
-    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop',
-  bio: 'Product Designer & Digital Creative. Building the future of social experiences at Cosmix 🌌. Coffee enthusiast ☕ | Explorer 🗺️',
-  location: 'San Francisco, CA',
-  website: 'sarah.design',
-  joinDate: 'Joined March 2023',
-  followers: 12543,
-  following: 854,
-  isMe: true,
-  verified: true,
-};
+import { useCurrentUser } from '@/hooks/useAuth';
+import { useFollowers, useFollowing } from '@/hooks/useUser';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const userPosts: PostData[] = [
   {
@@ -120,6 +107,27 @@ const userPosts: PostData[] = [
 export default function ProfilePage() {
   const [posts, setPosts] = useState<PostData[]>(userPosts);
 
+  const { data: user, isLoading: isUserLoading } = useCurrentUser();
+  const { data: followers } = useFollowers(user?.id);
+  const { data: following } = useFollowing(user?.id);
+
+  const profile: ProfileData | null = user
+    ? {
+        displayName: user.displayName ?? '',
+        username: user.username ?? '',
+        avatarUrl: user.avatarUrl ?? '',
+        coverImageUrl: user.coverImageUrl,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        createdAt: user.createdAt,
+        followers: followers?.length ?? 0,
+        following: following?.length ?? 0,
+        isMe: true,
+        isVerified: user.isVerified ?? false,
+      }
+    : null;
+
   const handleLike = (postId: number | string) => {
     setPosts((prev) =>
       prev.map((post) =>
@@ -138,7 +146,18 @@ export default function ProfilePage() {
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto animate-fade-in-up">
       {/* Left Column */}
       <div className="space-y-6">
-        <ProfileHeader profile={userProfile} />
+        {isUserLoading || !profile ? (
+          <div className="rounded-[2.5rem] bg-card shadow-[0_12px_45px_rgb(0,0,0,0.04)] overflow-hidden">
+            <Skeleton className="h-44 sm:h-56 w-full rounded-none" />
+            <div className="px-8 pb-8 pt-4 space-y-4">
+              <Skeleton className="h-28 w-28 sm:h-36 sm:w-36 rounded-[2.5rem] -mt-16 border-[6px] border-background" />
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          </div>
+        ) : (
+          <ProfileHeader profile={profile} />
+        )}
         <ProfileTabs posts={posts} onLike={handleLike} />
       </div>
 

@@ -1,38 +1,27 @@
-'use server';
+"use server";
 
-import { v2 as cloudinary } from 'cloudinary';
-
-// Cloudinary will automatically use process.env.CLOUDINARY_URL if it exists
-cloudinary.config({
-  secure: true
-});
+import {
+  uploadFile,
+  deleteFile,
+  deleteByUrl,
+  isCloudinaryFolder,
+  type CloudinaryFolder,
+} from "@/lib/cloudinary";
 
 export async function uploadToCloudinary(formData: FormData) {
-  try {
-    const file = formData.get('file') as File;
-    if (!file) {
-      throw new Error('No file provided');
-    }
+  const file = formData.get("file") as File | null;
+  const requestedFolder = formData.get("folder");
+  const folder: CloudinaryFolder = isCloudinaryFolder(requestedFolder)
+    ? requestedFolder
+    : "posts";
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+  return uploadFile(file, folder);
+}
 
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        { 
-            folder: 'cosmix/posts',
-            resource_type: 'auto' // automatically detect if image or video
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
-    });
+export async function deleteFromCloudinary(publicId: string) {
+  return deleteFile(publicId);
+}
 
-    return { success: true, result };
-  } catch (error: any) {
-    console.error('Cloudinary upload error:', error);
-    return { success: false, error: error.message || 'Upload failed' };
-  }
+export async function deleteFromCloudinaryByUrl(url: string) {
+  return deleteByUrl(url);
 }

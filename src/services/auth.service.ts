@@ -14,15 +14,20 @@ import {
 import { http } from "@/lib/http";
 
 export const authService = {
-  login: (data: LoginRequest) => http.post<LoginResponse>("/auth/login", data),
+  login: (data: LoginRequest) => 
+    http.post<LoginResponse>("/auth/login", data),
 
-  me: () => http.get<MeResponse>("/users/me"),
+  me: () => 
+    http.get<MeResponse>("/users/me"),
 
-  logout: () => http.post("/auth/logout"),
+  logout: () => 
+    http.post("/auth/logout"),
 
-  signup: (data: SignupRequest) => http.post("/auth/register", data),
+  signup: (data: SignupRequest) => 
+    http.post("/auth/register", data),
 
-  refresh: () => http.get<RefreshResponse>("/auth/refresh"),
+  refresh: () => 
+    http.get<RefreshResponse>("/auth/refresh"),
 
   verifyEmail: (data: VerifyEmailRequest) =>
     http.post<VerifyEmailResponse>("/auth/verify-email", data),

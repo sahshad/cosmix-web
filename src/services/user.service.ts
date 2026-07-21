@@ -1,10 +1,16 @@
-import { api } from "@/lib/api";
-import { UpdateUserRequest } from "@/types";
+import { http } from "@/lib/http";
+import { UpdateProfileRequest, UserProfileResponse, UserListResponse } from "@/types";
 
 export const userService = {
-    update: (data: UpdateUserRequest) =>
-        api.put<void>("/users/me", data),
-    
-    getById: (id: number | string) =>
-        api.get<any>(`/users/id/${id}`)
-}
+  updateProfile: (data: UpdateProfileRequest) =>
+    http.put<UserProfileResponse>("/users/me", data),
+
+  getByUsername: (username: string) =>
+    http.get<UserProfileResponse>(`/users/username/${username}`),
+
+  getFollowers: (userId: string) =>
+    http.get<UserListResponse>(`/users/followers/${userId}`),
+
+  getFollowing: (userId: string) =>
+    http.get<UserListResponse>(`/users/following/${userId}`),
+};

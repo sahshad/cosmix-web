@@ -11,6 +11,7 @@ import { postService } from "@/services/post.service";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
+import { MediaItem } from "@/types/post";
 
 export function CreatePost() {
   const [postContent, setPostContent] = useState("");
@@ -38,7 +39,7 @@ export function CreatePost() {
     if (!postContent.trim() && !selectedFile) return;
 
     setIsPosting(true);
-    let mediaItems: any[] = [];
+    const mediaItems: MediaItem[] = [];
 
     try {
       if (selectedFile) {
@@ -46,17 +47,14 @@ export function CreatePost() {
         formData.append("file", selectedFile);
         const uploadRes = await uploadToCloudinary(formData);
         if (uploadRes.success) {
-          const result = uploadRes.result as any;
           mediaItems.push({
-            public_id: result.public_id,
-            url: result.secure_url,
-            type: result.resource_type,
-            width: result.width,
-            height: result.height,
-            duration: result.duration || 0,
+            public_id: uploadRes.data.publicId,
+            url: uploadRes.data.url,
+            type: uploadRes.data.resourceType,
+            duration: uploadRes.data.duration || 0,
           });
         } else {
-          toast.error("Failed to upload media");
+          toast.error(uploadRes.error || "Failed to upload media");
           setIsPosting(false);
           return;
         }
