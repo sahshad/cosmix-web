@@ -3,6 +3,20 @@ import { postService } from '@/services/post.service';
 import { PostResponse as PostData } from '@/types/post';
 import { toast } from 'sonner';
 
+const POST_LIST_KEY_PREFIXES = ['feed', 'user-posts'];
+
+const patchPostInLists = (
+    queryClient: ReturnType<typeof useQueryClient>,
+    id: number | string,
+    updater: (post: PostData) => PostData
+) => {
+    POST_LIST_KEY_PREFIXES.forEach((prefix) => {
+        queryClient.setQueriesData({ queryKey: [prefix] }, (old: any) =>
+            Array.isArray(old) ? old.map((post: PostData) => (post.id === id ? updater(post) : post)) : old
+        );
+    });
+};
+
 export const useFeed = (page: number = 1, limit: number = 20) => {
     return useQuery({
         queryKey: ['feed', page, limit],
@@ -10,6 +24,17 @@ export const useFeed = (page: number = 1, limit: number = 20) => {
             const { data } = await postService.getFeed(page, limit);
             return (data.posts || []) as PostData[];
         }
+    });
+};
+
+export const useUserPosts = (userId: string | undefined, page: number = 1, limit: number = 20) => {
+    return useQuery({
+        queryKey: ['user-posts', userId, page, limit],
+        queryFn: async () => {
+            const { data } = await postService.getUserPosts(userId as string, page, limit);
+            return (data.posts || []) as PostData[];
+        },
+        enabled: !!userId,
     });
 };
 
@@ -26,31 +51,59 @@ export const useLikePost = () => {
             return { id, isLiked: !isLiked };
         },
         onMutate: async ({ id, isLiked }) => {
-            // Optimistic update
-            await queryClient.cancelQueries({ queryKey: ['feed'] });
-            const previousFeed = queryClient.getQueryData(['feed', 1, 20]);
-            
-            queryClient.setQueryData(['feed', 1, 20], (old: any) => {
-                if (!old) return old;
-                return old.map((post: PostData) => {
-                    if (post.id === id) {
-                        return {
-                            ...post,
-                            isLiked: !isLiked,
-                            likesCount: isLiked ? post.likesCount - 1 : post.likesCount + 1,
-                        };
-                    }
-                    return post;
-                });
-            });
+            await Promise.all(POST_LIST_KEY_PREFIXES.map((prefix) => queryClient.cancelQueries({ queryKey: [prefix] })));
 
-            return { previousFeed };
+            const previous = POST_LIST_KEY_PREFIXES.map((prefix) => [prefix, queryClient.getQueriesData({ queryKey: [prefix] })] as const);
+
+            patchPostInLists(queryClient, id, (post) => ({
+                ...post,
+                isLiked: !isLiked,
+                likesCount: isLiked ? post.likesCount - 1 : post.likesCount + 1,
+            }));
+
+            return { previous };
         },
         onError: (err, variables, context: any) => {
-            if (context?.previousFeed) {
-                queryClient.setQueryData(['feed', 1, 20], context.previousFeed);
-            }
+            context?.previous?.forEach(([, entries]: any) => {
+                entries.forEach(([key, data]: any) => queryClient.setQueryData(key, data));
+            });
             toast.error("Failed to like post");
+        }
+    });
+};
+
+export const useUpdatePost = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, content }: { id: number | string; content: string }) => {
+            const { data } = await postService.updatePost(id, content);
+            return data.post as PostData;
+        },
+        onSuccess: (updated) => {
+            toast.success("Post updated");
+            patchPostInLists(queryClient, updated.id, (post) => ({ ...post, content: updated.content, updatedAt: updated.updatedAt }));
+        },
+        onError: () => {
+            toast.error("Failed to update post");
+        }
+    });
+};
+
+export const useDeletePost = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (id: number | string) => {
+            await postService.deletePost(id);
+            return { id };
+        },
+        onSuccess: () => {
+            toast.success("Post deleted");
+            POST_LIST_KEY_PREFIXES.forEach((prefix) => queryClient.invalidateQueries({ queryKey: [prefix] }));
+        },
+        onError: () => {
+            toast.error("Failed to delete post");
         }
     });
 };

@@ -12,23 +12,31 @@ export interface CreatePostRequest {
     media?: MediaItem[];
 }
 
-// export interface User {
-//     display_name: string;
-//     username: string;
-//     avatar: string;
-//     verified: boolean;
-// }
-
 export interface PostResponse {
-    id: number;
+    id: string;
     user: User;
     content: string;
     media?: MediaItem[];
     likesCount: number;
     isLiked: boolean;
-    repostCount: number;
-    isReposted: boolean;
+    sharesCount: number;
     commentsCount: number;
+    isOwner: boolean;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface CommentResponse {
+    id: string;
+    postId: string;
+    authorId: string;
+    user: User;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    likesCount: number;
+    repliesCount: number;
+    isLiked: boolean;
+    isOwner: boolean;
+    parentCommentId: string;
 }

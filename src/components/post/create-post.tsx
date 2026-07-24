@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { MediaItem } from "@/types/post";
+import { useCurrentUser } from "@/hooks/useAuth";
 
 export function CreatePost() {
   const [postContent, setPostContent] = useState("");
@@ -20,6 +21,9 @@ export function CreatePost() {
   const [isPosting, setIsPosting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const { data: user } = useCurrentUser();
+
+  const avatarUrl = user?.avatarUrl ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix';
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -74,11 +78,11 @@ export function CreatePost() {
   };
 
   return (
-    <Card className="p-2 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-[3rem] bg-card flex flex-col focus-within:ring-4 ring-vivid-blue/10 transition-all duration-300">
+    <Card className="p-2 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-[14px] bg-card flex flex-col focus-within:ring-4 ring-vivid-blue/10 transition-all duration-300">
       <div className="flex px-6 pt-6 pb-2">
         <Avatar className="h-12 w-12 flex-shrink-0 mr-4 mt-1 ring-2 ring-transparent">
           <AvatarImage
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix"
+            src={avatarUrl}
             alt="You"
           />
           <AvatarFallback>ME</AvatarFallback>

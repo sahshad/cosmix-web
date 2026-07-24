@@ -30,7 +30,7 @@ export function SuggestedUsers({
   iconColor = '#11a657',
 }: SuggestedUsersProps) {
   return (
-    <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+    <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
       <SectionHeader icon={Users} label={title} iconColor={iconColor} />
       <div className="space-y-5">
         {users.map((user) => (

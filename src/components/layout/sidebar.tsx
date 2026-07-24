@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Compass,
   Settings,
   LogOut,
   MoreHorizontal,
@@ -22,7 +21,6 @@ import {
   SidebarRail,
   useSidebar,
   SidebarMenuBadge,
-  SidebarInput,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -62,7 +60,7 @@ export function AppSidebar() {
   // const user = useAuthStore((state) => state.user);
   const displayName = user?.displayName || '';
   const userHandle = '@' + (user?.username || '');
-  const avatarUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix';
+  const avatarUrl = user?.avatarUrl ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix';
 
   const renderMenuItems = () => (
     <SidebarMenu className="gap-1.5 px-3">
@@ -136,20 +134,9 @@ export function AppSidebar() {
             )}
           </Link>
         </div>
-        {!isCollapsed && (
-          <div className="px-2 pb-2">
-            <div className="relative group">
-              <SidebarInput
-                placeholder="Search cosmos..."
-                className="bg-secondary/40 border-none rounded-xl pl-10 h-10 group-hover:bg-secondary/60 transition-colors"
-              />
-              <Compass className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-vivid-blue transition-colors" />
-            </div>
-          </div>
-        )}
       </SidebarHeader>
 
-      <SidebarContent className="py-2 gap-2 custom-scrollbar">
+      <SidebarContent className="py-2 gap-2">
         {renderMenuItems()}
       </SidebarContent>
 

@@ -3,7 +3,7 @@
 import { WelcomeCard } from '@/components/widgets/welcome-card';
 import { RightSidebar } from '@/components/widgets/right-sidebar';
 import { CreatePost } from '@/components/post/create-post';
-import { PostCard } from '@/components/post/post-card';
+import { PostCard, PostData } from '@/components/post/post-card';
 import { useFeed, useLikePost } from '@/hooks/useFeed';
 import { useAuthStore } from '@/store/auth.store';
 import { useCurrentUser } from '@/hooks/useAuth';
@@ -19,9 +19,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto animate-fade-in-up">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto lg:h-svh animate-fade-in-up">
       {/* Main Feed */}
-      <div className="space-y-8">
+      <div className="space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         <WelcomeCard name={user?.displayName || 'there'} />
         <CreatePost />
 
@@ -32,10 +32,10 @@ export default function DashboardPage() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-vivid-blue" />
             </div>
           ) : (
-            posts.map((post: any) => (
+            posts.map((post: PostData) => (
               <PostCard
-                key={post.id.low}
-                onLike={() => handleLike(post.id.low, post.isLiked)}
+                key={post.id}
+                onLike={() => handleLike(post.id, post.isLiked)}
                 post={post}
               />
             ))

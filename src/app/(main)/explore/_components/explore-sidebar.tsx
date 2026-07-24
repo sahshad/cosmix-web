@@ -6,7 +6,7 @@ export function ExploreSidebar() {
     return (
         <div className="space-y-8 hidden lg:block">
             {/* Top Communities */}
-            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
                 <h2 className="text-sm font-bold text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-wider">
                     <div className="bg-[#8b5cf6]/10 p-1.5 rounded-lg">
                         <Star className="h-4 w-4 text-[#8b5cf6]" />
@@ -38,7 +38,7 @@ export function ExploreSidebar() {
             </Card>
 
             {/* Popular Topics - List Format */}
-            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
                 <h2 className="text-sm font-bold text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-wider">
                     <div className="bg-[#f84b4b]/10 p-1.5 rounded-lg">
                         <Activity className="h-4 w-4 text-[#f84b4b]" />
