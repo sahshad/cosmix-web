@@ -4,6 +4,12 @@ import { Providers } from './provider';
 import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
 import "./globals.css"
+import { Instrument_Serif, Inter } from 'next/font/google';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _inter = Inter({ subsets: ["latin"] });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _instrumentSerif = Instrument_Serif({ subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: {
