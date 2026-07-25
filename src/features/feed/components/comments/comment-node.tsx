@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { QueryKey } from "@tanstack/react-query";
 import { Heart, Pencil, Trash2 } from "lucide-react";
-import { CenteredLoader, InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
+import { ConfirmDialog, InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
 import { toast } from "sonner";
 import { CommentResponse } from "../../types";
 import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
@@ -17,6 +17,7 @@ import {
 import { useInlineEdit } from "@/hooks/useInlineEdit";
 import { User } from "@/types";
 import { CommentComposer } from "./comment-composer";
+import { CommentListSkeleton } from "./comment-skeleton";
 
 interface CommentNodeProps {
   comment: CommentResponse;
@@ -30,6 +31,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
   const [repliesOpen, setRepliesOpen] = useState(false);
   const [replyBoxOpen, setReplyBoxOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const palette = getAvatarPalette(comment.user?.username || comment.user?.displayName);
 
@@ -100,7 +102,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                     {
                       icon: Trash2,
                       label: "Delete",
-                      onClick: () => deleteComment(comment.id),
+                      onClick: () => setIsDeleteConfirmOpen(true),
                       disabled: isDeleting,
                       destructive: true,
                     },
@@ -181,7 +183,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
           {repliesOpen && (
             <div className="mt-3">
               {isLoadingReplies ? (
-                <CenteredLoader className="py-2" size="sm" />
+                <CommentListSkeleton count={1} />
               ) : (
                 replies.map((reply) => (
                   <CommentNode
@@ -198,6 +200,19 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={isDeleteConfirmOpen}
+        onOpenChange={setIsDeleteConfirmOpen}
+        title="Delete comment?"
+        description="This can't be undone. The comment will be permanently removed."
+        confirmLabel="Delete"
+        destructive
+        isConfirming={isDeleting}
+        onConfirm={() =>
+          deleteComment(comment.id, { onSuccess: () => setIsDeleteConfirmOpen(false) })
+        }
+      />
     </div>
   );
 }

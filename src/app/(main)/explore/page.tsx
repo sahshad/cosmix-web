@@ -8,7 +8,7 @@ import {
   ExploreFeed,
   ExploreSidebar,
 } from "@/features/explore/components";
-import { CenteredLoader } from "@/components/shared";
+import { PostFeedSkeleton } from "@/features/feed/components/post-card-skeleton";
 import { useFeed } from "@/features/feed/hooks/useFeed";
 
 export default function ExplorePage() {
@@ -21,7 +21,7 @@ export default function ExplorePage() {
         <TrendingTopics />
         <DiscoverCreators />
         {isLoading ? (
-          <CenteredLoader className="p-8" size="2xl" spinnerClassName="text-vivid-blue" />
+          <PostFeedSkeleton />
         ) : (
           <ExploreFeed posts={posts} />
         )}

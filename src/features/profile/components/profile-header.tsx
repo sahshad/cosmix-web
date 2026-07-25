@@ -46,7 +46,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const joinDate = formatJoinDate(profile.createdAt);
 
   return (
-    <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2.5rem] bg-card overflow-hidden">
+    <Card className="border-0 p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-md bg-card overflow-hidden">
       {/* Banner */}
       <div className="relative h-44 sm:h-56 bg-secondary overflow-hidden group">
         {profile.coverImageUrl ? (

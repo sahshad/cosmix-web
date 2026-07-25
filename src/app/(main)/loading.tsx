@@ -1,3 +1,5 @@
+import { PostFeedSkeleton } from '@/features/feed/components/post-card-skeleton';
+
 export default function Loading() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto animate-pulse">
@@ -15,27 +17,7 @@ export default function Loading() {
           <div className="h-12 rounded-4xl bg-secondary/60" />
         </div>
 
-        {/* Post Card Skeletons */}
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="rounded-xl bg-card p-6 space-y-6 border border-border/10 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-secondary" />
-                <div className="space-y-2">
-                  <div className="h-4 w-32 bg-secondary rounded-full" />
-                  <div className="h-3 w-20 bg-secondary/60 rounded-full" />
-                </div>
-              </div>
-              <div className="h-8 w-8 rounded-full bg-secondary" />
-            </div>
-            <div className="space-y-2">
-              <div className="h-4 w-full bg-secondary rounded-full" />
-              <div className="h-4 w-[90%] bg-secondary rounded-full" />
-            </div>
-            <div className="h-50 rounded-2xl bg-secondary/40" />
-            <div className="h-10 rounded-full bg-secondary/30" />
-          </div>
-        ))}
+        <PostFeedSkeleton />
       </div>
 
       {/* Right Column Skeleton */}

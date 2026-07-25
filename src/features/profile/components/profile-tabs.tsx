@@ -2,7 +2,8 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard, PostData } from '@/features/feed/components/post-card';
-import { CenteredLoader, EmptyState } from '@/components/shared';
+import { PostFeedSkeleton } from '@/features/feed/components/post-card-skeleton';
+import { EmptyState } from '@/components/shared';
 
 interface ProfileTabsProps {
   posts: PostData[];
@@ -30,7 +31,7 @@ export function ProfileTabs({ posts, onLike, isLoading }: ProfileTabsProps) {
 
       <TabsContent value="posts" className="space-y-6 mt-6">
         {isLoading ? (
-          <CenteredLoader className="p-8" />
+          <PostFeedSkeleton count={2} className="space-y-6" />
         ) : posts.length === 0 ? (
           <EmptyState message="No posts yet." />
         ) : (

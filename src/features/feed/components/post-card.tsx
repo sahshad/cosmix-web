@@ -2,7 +2,7 @@
 
 import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { OptionsMenu, UserAvatar } from "@/components/shared";
+import { ConfirmDialog, OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useRef, useState } from "react";
@@ -26,6 +26,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
   const shouldFocusOnOpenRef = useRef(false);
   const [showComments, setShowComments] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
 
   useEffect(() => {
@@ -87,7 +88,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
                   {
                     icon: Trash2,
                     label: "Delete post",
-                    onClick: () => deletePost(post.id),
+                    onClick: () => setIsDeleteConfirmOpen(true),
                     disabled: isDeleting,
                     destructive: true,
                   },
@@ -158,6 +159,19 @@ export function PostCard({ post, onLike }: PostCardProps) {
         initialMedia={post.media}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
+      />
+
+      <ConfirmDialog
+        open={isDeleteConfirmOpen}
+        onOpenChange={setIsDeleteConfirmOpen}
+        title="Delete post?"
+        description="This can't be undone. The post will be permanently removed."
+        confirmLabel="Delete"
+        destructive
+        isConfirming={isDeleting}
+        onConfirm={() =>
+          deletePost(post.id, { onSuccess: () => setIsDeleteConfirmOpen(false) })
+        }
       />
     </Card>
   );

@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff, Check, Heart, Moon, Sun } from "lucide-react"
+import { Eye, EyeOff, Check, Heart } from "lucide-react"
 import { Spinner } from "@/components/shared"
 import { useRouter } from "next/navigation"
 import { useSignup } from '@/features/auth/hooks/useAuth'
+import { AuthThemeToggle } from "@/features/auth/components"
 import { toast } from "sonner"
 import { extractApiError } from "@/lib/error"
-import { useTheme } from "next-themes"
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -23,7 +23,6 @@ export default function SignupPage() {
   const [acceptTerms, setAcceptTerms] = useState(false)
   const router = useRouter();
   const signupMutation = useSignup();
-  const { theme, setTheme } = useTheme()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,17 +54,7 @@ export default function SignupPage() {
       {/* Left Panel - Signup Form */}
       <div className="w-full lg:w-[50%] h-full flex flex-col bg-background relative z-30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         
-        {/* Theme Toggle Button */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="absolute top-6 left-6 lg:top-8 lg:left-10 rounded-full z-50 text-muted-foreground hover:bg-secondary transition-colors"
-        >
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
+        <AuthThemeToggle side="left" />
 
         {/* Form Container */}
         <div className="w-full max-w-125 mx-auto mt-auto mb-auto flex flex-col pb-10 pt-20 lg:pt-20 lg:pb-16 px-10 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
@@ -178,7 +167,7 @@ export default function SignupPage() {
                 id="terms"
                 checked={acceptTerms}
                 onCheckedChange={(checked: boolean) => setAcceptTerms(checked)}
-                className="rounded-[4px] border-border data-[state=checked]:bg-vivid-blue data-[state=checked]:text-white data-[state=checked]:border-vivid-blue transition-all h-4.5 w-4.5"
+                className="rounded-lg border-border data-[state=checked]:bg-vivid-blue data-[state=checked]:text-white data-[state=checked]:border-vivid-blue transition-all h-4.5 w-4.5"
               />
               <Label htmlFor="terms" className="text-[13px] text-muted-foreground font-medium leading-relaxed cursor-pointer select-none mt-0.5">
                 I agree to the{" "}

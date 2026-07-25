@@ -18,7 +18,7 @@ export function ProfileGallery({ posts }: ProfileGalleryProps) {
   const mediaPosts = posts.filter((p) => p.media && p.media.length > 0);
 
   return (
-    <PanelCard radius="lg">
+    <PanelCard radius="md">
       <SectionHeader
         icon={Images}
         label="Glimpses of Cosmos"

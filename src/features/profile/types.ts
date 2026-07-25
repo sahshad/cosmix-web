@@ -18,3 +18,7 @@ export type UserProfileResponse = {
 export type UserListResponse = {
   users: User[];
 };
+
+export type MessageResponse = {
+  message: string;
+};

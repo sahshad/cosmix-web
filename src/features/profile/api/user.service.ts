@@ -1,5 +1,5 @@
 import { http } from "@/lib/http";
-import { UpdateProfileRequest, UserProfileResponse, UserListResponse } from "../types";
+import { UpdateProfileRequest, UserProfileResponse, UserListResponse, MessageResponse } from "../types";
 
 export const userService = {
   updateProfile: (data: UpdateProfileRequest) =>
@@ -13,4 +13,10 @@ export const userService = {
 
   getFollowing: (userId: string) =>
     http.get<UserListResponse>(`/users/following/${userId}`),
+
+  followUser: (userId: string) =>
+    http.post<MessageResponse>(`/users/follow/${userId}`),
+
+  unfollowUser: (userId: string) =>
+    http.delete<MessageResponse>(`/users/unfollow/${userId}`),
 };

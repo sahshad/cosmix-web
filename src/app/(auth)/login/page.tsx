@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff, Sparkles, Moon, Sun } from "lucide-react"
+import { Eye, EyeOff, Sparkles } from "lucide-react"
 import { Spinner } from "@/components/shared"
 import { useLogin } from "@/features/auth/hooks/useAuth"
+import { AuthThemeToggle, AuthLogo } from "@/features/auth/components"
 import { toast } from "sonner"
 import { extractApiError } from "@/lib/error"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -20,7 +20,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const loginMutation = useLogin()
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,27 +85,11 @@ export default function LoginPage() {
       {/* Right Panel - Login Form */}
       <div className="w-full lg:w-[50%] h-full flex flex-col justify-center bg-background relative z-10 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         
-        {/* Theme Toggle Button */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="absolute top-6 right-6 lg:top-8 lg:right-10 rounded-full z-50 text-muted-foreground hover:bg-secondary transition-colors"
-        >
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
+        <AuthThemeToggle />
 
         <div className="w-full max-w-125 m-auto flex flex-col p-10 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-          
-          {/* Mobile Logo */}
-          <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="w-10 h-10 rounded-[10px] bg-linear-to-br from-vivid-blue to-vivid-blue-dark flex items-center justify-center shadow-md">
-              <span className="text-white font-black text-xl tracking-tighter">C</span>
-            </div>
-            <span className="text-foreground text-2xl font-bold tracking-tight">Cosmix</span>
-          </div>
+
+          <AuthLogo className="lg:hidden" />
 
           {/* Header */}
           <div className="mb-8">

@@ -2,13 +2,14 @@
 
 import { RefObject, useState } from "react";
 import { X } from "lucide-react";
-import { CenteredLoader, EmptyState } from "@/components/shared";
+import { EmptyState } from "@/components/shared";
 import { toast } from "sonner";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
 import { useComments, useCreateComment } from "../../hooks/useComments";
 import { User } from "@/types";
 import { CommentComposer } from "./comment-composer";
 import { CommentNode } from "./comment-node";
+import { CommentListSkeleton } from "./comment-skeleton";
 
 interface PostCommentSectionProps {
   postId: number | string;
@@ -72,7 +73,7 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
 
       <div className="px-5 sm:px-6 max-h-95 overflow-y-auto">
         {isLoadingComments ? (
-          <CenteredLoader className="pb-4" size="md" />
+          <CommentListSkeleton count={2} />
         ) : comments.length === 0 ? (
           <EmptyState message="No comments yet. Be the first to reply." variant="inline" className="pb-4" />
         ) : (

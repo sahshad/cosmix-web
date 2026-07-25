@@ -4,7 +4,7 @@ import { WelcomeCard } from '@/components/widgets/welcome-card';
 import { RightSidebar } from '@/components/widgets/right-sidebar';
 import { CreatePost } from '@/features/feed/components/create-post';
 import { PostCard, PostData } from '@/features/feed/components/post-card';
-import { CenteredLoader } from '@/components/shared';
+import { PostFeedSkeleton } from '@/features/feed/components/post-card-skeleton';
 import { useFeed, useLikePost } from '@/features/feed/hooks/useFeed';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 
@@ -27,7 +27,7 @@ export default function DashboardPage() {
         {/* Posts Feed */}
         <div className="space-y-8">
           {isLoading ? (
-            <CenteredLoader className="p-8" size="2xl" spinnerClassName="text-vivid-blue" />
+            <PostFeedSkeleton />
           ) : (
             posts.map((post: PostData) => (
               <PostCard
