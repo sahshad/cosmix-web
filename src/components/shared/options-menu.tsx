@@ -35,14 +35,14 @@ const SIZE_STYLES = {
   sm: {
     trigger: "h-7 w-7",
     triggerIcon: "h-3.5 w-3.5",
-    content: "min-w-[150px]",
+    content: "min-w-37.5",
     item: "py-1.5 px-2.5 text-[12.5px]",
     itemIcon: "h-3.5 w-3.5",
   },
   md: {
     trigger: "h-8 w-8",
     triggerIcon: "h-4 w-4",
-    content: "min-w-[190px]",
+    content: "min-w-47.5",
     item: "py-2 px-3 text-[13px]",
     itemIcon: "h-4 w-4",
   },
@@ -72,7 +72,7 @@ export function OptionsMenu({
           aria-label={ariaLabel}
           className={cn(
             s.trigger,
-            "rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground flex-shrink-0",
+            "rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground shrink-0",
             triggerClassName
           )}
         >

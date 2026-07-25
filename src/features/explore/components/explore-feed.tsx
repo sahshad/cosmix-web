@@ -65,7 +65,7 @@ export function ExploreFeed({posts}: { posts: PostData[]; }) {
     return (
         <div>
             <h2 className="text-lg font-extrabold mb-4 flex items-center gap-2 text-foreground">
-                <Compass className="h-5 w-5 text-[#f8b301]" />
+                <Compass className="h-5 w-5 text-vivid-yellow" />
                 Explore Feed
             </h2>
             <div className="space-y-8">

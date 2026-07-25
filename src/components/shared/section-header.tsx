@@ -22,7 +22,7 @@ export function SectionHeader({
   return (
     <h2 className="text-[11px] font-black text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-[0.2em]">
       <div
-        className="p-1.5 rounded-lg flex-shrink-0"
+        className="p-1.5 rounded-lg shrink-0"
         style={{ backgroundColor: bgStyle }}
       >
         <Icon className="h-4 w-4" style={{ color: iconColor }} />

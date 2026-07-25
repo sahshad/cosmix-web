@@ -6,13 +6,11 @@ import { CreatePost } from '@/features/feed/components/create-post';
 import { PostCard, PostData } from '@/features/feed/components/post-card';
 import { CenteredLoader } from '@/components/shared';
 import { useFeed, useLikePost } from '@/features/feed/hooks/useFeed';
-import { useAuthStore } from '@/features/auth/store';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 
 export default function DashboardPage() {
   const { data: posts = [], isLoading } = useFeed(1, 20);
   const { mutate: toggleLike } = useLikePost();
-  // const user = useAuthStore((s) => s.user);
   const { data: user } = useCurrentUser();
 
   const handleLike = (postId: number | string, isLiked: boolean) => {
@@ -20,7 +18,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto lg:h-svh animate-fade-in-up">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
       {/* Main Feed */}
       <div className="space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         <WelcomeCard name={user?.displayName || 'there'} />

@@ -46,7 +46,7 @@ export function CommentComposer({
         src={avatarUser.avatarUrl}
         alt={avatarUser.displayName}
         fallback={getInitials(avatarUser.displayName)}
-        className={cn("flex-shrink-0", compact ? "h-6 w-6" : "h-8 w-8")}
+        className={cn("shrink-0", compact ? "h-6 w-6" : "h-8 w-8")}
         fallbackClassName={cn(palette.bg, palette.text, "font-semibold", compact && "text-[10px]")}
       />
       <div
@@ -66,7 +66,7 @@ export function CommentComposer({
           disabled={isSubmitting}
           className={cn(
             "min-h-0 resize-none rounded-none border-0 bg-transparent dark:bg-transparent shadow-none p-0 leading-relaxed focus-visible:ring-0 placeholder:text-muted-foreground",
-            "text-[13.5px] leading-[20px] placeholder:text-[12px] placeholder:leading-[20px]",
+            "text-[13.5px] leading-5 placeholder:text-[12px] placeholder:leading-5",
             compact ? "text-[12.5px]" : "text-[13.5px]"
           )}
         />
@@ -77,7 +77,7 @@ export function CommentComposer({
         onClick={onSubmit}
         disabled={!value.trim() || isSubmitting}
         className={cn(
-          "flex-shrink-0 rounded-[6px] bg-vivid-blue text-white hover:bg-vivid-blue-hover disabled:bg-muted disabled:text-muted-foreground",
+          "shrink-0 rounded-[6px] bg-vivid-blue text-white hover:bg-vivid-blue-hover disabled:bg-muted disabled:text-muted-foreground",
           compact ? "h-6 w-6" : "h-7 w-7"
         )}
         aria-label="Send"

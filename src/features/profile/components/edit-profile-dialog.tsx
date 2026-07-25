@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -211,13 +212,15 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
               aria-label="Change cover image"
             >
               {coverImageUrl ? (
-                <img
+                <Image
                   src={coverImageUrl}
                   alt="Cover"
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 640px"
+                  className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-vivid-blue/20 via-secondary to-[#11a657]/10" />
+                <div className="w-full h-full bg-linear-to-br from-vivid-blue/20 via-secondary to-vivid-green/10" />
               )}
               <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
                 {isUploadingCover ? (
@@ -331,7 +334,7 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
                 Website
               </Label>
               <div className="relative">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#11a657]" />
+                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-vivid-green" />
                 <Input
                   id="website"
                   type="text"
@@ -349,7 +352,7 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
                 Location
               </Label>
               <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#f84b4b]" />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-vivid-red" />
                 <Input
                   id="location"
                   type="text"

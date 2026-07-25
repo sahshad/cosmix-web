@@ -70,7 +70,7 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
         )}
       </div>
 
-      <div className="px-5 sm:px-6 max-h-[380px] overflow-y-auto">
+      <div className="px-5 sm:px-6 max-h-95 overflow-y-auto">
         {isLoadingComments ? (
           <CenteredLoader className="pb-4" size="md" />
         ) : comments.length === 0 ? (

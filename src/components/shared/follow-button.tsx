@@ -27,7 +27,7 @@ export default function FollowButton({
       size="sm"
       onClick={handleClick}
       className={`
-        h-[32px]
+        h-8
         rounded-full
         font-extrabold
         px-4

@@ -19,7 +19,7 @@ export function CreatePost() {
 
   return (
     <>
-      <Card className="p-5 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-[14px] bg-card">
+      <Card className="p-5 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-md bg-card">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -30,7 +30,7 @@ export function CreatePost() {
             alt={user?.displayName || "You"}
             fallback={getInitials(user?.displayName) || "ME"}
             size="md"
-            className="flex-shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/15 transition-all"
+            className="shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/15 transition-all"
           />
           <span className="flex-1 rounded-full border border-border bg-secondary/30 group-hover:bg-secondary/60 group-hover:border-vivid-blue/30 px-4 py-3 text-[14.5px] text-muted-foreground transition-all">
             {firstName ? `Share an update, ${firstName}…` : "What's sparking your imagination today?"}
@@ -47,7 +47,7 @@ export function CreatePost() {
             onClick={() => setOpen(true)}
             className="h-9 rounded-full font-semibold text-[13px] text-vivid-blue hover:bg-vivid-blue/10 hover:text-vivid-blue transition-colors cursor-pointer"
           >
-            <ImageIcon className="h-[17px] w-[17px] mr-1.5" />
+            <ImageIcon className="h-4.25 w-4.25 mr-1.5" />
             Photo / Video
           </Button>
 

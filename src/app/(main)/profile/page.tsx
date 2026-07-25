@@ -39,7 +39,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-[1250px] mx-auto animate-fade-in-up">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto animate-fade-in-up">
       {/* Left Column */}
       <div className="space-y-6">
         {isUserLoading || !profile ? (

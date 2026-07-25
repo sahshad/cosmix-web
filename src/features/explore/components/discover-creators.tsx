@@ -14,12 +14,12 @@ export function DiscoverCreators() {
     return (
         <div>
             <h2 className="text-lg font-extrabold mb-4 flex items-center gap-2 text-foreground">
-                <Users className="h-5 w-5 text-[#11a657]" />
+                <Users className="h-5 w-5 text-vivid-green" />
                 Discover Creators
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {suggestedCreators.map((creator) => (
-                    <Card key={creator.handle} className="p-4 border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[1.5rem] bg-card hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] transition-all">
+                    <Card key={creator.handle} className="p-4 border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl bg-card hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] transition-all">
                         <UserListItem
                             name={creator.name}
                             handle={creator.handle}

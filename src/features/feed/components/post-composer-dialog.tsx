@@ -140,7 +140,7 @@ export function PostComposerDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl p-0 gap-0 overflow-hidden rounded-[20px]">
+      <DialogContent className="sm:max-w-xl p-0 gap-0 overflow-hidden rounded-xl">
         <DialogHeader className="px-6 pt-5 pb-3 border-b border-border/70">
           <DialogTitle className="text-[16px]">
             {isEdit ? "Edit post" : "Create post"}
@@ -153,7 +153,7 @@ export function PostComposerDialog({
             alt={user?.displayName || "You"}
             fallback={getInitials(user?.displayName) || "ME"}
             size="md"
-            className="flex-shrink-0"
+            className="shrink-0"
           />
           <div className="min-w-0">
             <p className="text-[14px] font-semibold text-foreground truncate">
@@ -184,7 +184,7 @@ export function PostComposerDialog({
             leading-relaxed
             font-medium
             whitespace-pre-wrap
-            break-words
+            wrap-break-word
             overflow-wrap-anywhere
             break-all
             focus-visible:ring-0 "
@@ -194,10 +194,14 @@ export function PostComposerDialog({
 
           {media && (
             <div className="relative mt-2 mb-3 w-max max-w-full">
+              {/* Local blob: preview before upload — next/image can't optimize
+                  blob URLs, and the shrink-to-content sizing here needs the
+                  browser's native intrinsic-size behavior instead of fill. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={media.url}
                 alt="Attached media"
-                className="max-h-[300px] rounded-[14px] object-cover border border-border"
+                className="max-h-75 rounded-md object-cover border border-border"
               />
               <button
                 onClick={handleRemoveMedia}
@@ -226,7 +230,7 @@ export function PostComposerDialog({
               onClick={() => fileInputRef.current?.click()}
               className="h-9 w-9 rounded-full text-vivid-blue hover:bg-vivid-blue/10 hover:text-vivid-blue transition-colors cursor-pointer"
             >
-              <ImageIcon className="h-[18px] w-[18px]" />
+              <ImageIcon className="h-4.5 w-4.5" />
             </Button>
           </div>
           <Button

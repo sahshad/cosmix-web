@@ -9,11 +9,11 @@ export function ExploreSearch() {
 
     return (
         <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-vivid-blue to-vivid-blue-dark rounded-[2.5rem] opacity-0 group-hover:opacity-20 blur-md transition-opacity"></div>
+            <div className="absolute -inset-1 bg-linear-to-r from-vivid-blue to-vivid-blue-dark rounded-[2.5rem] opacity-0 group-hover:opacity-20 blur-md transition-opacity"></div>
             <div className="relative">
                 <Input
                   placeholder="Search people, topics, or keywords..."
-                  className="pl-14 pr-4 h-16 rounded-[2rem] border-0 bg-card/90 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-visible:ring-2 focus-visible:ring-vivid-blue/30 transition-all font-bold text-[16px]"
+                  className="pl-14 pr-4 h-16 rounded-4xl border-0 bg-card/90 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] focus-visible:ring-2 focus-visible:ring-vivid-blue/30 transition-all font-bold text-[16px]"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />

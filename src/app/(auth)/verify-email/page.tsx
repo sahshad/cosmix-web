@@ -42,13 +42,13 @@ function VerifyEmailForm() {
   }
 
   return (
-    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
+    <main className="h-dvh w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
       <div className="w-full h-full flex flex-col justify-center bg-background relative z-10 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
         {/* Background Layer */}
         <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-100">
-          <div className="absolute top-[-20%] -right-[10%] w-[800px] h-[800px] bg-vivid-blue/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
-          <div className="absolute top-[30%] -left-[10%] w-[600px] h-[600px] bg-[#11a657]/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
+          <div className="absolute top-[-20%] -right-[10%] w-200 h-200 bg-vivid-blue/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
+          <div className="absolute top-[30%] -left-[10%] w-150 h-150 bg-vivid-green/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
         </div>
 
         {/* Theme Toggle Button */}
@@ -58,16 +58,16 @@ function VerifyEmailForm() {
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="absolute top-6 right-6 lg:top-8 lg:right-10 rounded-full z-50 text-muted-foreground hover:bg-secondary transition-colors"
         >
-          <Sun className="h-[20px] w-[20px] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[20px] w-[20px] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
 
-        <div className="w-full max-w-[440px] m-auto flex flex-col p-10 lg:px-8 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+        <div className="w-full max-w-110 m-auto flex flex-col p-10 lg:px-8 relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
 
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-[10px] bg-gradient-to-br from-vivid-blue to-vivid-blue-dark flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-[10px] bg-linear-to-br from-vivid-blue to-vivid-blue-dark flex items-center justify-center shadow-md">
               <span className="text-white font-black text-xl tracking-tighter">C</span>
             </div>
             <span className="text-foreground text-2xl font-bold tracking-tight">Cosmix</span>
@@ -75,8 +75,8 @@ function VerifyEmailForm() {
 
           {verified ? (
             <div className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-              <div className="w-16 h-16 rounded-2xl bg-[#11a657]/10 flex items-center justify-center mb-6">
-                <CheckCircle2 className="w-7 h-7 text-[#11a657]" />
+              <div className="w-16 h-16 rounded-2xl bg-vivid-green/10 flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-7 h-7 text-vivid-green" />
               </div>
               <h2 className="font-bold text-[24px] text-foreground tracking-tight mb-2">Email verified</h2>
               <p className="text-muted-foreground font-medium text-[15px] leading-relaxed">
@@ -146,7 +146,7 @@ function VerifyEmailForm() {
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-vivid-blue transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                      {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                     </button>
                   </div>
                 </div>

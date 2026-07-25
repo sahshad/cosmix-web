@@ -1,6 +1,7 @@
 "use client";
 
 import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -46,7 +47,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
   const authorPalette = getAvatarPalette(post.user?.username || post.user?.displayName);
 
   return (
-    <Card className="border border-border shadow-none rounded-[14px] bg-card overflow-hidden gap-0 py-5">
+    <Card className="border border-border shadow-none rounded-md bg-card overflow-hidden gap-0 py-5">
       {/* Header */}
       <div className="px-5 sm:px-6 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0 cursor-pointer group/author">
@@ -54,7 +55,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
             src={post.user?.avatarUrl}
             alt={post.user.displayName}
             fallback={getInitials(post.user?.displayName)}
-            className="h-10 w-10 flex-shrink-0"
+            className="h-10 w-10 shrink-0"
             fallbackClassName={cn(authorPalette.bg, authorPalette.text, "font-semibold")}
           />
           <div className="flex flex-col justify-center min-w-0">
@@ -63,7 +64,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
                 {post.user?.displayName}
               </span>
               {post.user.isVerified && (
-                <BadgeCheck className="h-3.5 w-3.5 text-vivid-blue fill-vivid-blue/10 flex-shrink-0" />
+                <BadgeCheck className="h-3.5 w-3.5 text-vivid-blue fill-vivid-blue/10 shrink-0" />
               )}
             </div>
             <div className="flex items-center gap-1.5 mt-1 leading-none">
@@ -71,7 +72,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
                 @{post.user.username}
               </p>
               <span className="text-muted-foreground/50 text-[4px] self-center">●</span>
-              <p className="text-muted-foreground text-[12.5px] flex-shrink-0">
+              <p className="text-muted-foreground text-[12.5px] shrink-0">
                 {formatRelativeTime(post.createdAt)}
               </p>
             </div>
@@ -102,19 +103,21 @@ export function PostCard({ post, onLike }: PostCardProps) {
 
       {/* Content */}
       <div className="px-5 sm:px-6 mt-3">
-        <p className="text-foreground leading-relaxed text-[14.5px] break-words">
+        <p className="text-foreground leading-relaxed text-[14.5px] wrap-break-word">
           {post.content}
         </p>
       </div>
 
       {/* Media */}
       {post.media && post.media.length > 0 && (
-        <div className="mt-4 mx-5 sm:mx-6 rounded-[8px] overflow-hidden border border-border relative group/media cursor-pointer aspect-[16/10] min-h-[220px] max-h-[480px]">
+        <div className="mt-4 mx-5 sm:mx-6 rounded-xl overflow-hidden border border-border relative group/media cursor-pointer aspect-16/10 min-h-55 max-h-120">
           <div className="absolute inset-0 bg-black/0 group-hover/media:bg-black/5 transition-colors z-10" />
-          <img
+          <Image
             src={post.media[0].url}
             alt="Post attachment"
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, 600px"
+            className="object-cover"
           />
         </div>
       )}

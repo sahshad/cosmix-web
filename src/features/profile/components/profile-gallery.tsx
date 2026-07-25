@@ -1,6 +1,7 @@
 'use client';
 
 import { Images } from 'lucide-react';
+import Image from 'next/image';
 import { PanelCard } from '@/components/shared/panel-card';
 import { SectionHeader } from '@/components/shared/section-header';
 
@@ -29,10 +30,12 @@ export function ProfileGallery({ posts }: ProfileGalleryProps) {
             key={post.id}
             className="aspect-square rounded-xl overflow-hidden group cursor-pointer border border-border/20 shadow-sm relative"
           >
-            <img
+            <Image
               src={post.media![0].url}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               alt="Gallery item"
+              fill
+              sizes="(max-width: 1024px) 33vw, 120px"
+              className="object-cover group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
           </div>

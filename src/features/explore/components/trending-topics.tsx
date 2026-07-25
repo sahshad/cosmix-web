@@ -20,7 +20,7 @@ export function TrendingTopics() {
         {trendingTopics.map((topic, idx) => (
           <div
             key={idx}
-            className={`flex-shrink-0 w-[170px] h-[90px] rounded-[1.5rem] bg-gradient-to-br ${topic.color} p-4 relative overflow-hidden group cursor-pointer shadow-lg hover:-translate-y-1 transition-all duration-300 snap-center`}
+            className={`shrink-0 w-42.5 h-22.5 rounded-2xl bg-linear-to-br ${topic.color} p-4 relative overflow-hidden group cursor-pointer shadow-lg hover:-translate-y-1 transition-all duration-300 snap-center`}
           >
             <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-white/20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
             <div className="relative z-10 h-full flex flex-col justify-between text-white">

@@ -33,7 +33,7 @@ export function PostActions({
         onClick={onLike}
         aria-label={isLiked ? "Unlike post" : "Like post"}
       >
-        <Heart className={cn("h-[18px] w-[18px]", isLiked && "fill-current")} />
+        <Heart className={cn("h-4.5 w-4.5", isLiked && "fill-current")} />
         Like
       </Button>
 
@@ -43,7 +43,7 @@ export function PostActions({
         onClick={onCommentClick}
         aria-label="Focus comment input"
       >
-        <MessageCircle className="h-[18px] w-[18px]" />
+        <MessageCircle className="h-4.5 w-4.5" />
         Comment
       </Button>
 
@@ -53,7 +53,7 @@ export function PostActions({
         onClick={onShare}
         aria-label="Share post"
       >
-        <Share2 className="h-[18px] w-[18px]" />
+        <Share2 className="h-4.5 w-4.5" />
         Share
       </Button>
 
@@ -63,7 +63,7 @@ export function PostActions({
         onClick={onBookmark}
         aria-label="Bookmark post"
       >
-        <Bookmark className="h-[18px] w-[18px]" />
+        <Bookmark className="h-4.5 w-4.5" />
         Save
       </Button>
     </div>

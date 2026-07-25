@@ -16,7 +16,7 @@ export function WelcomeCard({
     hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
 
   return (
-    <div className="bg-gradient-to-br from-vivid-blue to-vivid-blue-dark rounded-[14px] p-8 text-white shadow-2xl shadow-vivid-blue/20 relative overflow-hidden group">
+    <div className="bg-linear-to-br from-vivid-blue to-vivid-blue-dark rounded-md p-8 text-white shadow-2xl shadow-vivid-blue/20 relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-full h-full opacity-20 pointer-events-none bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white via-transparent to-transparent mix-blend-overlay" />
       <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/10 blur-[60px] rounded-full group-hover:scale-110 transition-transform duration-700" />
 

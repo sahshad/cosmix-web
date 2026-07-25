@@ -51,7 +51,7 @@ export function MobileHeader() {
           className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary transition-colors relative"
         >
           <Bell className="h-5 w-5 text-muted-foreground" />
-          <div className="absolute top-2.5 right-2.5 h-1.5 w-1.5 bg-[#f84b4b] rounded-full ring-2 ring-background" />
+          <div className="absolute top-2.5 right-2.5 h-1.5 w-1.5 bg-vivid-red rounded-full ring-2 ring-background" />
         </Link>
       </div>
     </header>

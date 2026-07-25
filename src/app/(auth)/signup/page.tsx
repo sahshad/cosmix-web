@@ -50,7 +50,7 @@ export default function SignupPage() {
   const hasNumber = /[0-9]/.test(password)
 
   return (
-    <main className="h-[100dvh] w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
+    <main className="h-dvh w-full flex bg-background overflow-hidden relative selection:bg-vivid-blue/30">
 
       {/* Left Panel - Signup Form */}
       <div className="w-full lg:w-[50%] h-full flex flex-col bg-background relative z-30 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -62,13 +62,13 @@ export default function SignupPage() {
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="absolute top-6 left-6 lg:top-8 lg:left-10 rounded-full z-50 text-muted-foreground hover:bg-secondary transition-colors"
         >
-          <Sun className="h-[20px] w-[20px] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[20px] w-[20px] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
 
         {/* Form Container */}
-        <div className="w-full max-w-[500px] mx-auto mt-auto mb-auto flex flex-col pb-10 pt-20 lg:pt-20 lg:pb-16 px-10 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+        <div className="w-full max-w-125 mx-auto mt-auto mb-auto flex flex-col pb-10 pt-20 lg:pt-20 lg:pb-16 px-10 lg:px-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
           
           {/* Header */}
           <div className="mb-6">
@@ -79,7 +79,7 @@ export default function SignupPage() {
           {/* Social Logins */}
           <div className="flex gap-4 mb-6">
             <Button variant="outline" className="flex-1 h-12 bg-transparent hover:bg-secondary/60 border-border hover:border-vivid-blue/40 hover:text-vivid-blue text-[14px] font-bold transition-all group rounded-xl" type="button">
-              <svg className="w-[18px] h-[18px] mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+              <svg className="w-4.5 h-4.5 mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                  <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -152,7 +152,7 @@ export default function SignupPage() {
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-vivid-blue transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                  {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                 </button>
               </div>
 
@@ -160,13 +160,13 @@ export default function SignupPage() {
               {password.length > 0 && (
                 <div className="mt-2 space-y-1.5 pt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-black pl-1">
                     <span className={`transition-colors flex items-center ${hasMinLength ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
-                        {hasMinLength ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}8+ chars
+                        {hasMinLength ? <Check className="w-3.5 h-3.5 mr-1" /> : <div className="w-3 h-3 inline-block mr-1.5 rounded-full border border-muted opacity-50" />}8+ chars
                     </span>
                     <span className={`transition-colors flex items-center ${hasUppercase ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
-                        {hasUppercase ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Uppercase
+                        {hasUppercase ? <Check className="w-3.5 h-3.5 mr-1" /> : <div className="w-3 h-3 inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Uppercase
                     </span>
                     <span className={`transition-colors flex items-center ${hasNumber ? 'text-vivid-blue' : 'text-muted-foreground'}`}>
-                        {hasNumber ? <Check className="w-[14px] h-[14px] mr-1" /> : <div className="w-[12px] h-[12px] inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Number
+                        {hasNumber ? <Check className="w-3.5 h-3.5 mr-1" /> : <div className="w-3 h-3 inline-block mr-1.5 rounded-full border border-muted opacity-50" />}Number
                     </span>
                 </div>
               )}
@@ -178,7 +178,7 @@ export default function SignupPage() {
                 id="terms"
                 checked={acceptTerms}
                 onCheckedChange={(checked: boolean) => setAcceptTerms(checked)}
-                className="rounded-[4px] border-border data-[state=checked]:bg-vivid-blue data-[state=checked]:text-white data-[state=checked]:border-vivid-blue transition-all h-[18px] w-[18px]"
+                className="rounded-[4px] border-border data-[state=checked]:bg-vivid-blue data-[state=checked]:text-white data-[state=checked]:border-vivid-blue transition-all h-4.5 w-4.5"
               />
               <Label htmlFor="terms" className="text-[13px] text-muted-foreground font-medium leading-relaxed cursor-pointer select-none mt-0.5">
                 I agree to the{" "}
@@ -223,30 +223,30 @@ export default function SignupPage() {
           
           {/* Background Layer constrained to this panel */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-100">
-              <div className="absolute top-[-10%] -left-[10%] w-[800px] h-[800px] bg-[#11a657]/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
-              <div className="absolute top-[40%] -right-[10%] w-[600px] h-[600px] bg-vivid-blue/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
-              <div className="absolute -bottom-[20%] left-[30%] w-[700px] h-[700px] bg-[#f8b301]/15 rounded-full blur-[140px] transition-all animate-pulse" />
+              <div className="absolute top-[-10%] -left-[10%] w-200 h-200 bg-vivid-green/20 rounded-full blur-[140px] transition-all animate-[spin_50s_linear_infinite]" />
+              <div className="absolute top-[40%] -right-[10%] w-150 h-150 bg-vivid-blue/15 rounded-full blur-[120px] transition-all animate-[spin_40s_linear_infinite_reverse]" />
+              <div className="absolute -bottom-[20%] left-[30%] w-175 h-175 bg-vivid-yellow/15 rounded-full blur-[140px] transition-all animate-pulse" />
           </div>
 
-          <div className="relative z-10 w-full max-w-[500px] animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out">
+          <div className="relative z-10 w-full max-w-125 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out">
               {/* Glass Card */}
               <div className="relative p-10 rounded-[2.5rem] bg-white/10 dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] overflow-hidden group">
-                  <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-[#11a657]/15 rounded-full blur-[50px] group-hover:scale-150 transition-transform duration-1000 ease-in-out"></div>
+                  <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-vivid-green/15 rounded-full blur-[50px] group-hover:scale-150 transition-transform duration-1000 ease-in-out"></div>
                   
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#11a657] to-vivid-blue-dark rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-[#11a657]/20">
+                  <div className="w-16 h-16 bg-linear-to-br from-vivid-green to-vivid-blue-dark rounded-2xl flex items-center justify-center mb-10 shadow-xl shadow-vivid-green/20">
                       <Heart className="text-white w-7 h-7 fill-current" />
                   </div>
 
                   <h2 className="text-foreground dark:text-white text-[32px] font-bold mb-4 tracking-tight">Expand your horizon.</h2>
-                  <p className="text-muted-foreground dark:text-white/70 text-sm font-medium leading-relaxed max-w-[340px]">
+                  <p className="text-muted-foreground dark:text-white/70 text-sm font-medium leading-relaxed max-w-85">
                      A meticulous network designed for modern creators. Scale your ideas rapidly and securely.
                   </p>
                   
                   {/* Mature Interactive Color Bars */}
                   <div className="mt-10 flex items-center gap-3">
-                      <div className="h-1.5 w-6 group-hover:w-10 bg-[#11a657] rounded-full transition-all duration-700 ease-out opacity-70 group-hover:opacity-100" />
+                      <div className="h-1.5 w-6 group-hover:w-10 bg-vivid-green rounded-full transition-all duration-700 ease-out opacity-70 group-hover:opacity-100" />
                       <div className="h-1.5 w-14 group-hover:w-16 bg-vivid-blue rounded-full transition-all duration-700 ease-out delay-75 opacity-80 group-hover:opacity-100" />
-                      <div className="h-1.5 w-6 group-hover:w-8 bg-[#f8b301] rounded-full transition-all duration-700 ease-out delay-150 opacity-60 group-hover:opacity-100" />
+                      <div className="h-1.5 w-6 group-hover:w-8 bg-vivid-yellow rounded-full transition-all duration-700 ease-out delay-150 opacity-60 group-hover:opacity-100" />
                   </div>
               </div>
 

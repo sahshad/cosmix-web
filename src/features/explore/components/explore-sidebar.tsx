@@ -17,7 +17,7 @@ export function ExploreSidebar() {
                     ].map((community) => (
                         <div key={community.name} className="flex items-center justify-between group cursor-pointer p-2 -mx-2 rounded-2xl hover:bg-secondary/40 transition-colors">
                             <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-secondary to-secondary border border-border/50 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                                <div className="h-10 w-10 rounded-xl bg-linear-to-br from-secondary to-secondary border border-border/50 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                                     <Users className="h-5 w-5 text-muted-foreground" />
                                 </div>
                                 <div>

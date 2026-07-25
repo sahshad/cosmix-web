@@ -9,8 +9,8 @@ interface PanelCardProps {
 }
 
 const RADIUS_MAP = {
-  md: "rounded-[14px]",
-  lg: "rounded-[2rem]",
+  md: "rounded-md",
+  lg: "rounded-4xl",
 };
 
 /**

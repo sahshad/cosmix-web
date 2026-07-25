@@ -48,7 +48,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
   } = useInlineEdit(comment.id, comment.content, updateComment);
 
   const avatarSize =
-    depth === 0 ? "h-9 w-9" : depth === 1 ? "h-[30px] w-[30px]" : "h-[26px] w-[26px]";
+    depth === 0 ? "h-9 w-9" : depth === 1 ? "h-7.5 w-7.5" : "h-6.5 w-6.5";
   const bubblePad = depth >= 2 ? "px-3 py-1.5" : "px-3.5 py-2";
   const nameSize = depth >= 2 ? "text-[12px]" : "text-[13px]";
   const handleSize = depth >= 2 ? "text-[11px]" : "text-[12px]";
@@ -76,17 +76,17 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
           src={comment.user?.avatarUrl}
           alt={comment.user?.displayName}
           fallback={getInitials(comment.user?.displayName)}
-          className={cn(avatarSize, "flex-shrink-0 mt-0.5")}
+          className={cn(avatarSize, "shrink-0 mt-0.5")}
           fallbackClassName={cn(palette.bg, palette.text, "font-semibold")}
         />
         <div className="flex-1 min-w-0">
-          <div className={cn("rounded-[12px] bg-secondary/50", bubblePad)}>
+          <div className={cn("rounded-sm bg-secondary/50", bubblePad)}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className={cn("font-semibold text-foreground truncate", nameSize)}>
                   {comment.user?.displayName}
                 </span>
-                <span className={cn("text-muted-foreground flex-shrink-0", handleSize)}>
+                <span className={cn("text-muted-foreground shrink-0", handleSize)}>
                   @{comment.user?.username}
                 </span>
               </div>
@@ -121,7 +121,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                 textareaClassName={cn("rounded-none border-0 bg-transparent p-0", textSize)}
               />
             ) : (
-              <p className={cn("text-foreground leading-relaxed break-words mt-0.5", textSize)}>
+              <p className={cn("text-foreground leading-relaxed wrap-break-word mt-0.5", textSize)}>
                 {comment.content}
               </p>
             )}

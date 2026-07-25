@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import {
   Calendar,
   MapPin,
@@ -49,15 +50,18 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
       {/* Banner */}
       <div className="relative h-44 sm:h-56 bg-secondary overflow-hidden group">
         {profile.coverImageUrl ? (
-          <img
+          <Image
             src={profile.coverImageUrl}
             alt="Profile Banner"
-            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+            fill
+            sizes="(max-width: 1024px) 100vw, 800px"
+            priority
+            className="object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-vivid-blue/20 via-secondary to-[#11a657]/10" />
+          <div className="w-full h-full bg-linear-to-br from-vivid-blue/20 via-secondary to-vivid-green/10" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
       </div>
 
       {/* Profile Meta */}
@@ -72,7 +76,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               imageClassName="object-cover"
               fallbackClassName="text-3xl"
             />
-            <div className="absolute bottom-2 right-2 h-6 w-6 bg-[#11a657] border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
+            <div className="absolute bottom-2 right-2 h-6 w-6 bg-vivid-green border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
           </div>
           <div className="pb-2">
             {profile.isMe ? (
@@ -111,13 +115,13 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           <div className="flex flex-wrap gap-y-2 gap-x-5">
             {profile.location && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5 text-[#f84b4b]" />
+                <MapPin className="h-3.5 w-3.5 text-vivid-red" />
                 <span className="text-[12px] font-bold">{profile.location}</span>
               </div>
             )}
             {profile.website && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <LinkIcon className="h-3.5 w-3.5 text-[#11a657]" />
+                <LinkIcon className="h-3.5 w-3.5 text-vivid-green" />
                 <a
                   href={
                     profile.website.startsWith('http')
@@ -126,7 +130,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[12px] font-bold hover:underline text-[#11a657]"
+                  className="text-[12px] font-bold hover:underline text-vivid-green"
                 >
                   {profile.website}
                 </a>
@@ -134,7 +138,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
             )}
             {joinDate && (
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Calendar className="h-3.5 w-3.5 text-[#f8b301]" />
+                <Calendar className="h-3.5 w-3.5 text-vivid-yellow" />
                 <span className="text-[12px] font-bold">{joinDate}</span>
               </div>
             )}

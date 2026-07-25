@@ -45,7 +45,7 @@ export function UserAvatar({
   fallbackClassName,
 }: UserAvatarProps) {
   return (
-    <div className="relative flex-shrink-0">
+    <div className="relative shrink-0">
       <Avatar
         className={cn(
           sizeMap[size],

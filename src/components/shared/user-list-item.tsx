@@ -41,7 +41,7 @@ export function UserListItem({
           size={s.avatarSize}
           ringOnHover
           ringColor={ringColor}
-          className="shadow-sm flex-shrink-0"
+          className="shadow-sm shrink-0"
         />
         <div className="min-w-0 pr-2">
           <p className={cn("font-bold text-foreground group-hover:underline truncate", s.name)}>

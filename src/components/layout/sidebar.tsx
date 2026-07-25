@@ -89,14 +89,14 @@ export function AppSidebar() {
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-5 bg-vivid-blue rounded-full" />
                 )}
                 <Icon
-                  className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'
+                  className={`h-5 w-5 shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'
                     }`}
                 />
                 {!isCollapsed && (
                   <>
                     <span className="text-[14px] truncate">{item.label}</span>
                     {item.badge && (
-                      <SidebarMenuBadge className="bg-[#f84b4b] text-white font-bold opacity-100 group-hover:scale-110 transition-transform">
+                      <SidebarMenuBadge className="bg-vivid-red text-white font-bold opacity-100 group-hover:scale-110 transition-transform">
                         {item.badge}
                       </SidebarMenuBadge>
                     )}
@@ -122,7 +122,7 @@ export function AppSidebar() {
           className={`flex items-center transition-all duration-300 ${isCollapsed ? 'flex-col gap-4' : 'justify-between gap-2 px-2'}`}
         >
           <Link href="/" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-vivid-blue shadow-lg shadow-vivid-blue/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+            <div className="h-10 w-10 rounded-xl bg-vivid-blue shadow-lg shadow-vivid-blue/20 flex items-center justify-center shrink-0 relative overflow-hidden group">
               <span className="text-xl font-black text-white z-10 relative">C</span>
             </div>
             {!isCollapsed && (
@@ -164,7 +164,7 @@ export function AppSidebar() {
                 src={avatarUrl}
                 alt="User"
                 fallback={displayName?.[0] || 'U'}
-                className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} flex-shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/30 transition-all`}
+                className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/30 transition-all`}
                 fallbackClassName="text-[10px]"
               />
               {!isCollapsed && (
