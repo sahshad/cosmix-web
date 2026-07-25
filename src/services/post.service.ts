@@ -1,46 +1,53 @@
 import { api } from '@/lib/api';
-import { CreatePostRequest } from '@/types/post';
+import {
+  CreatePostRequest,
+  GetCommentResponse,
+  GetCommentsResponse,
+  GetPostResponse,
+  GetPostsResponse,
+  MessageResponse,
+} from '@/types/post';
 
 export const postService = {
   createPost: (data: CreatePostRequest) =>
-    api.post<any>('/posts', data),
+    api.post<GetPostResponse>('/posts', data),
 
   getFeed: (page: number = 1, limit: number = 20) =>
-    api.get<any>(`/posts?page=${page}&limit=${limit}`),
+    api.get<GetPostsResponse>(`/posts?page=${page}&limit=${limit}`),
 
   getUserPosts: (userId: string, page: number = 1, limit: number = 20) =>
-    api.get<any>(`/posts/user/${userId}?page=${page}&limit=${limit}`),
+    api.get<GetPostsResponse>(`/posts/user/${userId}?page=${page}&limit=${limit}`),
 
   updatePost: (id: number | string, content: string) =>
-    api.put<any>(`/posts/${id}`, { content }),
+    api.put<GetPostResponse>(`/posts/${id}`, { content }),
 
   likePost: (id: number | string) =>
-    api.post<any>(`/posts/${id}/like`),
+    api.post<MessageResponse>(`/posts/${id}/like`),
 
   unlikePost: (id: number | string) =>
-    api.delete<any>(`/posts/${id}/like`),
+    api.delete<MessageResponse>(`/posts/${id}/like`),
 
   createComment: (id: number | string, content: string, parentCommentId?: string) =>
-    api.post<any>(`/posts/${id}/comment`, { content, parentCommentId }),
+    api.post<GetCommentResponse>(`/posts/${id}/comment`, { content, parentCommentId }),
 
   getComments: (id: number | string, page: number = 1, limit: number = 4) =>
-    api.get<any>(`/posts/${id}/comment?page=${page}&limit=${limit}`),
+    api.get<GetCommentsResponse>(`/posts/${id}/comment?page=${page}&limit=${limit}`),
 
   getReplies: (commentId: string, page: number = 1, limit: number = 20) =>
-    api.get<any>(`/posts/comment/${commentId}/replies?page=${page}&limit=${limit}`),
+    api.get<GetCommentsResponse>(`/posts/comment/${commentId}/replies?page=${page}&limit=${limit}`),
 
   likeComment: (commentId: string) =>
-    api.post<any>(`/posts/comment/${commentId}/like`),
+    api.post<MessageResponse>(`/posts/comment/${commentId}/like`),
 
   unlikeComment: (commentId: string) =>
-    api.delete<any>(`/posts/comment/${commentId}/like`),
+    api.delete<MessageResponse>(`/posts/comment/${commentId}/like`),
 
   updateComment: (commentId: string, content: string) =>
-    api.put<any>(`/posts/comment/${commentId}`, { content }),
+    api.put<GetCommentResponse>(`/posts/comment/${commentId}`, { content }),
 
   deleteComment: (commentId: string) =>
-    api.delete<any>(`/posts/comment/${commentId}`),
+    api.delete<MessageResponse>(`/posts/comment/${commentId}`),
 
   deletePost: (id: number | string) =>
-    api.delete<any>(`/posts/${id}`),
+    api.delete<MessageResponse>(`/posts/${id}`),
 };

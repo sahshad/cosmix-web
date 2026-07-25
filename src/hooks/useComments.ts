@@ -6,25 +6,32 @@ import {
     QueryKey,
 } from '@tanstack/react-query';
 import { postService } from '@/services/post.service';
-import { CommentResponse } from '@/types/post';
+import { CommentResponse, PostPagination } from '@/types/post';
 import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from 'sonner';
 
 const COMMENTS_PAGE_SIZE = 4;
 const REPLIES_LIMIT = 20;
 
+interface CommentsPage {
+    comments: CommentResponse[];
+    pagination?: PostPagination;
+}
+
+type CommentListCache = CommentResponse[] | { pages: CommentsPage[]; pageParams: unknown[] };
+
 // A comment-list cache entry is either a flat array (useReplies) or an
 // infinite-query { pages } object (useComments) — apply `fn` to whichever shape it is.
-const mapCommentList = (old: any, fn: (comments: CommentResponse[]) => CommentResponse[]) => {
+const mapCommentList = (
+    old: CommentListCache | undefined,
+    fn: (comments: CommentResponse[]) => CommentResponse[]
+): CommentListCache | undefined => {
     if (!old) return old;
     if (Array.isArray(old)) return fn(old);
-    if (old.pages) {
-        return {
-            ...old,
-            pages: old.pages.map((page: any) => ({ ...page, comments: fn(page.comments) })),
-        };
-    }
-    return old;
+    return {
+        ...old,
+        pages: old.pages.map((page) => ({ ...page, comments: fn(page.comments) })),
+    };
 };
 
 export const useComments = (postId: number | string) => {
@@ -33,8 +40,8 @@ export const useComments = (postId: number | string) => {
         queryFn: async ({ pageParam }: { pageParam: number }) => {
             const { data } = await postService.getComments(postId, pageParam, COMMENTS_PAGE_SIZE);
             return {
-                comments: (data.comments ?? []) as CommentResponse[],
-                pagination: data.pagination as { page: number; totalPages: number } | undefined,
+                comments: data.comments ?? [],
+                pagination: data.pagination,
             };
         },
         initialPageParam: 1,
@@ -51,7 +58,7 @@ export const useReplies = (commentId: string, enabled: boolean) => {
         queryKey: ['replies', commentId],
         queryFn: async () => {
             const { data } = await postService.getReplies(commentId, 1, REPLIES_LIMIT);
-            return (data.comments ?? []) as CommentResponse[];
+            return data.comments ?? [];
         },
         enabled,
     });
@@ -63,7 +70,7 @@ export const useCreateComment = (postId: number | string) => {
     return useMutation({
         mutationFn: async ({ content, parentCommentId }: { content: string; parentCommentId?: string }) => {
             const { data } = await postService.createComment(postId, content, parentCommentId);
-            return data.comment as CommentResponse;
+            return data.comment;
         },
         onSuccess: (_comment, variables) => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.feed] });
@@ -99,7 +106,7 @@ export const useToggleCommentLike = (queryKey: QueryKey) => {
                     }
                     : comment;
 
-            queryClient.setQueryData(queryKey, (old: any) => mapCommentList(old, (comments) => comments.map(patch)));
+            queryClient.setQueryData<CommentListCache>(queryKey, (old) => mapCommentList(old, (comments) => comments.map(patch)));
 
             return { previous };
         },
@@ -117,10 +124,10 @@ export const useUpdateComment = (queryKey: QueryKey) => {
     return useMutation({
         mutationFn: async ({ id, content }: { id: string; content: string }) => {
             const { data } = await postService.updateComment(id, content);
-            return data.comment as CommentResponse;
+            return data.comment;
         },
         onSuccess: (updated) => {
-            queryClient.setQueryData(queryKey, (old: any) =>
+            queryClient.setQueryData<CommentListCache>(queryKey, (old) =>
                 mapCommentList(old, (comments) =>
                     comments.map((comment) =>
                         comment.id === updated.id
@@ -146,7 +153,7 @@ export const useDeleteComment = (queryKey: QueryKey) => {
         },
         onSuccess: (id) => {
             toast.success("Comment deleted");
-            queryClient.setQueryData(queryKey, (old: any) =>
+            queryClient.setQueryData<CommentListCache>(queryKey, (old) =>
                 mapCommentList(old, (comments) => comments.filter((comment) => comment.id !== id))
             );
         },

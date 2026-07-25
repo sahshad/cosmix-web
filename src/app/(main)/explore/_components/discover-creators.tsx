@@ -1,8 +1,7 @@
 import React from 'react';
 import { Users } from 'lucide-react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
-import { FollowButton } from '@/components/shared';
+import { UserListItem } from '@/components/shared';
 
 const suggestedCreators = [
     { name: 'Alex Chen', handle: 'alexchen', avatar: 'alex', bio: 'Frontend Wizard ✨' },
@@ -20,21 +19,14 @@ export function DiscoverCreators() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {suggestedCreators.map((creator) => (
-                    <Card key={creator.handle} className="p-4 border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[1.5rem] bg-card flex items-center justify-between group hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] transition-all">
-                        <div className="flex items-center gap-3 min-w-0">
-                            <Avatar className="h-12 w-12 ring-2 ring-transparent group-hover:ring-[#11a657]/30 transition-all shadow-sm flex-shrink-0">
-                                <AvatarImage
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${creator.avatar}`}
-                                    alt={creator.name}
-                                />
-                                <AvatarFallback>{creator.name[0]}</AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0 pr-2">
-                                <p className="text-[15px] font-bold text-foreground group-hover:underline truncate">{creator.name}</p>
-                                <p className="text-[12px] font-medium text-muted-foreground truncate">@{creator.handle}</p>
-                            </div>
-                        </div>
-                        <FollowButton />
+                    <Card key={creator.handle} className="p-4 border-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[1.5rem] bg-card hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] transition-all">
+                        <UserListItem
+                            name={creator.name}
+                            handle={creator.handle}
+                            avatarSeed={creator.avatar}
+                            variant="card"
+                            ringColor="#11a657"
+                        />
                     </Card>
                 ))}
             </div>

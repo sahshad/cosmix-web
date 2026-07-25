@@ -1,11 +1,11 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PostCard } from '@/components/post/post-card';
-import { Loader2 } from 'lucide-react';
+import { PostCard, PostData } from '@/components/post/post-card';
+import { CenteredLoader, EmptyState } from '@/components/shared';
 
 interface ProfileTabsProps {
-  posts: any[];
+  posts: PostData[];
   onLike: (postId: number | string) => void;
   isLoading?: boolean;
 }
@@ -30,28 +30,18 @@ export function ProfileTabs({ posts, onLike, isLoading }: ProfileTabsProps) {
 
       <TabsContent value="posts" className="space-y-6 mt-6">
         {isLoading ? (
-          <div className="flex justify-center p-8">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          </div>
+          <CenteredLoader className="p-8" />
         ) : posts.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground font-bold text-sm uppercase tracking-widest bg-card rounded-[2.5rem] shadow-sm">
-            No posts yet.
-          </div>
+          <EmptyState message="No posts yet." />
         ) : (
           posts.map((post) => <PostCard key={post.id} post={post} onLike={onLike} />)
         )}
       </TabsContent>
-      <TabsContent
-        value="replies"
-        className="p-12 text-center text-muted-foreground font-bold text-sm uppercase tracking-widest bg-card rounded-[2.5rem] shadow-sm"
-      >
-        No cosmic replies yet.
+      <TabsContent value="replies">
+        <EmptyState message="No cosmic replies yet." />
       </TabsContent>
-      <TabsContent
-        value="likes"
-        className="p-12 text-center text-muted-foreground font-bold text-sm uppercase tracking-widest bg-card rounded-[2.5rem] shadow-sm"
-      >
-        No cosmic likes yet.
+      <TabsContent value="likes">
+        <EmptyState message="No cosmic likes yet." />
       </TabsContent>
     </Tabs>
   );

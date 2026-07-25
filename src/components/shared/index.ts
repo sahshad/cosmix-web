@@ -1,3 +1,10 @@
 export { default as FollowButton } from './follow-button';
 export { SectionHeader } from './section-header';
 export { UserAvatar } from './user-avatar';
+export { OptionsMenu } from './options-menu';
+export type { OptionsMenuItem } from './options-menu';
+export { InlineEditField } from './inline-edit-field';
+export { PanelCard } from './panel-card';
+export { EmptyState } from './empty-state';
+export { UserListItem } from './user-list-item';
+export { Spinner, CenteredLoader } from './spinner';

@@ -4,16 +4,14 @@ export type User = {
   username: string;
   email: string;
   isActive: boolean;
-  isEmailVerified: boolean;
   isVerified: boolean;
-  isPrivate?: boolean;
-  avatarUrl: string;
+  isPrivate: boolean;
+  avatarUrl?: string;
   coverImageUrl?: string;
   bio?: string;
   website?: string;
   location?: string;
-  dateOfBirth?: string;
-  lastLoginAt: string;
+  dateOfBirth: string;
   lastSeenAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -31,9 +29,9 @@ export type UpdateProfileRequest = {
 };
 
 export type UserProfileResponse = {
-  user: Partial<User>;
+  user: User;
 };
 
 export type UserListResponse = {
-  users: Partial<User>[];
+  users: User[];
 };

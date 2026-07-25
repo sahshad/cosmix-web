@@ -13,8 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Camera, Loader2, MapPin, Link as LinkIcon } from 'lucide-react';
+import { Spinner, UserAvatar } from '@/components/shared';
+import { Camera, MapPin, Link as LinkIcon } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { useUpdateProfile } from '@/hooks/useUser';
 import {
@@ -221,7 +221,7 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
               )}
               <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
                 {isUploadingCover ? (
-                  <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  <Spinner size="lg" className="text-white" />
                 ) : (
                   <Camera className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                 )}
@@ -243,15 +243,17 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
                 className="relative group shrink-0 rounded-2xl focus:outline-none"
                 aria-label="Change avatar"
               >
-                <Avatar className="h-16 w-16 rounded-2xl border-[3px] border-background shadow-lg">
-                  <AvatarImage src={avatarUrl} alt={displayName} className="object-cover" />
-                  <AvatarFallback className="rounded-2xl text-xl">
-                    {displayName ? displayName[0] : '?'}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  src={avatarUrl}
+                  alt={displayName}
+                  fallback={displayName ? displayName[0] : '?'}
+                  className="h-16 w-16 rounded-2xl border-[3px] border-background shadow-lg"
+                  imageClassName="object-cover"
+                  fallbackClassName="rounded-2xl text-xl"
+                />
                 <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/0 group-hover:bg-black/40 transition-colors">
                   {isUploadingAvatar ? (
-                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                    <Spinner size="lg" className="text-white" />
                   ) : (
                     <Camera className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}

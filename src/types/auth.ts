@@ -5,13 +5,22 @@ export type LoginRequest = {
   password: string;
 };
 
+export type AuthUser = {
+  email: string;
+  isActive: boolean;
+  emailVerified: boolean;
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type LoginResponse = {
   accessToken: string;
-  user: Partial<User>;
+  user: AuthUser;
 }
 
 export type MeResponse = {
-  user: Partial<User>;
+  user: User;
 }
 
 export type RefreshResponse = {
@@ -24,10 +33,12 @@ export type SignupRequest = {
   password: string;
 };
 
-export type AuthUser = {
-  id: number;
-  email: string;
-  role: string;
+export type RegisterResponse = {
+  userId: string;
+};
+
+export type LogoutResponse = {
+  message: string;
 };
 
 export type VerifyEmailRequest = {

@@ -1,7 +1,7 @@
 'use client';
 
 import { MoreHorizontal, TrendingUp } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { PanelCard } from '@/components/shared/panel-card';
 import { SectionHeader } from '@/components/shared/section-header';
 
 export interface TrendItem {
@@ -28,7 +28,7 @@ export function TrendingPanel({
   title = 'Trending Now',
 }: TrendingPanelProps) {
   return (
-    <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
+    <PanelCard>
       <SectionHeader icon={TrendingUp} label={title} iconColor="#f8b301" />
       <div className="space-y-4">
         {trends.map((trend) => (
@@ -55,6 +55,6 @@ export function TrendingPanel({
           </button>
         ))}
       </div>
-    </Card>
+    </PanelCard>
   );
 }

@@ -22,7 +22,7 @@ import {
   useSidebar,
   SidebarMenuBadge,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/shared';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +36,7 @@ import { useTheme } from 'next-themes';
 // import { useAuthStore } from '@/store/auth.store';
 import { NAV_ITEMS } from '@/lib/constants';
 import { useCurrentUser } from '@/hooks/useAuth';
+import { dicebearUrl } from '@/lib/utils';
 
 export function AppSidebar() {
   const { state, setOpenMobile } = useSidebar();
@@ -60,7 +61,7 @@ export function AppSidebar() {
   // const user = useAuthStore((state) => state.user);
   const displayName = user?.displayName || '';
   const userHandle = '@' + (user?.username || '');
-  const avatarUrl = user?.avatarUrl ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=cosmix';
+  const avatarUrl = user?.avatarUrl ?? dicebearUrl('cosmix');
 
   const renderMenuItems = () => (
     <SidebarMenu className="gap-1.5 px-3">
@@ -75,10 +76,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive}
-              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
-                  ? 'bg-vivid-blue/10 text-vivid-blue font-semibold'
-                  : 'hover:bg-secondary text-muted-foreground hover:text-foreground font-medium'
-                } ${isCollapsed ? 'justify-center p-0' : ''}`}
+              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden text-muted-foreground hover:text-foreground hover:bg-transparent active:bg-transparent font-medium data-[active=true]:bg-vivid-blue/6 data-[active=true]:text-vivid-blue data-[active=true]:hover:text-vivid-blue data-[active=true]:font-semibold ${isCollapsed ? 'justify-center p-0' : ''}`}
               tooltip={item.label}
               onClick={() => setOpenMobile(false)}
             >
@@ -86,9 +84,9 @@ export function AppSidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 w-full ${isCollapsed ? 'justify-center px-0' : 'px-3'}`}
               >
-                {/* Active pill indicator */}
+                {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-vivid-blue rounded-r-full" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-5 bg-vivid-blue rounded-full" />
                 )}
                 <Icon
                   className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'
@@ -136,7 +134,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="py-2 gap-2">
+      <SidebarContent className="p-2 gap-2">
         {renderMenuItems()}
       </SidebarContent>
 
@@ -162,14 +160,13 @@ export function AppSidebar() {
               className={`rounded-2xl hover:bg-secondary transition-all group flex items-center focus:outline-none focus-visible:ring-0 focus-visible:outline-none ${isCollapsed ? 'h-10 w-10 p-0 justify-center' : 'w-full h-14 px-3 gap-3'
                 }`}
             >
-              <Avatar
+              <UserAvatar
+                src={avatarUrl}
+                alt="User"
+                fallback={displayName?.[0] || 'U'}
                 className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} flex-shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/30 transition-all`}
-              >
-                <AvatarImage src={avatarUrl} alt="User" />
-                <AvatarFallback className="text-[10px]">
-                  {displayName?.[0] || 'U'}
-                </AvatarFallback>
-              </Avatar>
+                fallbackClassName="text-[10px]"
+              />
               {!isCollapsed && (
                 <div className="text-left min-w-0 flex-1">
                   <p className="text-sm font-bold text-foreground truncate">{displayName}</p>
@@ -190,10 +187,7 @@ export function AppSidebar() {
                 className="flex items-center gap-3"
                 onClick={() => setOpenMobile(false)}
               >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={avatarUrl} alt="User" />
-                  <AvatarFallback>{displayName?.[0] || 'U'}</AvatarFallback>
-                </Avatar>
+                <UserAvatar src={avatarUrl} alt="User" fallback={displayName?.[0] || 'U'} size="md" />
                 <div>
                   <p className="text-sm font-bold">{displayName}</p>
                   <p className="text-xs text-muted-foreground">View profile</p>

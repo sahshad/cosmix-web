@@ -3,6 +3,7 @@
 import { AppSidebar } from "@/components/layout/sidebar"
 import { MobileHeader } from "@/components/layout/mobile-header"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { CenteredLoader } from "@/components/shared"
 import { useCurrentUser } from "@/hooks/useAuth"
 import { useAuthStore } from "@/store/auth.store"
 import { useEffect } from "react"
@@ -21,7 +22,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [user, setIsAuthenticated])
 
   if (!isAuthenticated && isLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>
+    return <CenteredLoader className="h-screen items-center" size="2xl" spinnerClassName="text-vivid-blue" />
   }
 
   return (

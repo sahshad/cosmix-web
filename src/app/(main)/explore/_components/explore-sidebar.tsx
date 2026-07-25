@@ -1,18 +1,14 @@
 import React from 'react';
 import { Users, MoreHorizontal, Star, Activity } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { PanelCard } from '@/components/shared/panel-card';
+import { SectionHeader } from '@/components/shared/section-header';
 
 export function ExploreSidebar() {
     return (
         <div className="space-y-8 hidden lg:block">
             {/* Top Communities */}
-            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
-                <h2 className="text-sm font-bold text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-wider">
-                    <div className="bg-[#8b5cf6]/10 p-1.5 rounded-lg">
-                        <Star className="h-4 w-4 text-[#8b5cf6]" />
-                    </div>
-                    Top Communities
-                </h2>
+            <PanelCard>
+                <SectionHeader icon={Star} label="Top Communities" iconColor="#8b5cf6" />
                 <div className="space-y-4">
                     {[
                         { name: 'Frontend Devs', members: '124K', color: 'var(--brand-primary)' },
@@ -35,16 +31,11 @@ export function ExploreSidebar() {
                         </div>
                     ))}
                 </div>
-            </Card>
+            </PanelCard>
 
             {/* Popular Topics - List Format */}
-            <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[14px] bg-card p-6">
-                <h2 className="text-sm font-bold text-muted-foreground mb-6 flex items-center gap-3 uppercase tracking-wider">
-                    <div className="bg-[#f84b4b]/10 p-1.5 rounded-lg">
-                        <Activity className="h-4 w-4 text-[#f84b4b]" />
-                    </div>
-                    Popular Topics
-                </h2>
+            <PanelCard>
+                <SectionHeader icon={Activity} label="Popular Topics" iconColor="#f84b4b" />
                 <div className="space-y-4">
                     {[
                         { topic: 'Artificial Intelligence', category: 'Technology' },
@@ -58,7 +49,7 @@ export function ExploreSidebar() {
                         </div>
                     ))}
                 </div>
-            </Card>
+            </PanelCard>
         </div>
     );
 }

@@ -69,8 +69,8 @@ export function ExploreFeed({posts}: { posts: PostData[]; }) {
                 Explore Feed
             </h2>
             <div className="space-y-8">
-                {posts.map((post: any) => (
-                    <PostCard key={post.id.low} post={post} />
+                {posts.map((post) => (
+                    <PostCard key={post.id} post={post} />
                 ))}
             </div>
         </div>

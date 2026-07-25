@@ -1,4 +1,10 @@
+import { CSSProperties } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
+
+interface RingColorStyle extends CSSProperties {
+  '--ring-color'?: string;
+}
 
 interface UserAvatarProps {
   src?: string;
@@ -9,6 +15,8 @@ interface UserAvatarProps {
   ringOnHover?: boolean;
   ringColor?: string;
   className?: string;
+  imageClassName?: string;
+  fallbackClassName?: string;
 }
 
 const sizeMap = {
@@ -21,6 +29,8 @@ const sizeMap = {
 /**
  * Standardised avatar with optional online dot and hover ring —
  * used in sidebar, post card, suggested users, etc.
+ * `className` overrides sizing/shape/border, `imageClassName`/`fallbackClassName`
+ * reach the inner AvatarImage/AvatarFallback (e.g. for object-fit or palette colors).
  */
 export function UserAvatar({
   src,
@@ -31,19 +41,21 @@ export function UserAvatar({
   ringOnHover = false,
   ringColor = 'var(--brand-primary)',
   className,
+  imageClassName,
+  fallbackClassName,
 }: UserAvatarProps) {
   return (
     <div className="relative flex-shrink-0">
       <Avatar
-        className={`
-          ${sizeMap[size]}
-          ${ringOnHover ? 'ring-2 ring-transparent transition-all group-hover:ring-[var(--ring-color)]' : ''}
-          ${className ?? ''}
-        `}
-        style={{ ['--ring-color' as any]: `${ringColor}4d` }}
+        className={cn(
+          sizeMap[size],
+          ringOnHover && 'ring-2 ring-transparent transition-all group-hover:ring-[var(--ring-color)]',
+          className
+        )}
+        style={{ '--ring-color': `${ringColor}4d` } as RingColorStyle}
       >
-        <AvatarImage src={src} alt={alt} />
-        <AvatarFallback>{fallback}</AvatarFallback>
+        <AvatarImage src={src} alt={alt} className={imageClassName} />
+        <AvatarFallback className={fallbackClassName}>{fallback}</AvatarFallback>
       </Avatar>
       {showOnlineDot && (
         <div

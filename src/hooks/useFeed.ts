@@ -11,8 +11,8 @@ const patchPostInLists = (
     updater: (post: PostData) => PostData
 ) => {
     POST_LIST_KEY_PREFIXES.forEach((prefix) => {
-        queryClient.setQueriesData({ queryKey: [prefix] }, (old: any) =>
-            Array.isArray(old) ? old.map((post: PostData) => (post.id === id ? updater(post) : post)) : old
+        queryClient.setQueriesData<PostData[]>({ queryKey: [prefix] }, (old) =>
+            Array.isArray(old) ? old.map((post) => (post.id === id ? updater(post) : post)) : old
         );
     });
 };
@@ -63,9 +63,9 @@ export const useLikePost = () => {
 
             return { previous };
         },
-        onError: (err, variables, context: any) => {
-            context?.previous?.forEach(([, entries]: any) => {
-                entries.forEach(([key, data]: any) => queryClient.setQueryData(key, data));
+        onError: (_err, _variables, context) => {
+            context?.previous?.forEach(([, entries]) => {
+                entries.forEach(([key, data]) => queryClient.setQueryData(key, data));
             });
             toast.error("Failed to like post");
         }

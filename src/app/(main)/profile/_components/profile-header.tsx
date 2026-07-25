@@ -5,10 +5,10 @@ import {
   Calendar,
   MapPin,
   Link as LinkIcon,
-  Edit2,
   CheckCircle2,
+  Edit,
 } from 'lucide-react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import FollowButton from '@/components/shared/follow-button';
@@ -64,19 +64,23 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
       <div className="px-8 relative pb-8">
         <div className="flex justify-between items-end -mt-14 sm:-mt-16 mb-6">
           <div className="relative">
-            <Avatar className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl rounded-[2.5rem] overflow-hidden bg-background">
-              <AvatarImage src={profile.avatarUrl} alt={profile.displayName} className="object-cover" />
-              <AvatarFallback className="text-3xl">{profile.displayName[0]}</AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              src={profile.avatarUrl}
+              alt={profile.displayName}
+              fallback={profile.displayName[0]}
+              className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl rounded-[2.5rem] overflow-hidden bg-background"
+              imageClassName="object-cover"
+              fallbackClassName="text-3xl"
+            />
             <div className="absolute bottom-2 right-2 h-6 w-6 bg-[#11a657] border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
           </div>
           <div className="pb-2">
             {profile.isMe ? (
               <Button
                 onClick={() => setEditOpen(true)}
-                className="rounded-2xl border-border bg-foreground text-background hover:bg-foreground/90 font-bold px-6 h-11 transition-all shadow-lg active:scale-95 text-sm"
+                className="h-8 rounded-full border border-border bg-secondary text-foreground hover:bg-secondary/80 font-extrabold px-4 transition-all shadow-md active:scale-95 text-[11px] uppercase tracking-wider"
               >
-                <Edit2 className="h-4 w-4 mr-2" />
+                <Edit className="h-3 w-3 mr-1.5" />
                 Edit Profile
               </Button>
             ) : (

@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function dicebearUrl(seed: string): string {
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`
+}
+
 export function getInitials(name?: string): string {
   if (!name) return "?"
   const parts = name.trim().split(/\s+/)

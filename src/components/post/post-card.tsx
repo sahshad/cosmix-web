@@ -1,17 +1,9 @@
 "use client";
 
-import { BadgeCheck, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
+import { InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useRef, useState } from "react";
 import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
 import { PostResponse as PostData } from "@/types/post";
@@ -21,9 +13,10 @@ export type { User } from "@/types/user";
 import { PostActions } from "./post-actions";
 import { PostCommentSection } from "./post-comment-section";
 import { useDeletePost, useUpdatePost } from "@/hooks/useFeed";
+import { useInlineEdit } from "@/hooks/useInlineEdit";
 
 interface PostCardProps {
-  post: any;
+  post: PostData;
   onLike?: (postId: number | string) => void;
 }
 
@@ -31,10 +24,16 @@ export function PostCard({ post, onLike }: PostCardProps) {
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const shouldFocusOnOpenRef = useRef(false);
   const [showComments, setShowComments] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(post.content);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
   const { mutate: updatePost, isPending: isUpdating } = useUpdatePost();
+  const {
+    isEditing,
+    content: editContent,
+    setContent: setEditContent,
+    startEdit,
+    cancelEdit: handleCancelEdit,
+    saveEdit: handleSaveEdit,
+  } = useInlineEdit(post.id, post.content, updatePost);
 
   useEffect(() => {
     if (showComments && shouldFocusOnOpenRef.current) {
@@ -52,19 +51,6 @@ export function PostCard({ post, onLike }: PostCardProps) {
     }
   };
 
-  const handleSaveEdit = () => {
-    if (!editContent.trim()) return;
-    updatePost(
-      { id: post.id, content: editContent.trim() },
-      { onSuccess: () => setIsEditing(false) }
-    );
-  };
-
-  const handleCancelEdit = () => {
-    setEditContent(post.content);
-    setIsEditing(false);
-  };
-
   const authorPalette = getAvatarPalette(post.user?.username || post.user?.displayName);
 
   return (
@@ -72,15 +58,13 @@ export function PostCard({ post, onLike }: PostCardProps) {
       {/* Header */}
       <div className="px-5 sm:px-6 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0 cursor-pointer group/author">
-          <Avatar className="h-10 w-10 flex-shrink-0">
-            <AvatarImage
-              src={post.user?.avatarUrl}
-              alt={post.user.displayName}
-            />
-            <AvatarFallback className={cn(authorPalette.bg, authorPalette.text, "font-semibold")}>
-              {getInitials(post.user?.displayName)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            src={post.user?.avatarUrl}
+            alt={post.user.displayName}
+            fallback={getInitials(post.user?.displayName)}
+            className="h-10 w-10 flex-shrink-0"
+            fallbackClassName={cn(authorPalette.bg, authorPalette.text, "font-semibold")}
+          />
           <div className="flex flex-col justify-center min-w-0">
             <div className="flex items-center gap-1 leading-none">
               <span className="font-semibold text-[14px] text-foreground group-hover/author:underline truncate">
@@ -101,90 +85,40 @@ export function PostCard({ post, onLike }: PostCardProps) {
             </div>
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground flex-shrink-0 -mt-1"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="rounded-[10px] shadow-lg border-border/60 min-w-[190px] z-50 p-1.5"
-          >
-            {post.isOwner ? (
-              <>
-                <DropdownMenuItem
-                  onClick={() => setIsEditing(true)}
-                  className="rounded-lg py-2 px-3 cursor-pointer gap-2 font-medium text-[13px] hover:bg-secondary"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Edit post
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={isDeleting}
-                  onClick={() => deletePost(post.id)}
-                  className="rounded-lg py-2 px-3 cursor-pointer gap-2 text-destructive focus:text-destructive focus:bg-destructive/10 font-medium text-[13px]"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete post
-                </DropdownMenuItem>
-              </>
-            ) : (
-              <>
-                <DropdownMenuItem className="rounded-lg py-2 px-3 cursor-pointer font-medium text-[13px] hover:bg-secondary">
-                  Unfollow {post.user.username}
-                </DropdownMenuItem>
-                <DropdownMenuItem className="rounded-lg py-2 px-3 cursor-pointer font-medium text-[13px] hover:bg-secondary">
-                  Mute {post.user.username}
-                </DropdownMenuItem>
-                <Separator className="my-1 bg-border/50" />
-                <DropdownMenuItem className="rounded-lg py-2 px-3 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10 font-medium text-[13px]">
-                  Report post
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <OptionsMenu
+          triggerClassName="-mt-1"
+          items={
+            post.isOwner
+              ? [
+                  { icon: Pencil, label: "Edit post", onClick: startEdit },
+                  {
+                    icon: Trash2,
+                    label: "Delete post",
+                    onClick: () => deletePost(post.id),
+                    disabled: isDeleting,
+                    destructive: true,
+                  },
+                ]
+              : [
+                  { label: `Unfollow ${post.user.username}` },
+                  { label: `Mute ${post.user.username}` },
+                  { label: "Report post", destructive: true, separatorBefore: true },
+                ]
+          }
+        />
       </div>
 
       {/* Content */}
       <div className="px-5 sm:px-6 mt-3">
         {isEditing ? (
-          <div>
-            <Textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={3}
-              autoFocus
-              disabled={isUpdating}
-              className="w-full resize-none rounded-[8px] border border-border bg-background p-3 text-[14.5px] leading-relaxed focus-visible:ring-0"
-            />
-            <div className="flex items-center justify-end gap-2 mt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={handleCancelEdit}
-                disabled={isUpdating}
-                className="cursor-pointer"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={handleSaveEdit}
-                disabled={isUpdating || !editContent.trim()}
-                className="bg-vivid-blue hover:bg-vivid-blue-hover text-white cursor-pointer"
-              >
-                {isUpdating ? "Saving..." : "Save"}
-              </Button>
-            </div>
-          </div>
+          <InlineEditField
+            value={editContent}
+            onChange={setEditContent}
+            onSave={handleSaveEdit}
+            onCancel={handleCancelEdit}
+            isSaving={isUpdating}
+            textareaClassName="rounded-[8px] border border-border bg-background p-3 text-[14.5px]"
+          />
         ) : (
           <p className="text-foreground leading-relaxed text-[14.5px] break-words">
             {post.content}

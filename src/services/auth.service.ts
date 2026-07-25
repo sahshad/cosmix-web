@@ -4,6 +4,8 @@ import {
   MeResponse,
   LoginResponse,
   RefreshResponse,
+  RegisterResponse,
+  LogoutResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
   ForgotPasswordRequest,
@@ -14,17 +16,17 @@ import {
 import { http } from "@/lib/http";
 
 export const authService = {
-  login: (data: LoginRequest) => 
+  login: (data: LoginRequest) =>
     http.post<LoginResponse>("/auth/login", data),
 
-  me: () => 
+  me: () =>
     http.get<MeResponse>("/users/me"),
 
-  logout: () => 
-    http.post("/auth/logout"),
+  logout: () =>
+    http.post<LogoutResponse>("/auth/logout"),
 
-  signup: (data: SignupRequest) => 
-    http.post("/auth/register", data),
+  signup: (data: SignupRequest) =>
+    http.post<RegisterResponse>("/auth/register", data),
 
   refresh: () => 
     http.get<RefreshResponse>("/auth/refresh"),

@@ -1,7 +1,7 @@
 'use client';
 
 import { Images } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { PanelCard } from '@/components/shared/panel-card';
 import { SectionHeader } from '@/components/shared/section-header';
 
 interface MediaPost {
@@ -17,7 +17,7 @@ export function ProfileGallery({ posts }: ProfileGalleryProps) {
   const mediaPosts = posts.filter((p) => p.media && p.media.length > 0);
 
   return (
-    <Card className="border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-[2rem] bg-card p-6">
+    <PanelCard radius="lg">
       <SectionHeader
         icon={Images}
         label="Glimpses of Cosmos"
@@ -49,6 +49,6 @@ export function ProfileGallery({ posts }: ProfileGalleryProps) {
           )
         )}
       </div>
-    </Card>
+    </PanelCard>
   );
 }
