@@ -1,7 +1,7 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PostCard, PostData } from '@/components/post/post-card';
+import { PostCard, PostData } from '@/features/feed/components/post-card';
 import { CenteredLoader, EmptyState } from '@/components/shared';
 
 interface ProfileTabsProps {

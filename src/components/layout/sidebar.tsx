@@ -30,12 +30,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
-import { useLogout } from '@/hooks/useAuth';
+import { useLogout } from '@/features/auth/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 // import { useAuthStore } from '@/store/auth.store';
 import { NAV_ITEMS } from '@/lib/constants';
-import { useCurrentUser } from '@/hooks/useAuth';
+import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 import { dicebearUrl } from '@/lib/utils';
 
 export function AppSidebar() {

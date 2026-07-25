@@ -12,7 +12,7 @@ import {
   ForgotPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-} from "@/types";
+} from "../types";
 import { http } from "@/lib/http";
 
 export const authService = {

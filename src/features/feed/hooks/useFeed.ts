@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { postService } from '@/services/post.service';
-import { MediaItem, PostResponse as PostData } from '@/types/post';
+import { postService } from '../api/post.service';
+import { MediaItem, PostResponse as PostData } from '../types';
 import { toast } from 'sonner';
 
 const POST_LIST_KEY_PREFIXES = ['feed', 'user-posts'];
@@ -35,6 +35,24 @@ export const useUserPosts = (userId: string | undefined, page: number = 1, limit
             return (data.posts || []) as PostData[];
         },
         enabled: !!userId,
+    });
+};
+
+export const useCreatePost = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ content, media }: { content: string; media?: MediaItem[] }) => {
+            const { data } = await postService.createPost({ content, media });
+            return data.post as PostData;
+        },
+        onSuccess: () => {
+            toast.success("Post created successfully!");
+            queryClient.invalidateQueries({ queryKey: ['feed'] });
+        },
+        onError: () => {
+            toast.error("Failed to create post");
+        }
     });
 };
 

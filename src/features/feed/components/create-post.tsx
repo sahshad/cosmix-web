@@ -6,7 +6,7 @@ import { UserAvatar } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useCurrentUser } from "@/hooks/useAuth";
+import { useCurrentUser } from "@/features/auth/hooks/useAuth";
 import { dicebearUrl, getInitials } from "@/lib/utils";
 import { PostComposerDialog } from "./post-composer-dialog";
 

@@ -1,13 +1,11 @@
 'use client';
 
-import { ProfileHeader, ProfileData } from './_components/profile-header';
-import { ProfileTabs } from './_components/profile-tabs';
-import { ProfileGallery } from './_components/profile-gallery';
+import { ProfileHeader, ProfileData, ProfileTabs, ProfileGallery } from '@/features/profile/components';
 import { TrendingPanel } from '@/components/widgets/trending-panel';
 import { SuggestedUsers } from '@/components/widgets/suggested-users';
-import { useCurrentUser } from '@/hooks/useAuth';
-import { useFollowers, useFollowing } from '@/hooks/useUser';
-import { useUserPosts, useLikePost } from '@/hooks/useFeed';
+import { useCurrentUser } from '@/features/auth/hooks/useAuth';
+import { useFollowers, useFollowing } from '@/features/profile/hooks/useUser';
+import { useUserPosts, useLikePost } from '@/features/feed/hooks/useFeed';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {

@@ -2,12 +2,12 @@
 
 import { WelcomeCard } from '@/components/widgets/welcome-card';
 import { RightSidebar } from '@/components/widgets/right-sidebar';
-import { CreatePost } from '@/components/post/create-post';
-import { PostCard, PostData } from '@/components/post/post-card';
+import { CreatePost } from '@/features/feed/components/create-post';
+import { PostCard, PostData } from '@/features/feed/components/post-card';
 import { CenteredLoader } from '@/components/shared';
-import { useFeed, useLikePost } from '@/hooks/useFeed';
-import { useAuthStore } from '@/store/auth.store';
-import { useCurrentUser } from '@/hooks/useAuth';
+import { useFeed, useLikePost } from '@/features/feed/hooks/useFeed';
+import { useAuthStore } from '@/features/auth/store';
+import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 
 export default function DashboardPage() {
   const { data: posts = [], isLoading } = useFeed(1, 20);

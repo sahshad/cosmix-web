@@ -7,7 +7,7 @@ import {
   GetPostsResponse,
   MediaItem,
   MessageResponse,
-} from '@/types/post';
+} from '../types';
 
 export const postService = {
   createPost: (data: CreatePostRequest) =>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Compass } from 'lucide-react';
-import { PostCard, PostData } from '@/components/post';
+import { PostCard, PostData } from '@/features/feed/components';
 
 // const discoverPosts: PostData[] = [
 //     {

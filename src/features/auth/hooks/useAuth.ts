@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authService } from "@/services/auth.service";
+import { authService } from "../api/auth.service";
 import {
   LoginRequest,
   LoginResponse,
   SignupRequest,
-  User,
   VerifyEmailRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-} from "@/types";
-import { useAuthStore } from "@/store/auth.store";
+} from "../types";
+import { useAuthStore } from "../store";
 
 export function useLogin() {
   // const setUser = useAuthStore((s) => s.setUser);

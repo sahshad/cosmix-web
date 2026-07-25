@@ -1,5 +1,5 @@
 import { http } from "@/lib/http";
-import { UpdateProfileRequest, UserProfileResponse, UserListResponse } from "@/types";
+import { UpdateProfileRequest, UserProfileResponse, UserListResponse } from "../types";
 
 export const userService = {
   updateProfile: (data: UpdateProfileRequest) =>

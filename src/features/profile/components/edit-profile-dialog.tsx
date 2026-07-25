@@ -15,8 +15,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Spinner, UserAvatar } from '@/components/shared';
 import { Camera, MapPin, Link as LinkIcon } from 'lucide-react';
-import { useCurrentUser } from '@/hooks/useAuth';
-import { useUpdateProfile } from '@/hooks/useUser';
+import { useCurrentUser } from '@/features/auth/hooks/useAuth';
+import { useUpdateProfile } from '../hooks/useUser';
 import {
   uploadToCloudinary,
   deleteFromCloudinary,

@@ -12,14 +12,11 @@ import { UserAvatar } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { uploadToCloudinary } from "@/actions/upload";
-import { postService } from "@/services/post.service";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/lib/constants";
-import { MediaItem } from "@/types/post";
-import { useCurrentUser } from "@/hooks/useAuth";
+import { MediaItem } from "../types";
+import { useCurrentUser } from "@/features/auth/hooks/useAuth";
 import { dicebearUrl, getInitials } from "@/lib/utils";
-import { useUpdatePost } from "@/hooks/useFeed";
+import { useCreatePost, useUpdatePost } from "../hooks/useFeed";
 
 interface PostComposerDialogProps {
   open: boolean;
@@ -52,9 +49,9 @@ export function PostComposerDialog({
   const [media, setMedia] = useState<MediaState | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
   const { data: user } = useCurrentUser();
   const { mutate: updatePost } = useUpdatePost();
+  const { mutate: createPost } = useCreatePost();
 
   const avatarUrl = user?.avatarUrl ?? dicebearUrl("cosmix");
 
@@ -127,10 +124,10 @@ export function PostComposerDialog({
         return;
       }
 
-      await postService.createPost({ content, media: mediaItems });
-      toast.success("Post created successfully!");
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.feed] });
-      onOpenChange(false);
+      createPost(
+        { content, media: mediaItems },
+        { onSuccess: () => onOpenChange(false) }
+      );
     } catch (error) {
       console.error(error);
       toast.error(isEdit ? "Failed to update post" : "Failed to create post");

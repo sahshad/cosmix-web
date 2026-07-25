@@ -4,8 +4,8 @@ import { AppSidebar } from "@/components/layout/sidebar"
 import { MobileHeader } from "@/components/layout/mobile-header"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { CenteredLoader } from "@/components/shared"
-import { useCurrentUser } from "@/hooks/useAuth"
-import { useAuthStore } from "@/store/auth.store"
+import { useCurrentUser } from "@/features/auth/hooks/useAuth"
+import { useAuthStore } from "@/features/auth/store"
 import { useEffect } from "react"
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {

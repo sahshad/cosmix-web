@@ -1,7 +1,7 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { authService } from '@/services/auth.service';
+import { authService } from '@/features/auth/api/auth.service';
 import { api } from './api';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore } from '@/features/auth/store';
 
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;

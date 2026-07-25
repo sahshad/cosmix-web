@@ -5,8 +5,8 @@ import {
     useQueryClient,
     QueryKey,
 } from '@tanstack/react-query';
-import { postService } from '@/services/post.service';
-import { CommentResponse, PostPagination } from '@/types/post';
+import { postService } from '../api/post.service';
+import { CommentResponse, PostPagination } from '../types';
 import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from 'sonner';
 

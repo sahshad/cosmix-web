@@ -5,7 +5,7 @@ import { QueryKey } from "@tanstack/react-query";
 import { Heart, Pencil, Trash2 } from "lucide-react";
 import { CenteredLoader, InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
 import { toast } from "sonner";
-import { CommentResponse } from "@/types/post";
+import { CommentResponse } from "../../types";
 import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
 import {
   useCreateComment,
@@ -13,7 +13,7 @@ import {
   useReplies,
   useToggleCommentLike,
   useUpdateComment,
-} from "@/hooks/useComments";
+} from "../../hooks/useComments";
 import { useInlineEdit } from "@/hooks/useInlineEdit";
 import { User } from "@/types";
 import { CommentComposer } from "./comment-composer";

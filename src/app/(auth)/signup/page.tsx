@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Eye, EyeOff, Check, Heart, Moon, Sun } from "lucide-react"
 import { Spinner } from "@/components/shared"
 import { useRouter } from "next/navigation"
-import { useSignup } from '@/hooks/useAuth'
+import { useSignup } from '@/features/auth/hooks/useAuth'
 import { toast } from "sonner"
 import { extractApiError } from "@/lib/error"
 import { useTheme } from "next-themes"

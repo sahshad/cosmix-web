@@ -6,14 +6,14 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useRef, useState } from "react";
 import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
-import { PostResponse as PostData } from "@/types/post";
-export type { PostResponse } from "@/types/post";
+import { PostResponse as PostData } from "../types";
+export type { PostResponse } from "../types";
 export type { PostData };
 export type { User } from "@/types/user";
 import { PostActions } from "./post-actions";
-import { PostCommentSection } from "./post-comment-section";
+import { PostCommentSection } from "./comments/post-comment-section";
 import { PostComposerDialog } from "./post-composer-dialog";
-import { useDeletePost } from "@/hooks/useFeed";
+import { useDeletePost } from "../hooks/useFeed";
 
 interface PostCardProps {
   post: PostData;

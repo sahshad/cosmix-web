@@ -1,13 +1,15 @@
 'use client';
 
 import React from "react";
-import { ExploreSearch } from "./_components/explore-search";
-import { TrendingTopics } from "./_components/trending-topics";
-import { DiscoverCreators } from "./_components/discover-creators";
-import { ExploreFeed } from "./_components/explore-feed";
-import { ExploreSidebar } from "./_components/explore-sidebar";
+import {
+  ExploreSearch,
+  TrendingTopics,
+  DiscoverCreators,
+  ExploreFeed,
+  ExploreSidebar,
+} from "@/features/explore/components";
 import { CenteredLoader } from "@/components/shared";
-import { useFeed } from "@/hooks/useFeed";
+import { useFeed } from "@/features/feed/hooks/useFeed";
 
 export default function ExplorePage() {
   const { data: posts = [], isLoading } = useFeed(1, 20);
