@@ -5,6 +5,7 @@ import {
   GetCommentsResponse,
   GetPostResponse,
   GetPostsResponse,
+  MediaItem,
   MessageResponse,
 } from '@/types/post';
 
@@ -18,8 +19,8 @@ export const postService = {
   getUserPosts: (userId: string, page: number = 1, limit: number = 20) =>
     api.get<GetPostsResponse>(`/posts/user/${userId}?page=${page}&limit=${limit}`),
 
-  updatePost: (id: number | string, content: string) =>
-    api.put<GetPostResponse>(`/posts/${id}`, { content }),
+  updatePost: (id: number | string, content: string, media?: MediaItem[]) =>
+    api.put<GetPostResponse>(`/posts/${id}`, { content, media }),
 
   likePost: (id: number | string) =>
     api.post<MessageResponse>(`/posts/${id}/like`),

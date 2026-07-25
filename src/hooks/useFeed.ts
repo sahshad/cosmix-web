@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { postService } from '@/services/post.service';
-import { PostResponse as PostData } from '@/types/post';
+import { MediaItem, PostResponse as PostData } from '@/types/post';
 import { toast } from 'sonner';
 
 const POST_LIST_KEY_PREFIXES = ['feed', 'user-posts'];
@@ -76,13 +76,18 @@ export const useUpdatePost = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, content }: { id: number | string; content: string }) => {
-            const { data } = await postService.updatePost(id, content);
+        mutationFn: async ({ id, content, media }: { id: number | string; content: string; media?: MediaItem[] }) => {
+            const { data } = await postService.updatePost(id, content, media);
             return data.post as PostData;
         },
         onSuccess: (updated) => {
             toast.success("Post updated");
-            patchPostInLists(queryClient, updated.id, (post) => ({ ...post, content: updated.content, updatedAt: updated.updatedAt }));
+            patchPostInLists(queryClient, updated.id, (post) => ({
+                ...post,
+                content: updated.content,
+                media: updated.media,
+                updatedAt: updated.updatedAt,
+            }));
         },
         onError: () => {
             toast.error("Failed to update post");

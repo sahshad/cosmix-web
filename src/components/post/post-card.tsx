@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
-import { InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
+import { OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useRef, useState } from "react";
@@ -12,8 +12,8 @@ export type { PostData };
 export type { User } from "@/types/user";
 import { PostActions } from "./post-actions";
 import { PostCommentSection } from "./post-comment-section";
-import { useDeletePost, useUpdatePost } from "@/hooks/useFeed";
-import { useInlineEdit } from "@/hooks/useInlineEdit";
+import { PostComposerDialog } from "./post-composer-dialog";
+import { useDeletePost } from "@/hooks/useFeed";
 
 interface PostCardProps {
   post: PostData;
@@ -24,16 +24,8 @@ export function PostCard({ post, onLike }: PostCardProps) {
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const shouldFocusOnOpenRef = useRef(false);
   const [showComments, setShowComments] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
-  const { mutate: updatePost, isPending: isUpdating } = useUpdatePost();
-  const {
-    isEditing,
-    content: editContent,
-    setContent: setEditContent,
-    startEdit,
-    cancelEdit: handleCancelEdit,
-    saveEdit: handleSaveEdit,
-  } = useInlineEdit(post.id, post.content, updatePost);
 
   useEffect(() => {
     if (showComments && shouldFocusOnOpenRef.current) {
@@ -90,7 +82,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
           items={
             post.isOwner
               ? [
-                  { icon: Pencil, label: "Edit post", onClick: startEdit },
+                  { icon: Pencil, label: "Edit post", onClick: () => setIsEditOpen(true) },
                   {
                     icon: Trash2,
                     label: "Delete post",
@@ -110,20 +102,9 @@ export function PostCard({ post, onLike }: PostCardProps) {
 
       {/* Content */}
       <div className="px-5 sm:px-6 mt-3">
-        {isEditing ? (
-          <InlineEditField
-            value={editContent}
-            onChange={setEditContent}
-            onSave={handleSaveEdit}
-            onCancel={handleCancelEdit}
-            isSaving={isUpdating}
-            textareaClassName="rounded-[8px] border border-border bg-background p-3 text-[14.5px]"
-          />
-        ) : (
-          <p className="text-foreground leading-relaxed text-[14.5px] break-words">
-            {post.content}
-          </p>
-        )}
+        <p className="text-foreground leading-relaxed text-[14.5px] break-words">
+          {post.content}
+        </p>
       </div>
 
       {/* Media */}
@@ -166,6 +147,15 @@ export function PostCard({ post, onLike }: PostCardProps) {
           onClose={() => setShowComments(false)}
         />
       )}
+
+      <PostComposerDialog
+        mode="edit"
+        postId={post.id}
+        initialContent={post.content}
+        initialMedia={post.media}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+      />
     </Card>
   );
 }
