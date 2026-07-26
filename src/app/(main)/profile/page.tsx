@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { ProfileHeader, ProfileData, ProfileTabs, ProfileGallery } from '@/features/profile/components';
 import { TrendingPanel } from '@/components/widgets/trending-panel';
 import { SuggestedUsers } from '@/components/widgets/suggested-users';
@@ -14,6 +15,7 @@ export default function ProfilePage() {
   const { data: following } = useFollowing(user?.id);
   const { data: posts = [], isLoading: isPostsLoading } = useUserPosts(user?.id);
   const { mutate: toggleLike } = useLikePost();
+  const [scrollToPostId, setScrollToPostId] = useState<number | string | null>(null);
 
   const profile: ProfileData | null = user
     ? {
@@ -39,13 +41,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto animate-fade-in-up">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
       {/* Left Column */}
-      <div className="space-y-6">
+      <div className="space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         {isUserLoading || !profile ? (
-          <div className="rounded-[2.5rem] bg-card shadow-[0_12px_45px_rgb(0,0,0,0.04)] overflow-hidden">
+          <div className="-mx-3 sm:mx-0 rounded-none sm:rounded-[2.5rem] bg-card shadow-[0_12px_45px_rgb(0,0,0,0.04)] overflow-hidden">
             <Skeleton className="h-44 sm:h-56 w-full rounded-none" />
-            <div className="px-8 pb-8 pt-4 space-y-4">
+            <div className="px-4 sm:px-8 pb-8 pt-4 space-y-4">
               <Skeleton className="h-28 w-28 sm:h-36 sm:w-36 rounded-[2.5rem] -mt-16 border-[6px] border-background" />
               <Skeleton className="h-6 w-48" />
               <Skeleton className="h-4 w-32" />
@@ -54,12 +56,18 @@ export default function ProfilePage() {
         ) : (
           <ProfileHeader profile={profile} />
         )}
-        <ProfileTabs posts={posts} onLike={handleLike} isLoading={isPostsLoading} />
+        <ProfileTabs
+          posts={posts}
+          onLike={handleLike}
+          isLoading={isPostsLoading}
+          scrollToPostId={scrollToPostId}
+          onScrolledToPost={() => setScrollToPostId(null)}
+        />
       </div>
 
       {/* Right Column */}
-      <div className="space-y-8 hidden lg:block">
-        <ProfileGallery posts={posts} />
+      <div className="space-y-3 sm:space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+        <ProfileGallery posts={posts} onSelectPost={setScrollToPostId} />
         <SuggestedUsers title="Picks for You" iconColor="var(--brand-primary)" />
         <TrendingPanel
           title="Trending in Cosmos"

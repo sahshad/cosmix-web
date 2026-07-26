@@ -1,7 +1,6 @@
 "use client";
 
 import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
-import Image from "next/image";
 import { ConfirmDialog, OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +13,7 @@ export type { User } from "@/types/user";
 import { PostActions } from "./post-actions";
 import { PostCommentSection } from "./comments/post-comment-section";
 import { PostComposerDialog } from "./post-composer-dialog";
+import { MediaCarousel } from "./media-carousel";
 import { useDeletePost } from "../hooks/useFeed";
 
 interface PostCardProps {
@@ -48,9 +48,12 @@ export function PostCard({ post, onLike }: PostCardProps) {
   const authorPalette = getAvatarPalette(post.user?.username || post.user?.displayName);
 
   return (
-    <Card className="border border-border shadow-none rounded-md bg-card overflow-hidden gap-0 py-5">
+    <Card
+      data-post-id={post.id}
+      className="scroll-mt-20 border border-border shadow-none rounded-md bg-card overflow-hidden gap-0 py-4 sm:py-5 transition-shadow"
+    >
       {/* Header */}
-      <div className="px-5 sm:px-6 flex items-start justify-between gap-3">
+      <div className="px-4 sm:px-6 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0 cursor-pointer group/author">
           <UserAvatar
             src={post.user?.avatarUrl}
@@ -103,28 +106,17 @@ export function PostCard({ post, onLike }: PostCardProps) {
       </div>
 
       {/* Content */}
-      <div className="px-5 sm:px-6 mt-3">
+      <div className="px-4 sm:px-6 mt-3">
         <p className="text-foreground leading-relaxed text-[14.5px] wrap-break-word">
           {post.content}
         </p>
       </div>
 
       {/* Media */}
-      {post.media && post.media.length > 0 && (
-        <div className="mt-4 mx-5 sm:mx-6 rounded-xl overflow-hidden border border-border relative group/media cursor-pointer aspect-16/10 min-h-55 max-h-120">
-          <div className="absolute inset-0 bg-black/0 group-hover/media:bg-black/5 transition-colors z-10" />
-          <Image
-            src={post.media[0].url}
-            alt="Post attachment"
-            fill
-            sizes="(max-width: 640px) 100vw, 600px"
-            className="object-cover"
-          />
-        </div>
-      )}
+      {post.media && post.media.length > 0 && <MediaCarousel items={post.media} />}
 
       {/* Stats summary */}
-      <div className="mt-4 px-5 sm:px-6 flex items-center justify-between text-[13px] text-muted-foreground">
+      <div className="mt-4 px-4 sm:px-6 flex items-center justify-between text-[13px] text-muted-foreground">
         <span>{post.likesCount.toLocaleString()} likes</span>
         <span>
           {post.commentsCount.toLocaleString()} comments ·{" "}
@@ -135,7 +127,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
       <Separator className="mt-3 bg-border/70" />
 
       {/* Actions */}
-      <div className="px-3 sm:px-4 pt-1">
+      <div className="px-3 sm:px-4 pt-1 min-w-0">
         <PostActions
           isLiked={post.isLiked}
           onLike={() => onLike?.(post.id)}

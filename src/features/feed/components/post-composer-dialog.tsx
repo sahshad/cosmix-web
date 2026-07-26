@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImageIcon, Globe2, X } from "lucide-react";
+import { ImageIcon, Code2, Smile } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,21 @@ import {
 import { UserAvatar } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { uploadToCloudinary } from "@/actions/upload";
 import { toast } from "sonner";
 import { MediaItem } from "../types";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
-import { dicebearUrl, getInitials } from "@/lib/utils";
+import { cn, dicebearUrl, getInitials } from "@/lib/utils";
 import { useCreatePost, useUpdatePost } from "../hooks/useFeed";
+import { useAutoGrowTextarea } from "../hooks/useAutoGrowTextarea";
+import { AttachmentPreview } from "./attachment-preview";
+import { ComposerCharCount } from "./composer-char-count";
+import { AudienceMenu, type Audience } from "./composer/audience-menu";
+import { isVideoFile, MAX_MEDIA_ITEMS, pickMediaFiles, uploadMediaFiles } from "../lib/media";
+
+const CONTENT_LIMIT = 500;
+
+const actionButtonClass =
+  "h-9 w-9 rounded-full text-vivid-blue hover:bg-vivid-blue/10 hover:text-vivid-blue transition-colors cursor-pointer flex items-center justify-center";
 
 interface PostComposerDialogProps {
   open: boolean;
@@ -25,6 +34,11 @@ interface PostComposerDialogProps {
   postId?: number | string;
   initialContent?: string;
   initialMedia?: MediaItem[];
+  /** Not-yet-uploaded files (e.g. from a draft this dialog is expanded from). Takes precedence over initialMedia. */
+  initialFiles?: File[];
+  initialAudience?: Audience;
+  /** Called only on a successful create (not on cancel/edit) — e.g. to clear a draft this dialog was expanded from. */
+  onCreated?: () => void;
 }
 
 interface MediaState {
@@ -33,6 +47,7 @@ interface MediaState {
   publicId?: string;
   type?: string;
   duration?: number;
+  isVideo: boolean;
 }
 
 export function PostComposerDialog({
@@ -42,42 +57,61 @@ export function PostComposerDialog({
   postId,
   initialContent = "",
   initialMedia = [],
+  initialFiles = [],
+  initialAudience = "Public",
+  onCreated,
 }: PostComposerDialogProps) {
   const isEdit = mode === "edit";
 
   const [content, setContent] = useState(initialContent);
-  const [media, setMedia] = useState<MediaState | null>(null);
+  const [media, setMedia] = useState<MediaState[]>([]);
+  const [audience, setAudience] = useState<Audience>(initialAudience);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { data: user } = useCurrentUser();
   const { mutate: updatePost } = useUpdatePost();
   const { mutate: createPost } = useCreatePost();
 
   const avatarUrl = user?.avatarUrl ?? dicebearUrl("cosmix");
+  const displayName = user?.displayName || "You";
+
+  useAutoGrowTextarea(textareaRef, content);
 
   useEffect(() => {
     if (!open) return;
     setContent(initialContent);
-    const existing = initialMedia[0];
+    setAudience(initialAudience);
     setMedia(
-      existing
-        ? { url: existing.url, publicId: existing.publicId, type: existing.type, duration: existing.duration }
-        : null
+      initialFiles.length > 0
+        ? initialFiles.map((file) => ({ file, url: URL.createObjectURL(file), isVideo: isVideoFile(file) }))
+        : initialMedia.map((item) => ({
+            url: item.url,
+            publicId: item.publicId,
+            type: item.type,
+            duration: item.duration,
+            isVideo: item.type === "video",
+          }))
     );
     if (fileInputRef.current) fileInputRef.current.value = "";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const file = e.target.files[0];
-      setMedia({ file, url: URL.createObjectURL(file) });
-    }
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (files.length === 0) return;
+    const { valid, errors } = pickMediaFiles(files, media.length);
+    errors.forEach((message) => toast.error(message));
+    if (valid.length === 0) return;
+    setMedia((prev) => [
+      ...prev,
+      ...valid.map((file) => ({ file, url: URL.createObjectURL(file), isVideo: isVideoFile(file) })),
+    ]);
   };
 
-  const handleRemoveMedia = () => {
-    setMedia(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  const handleRemoveMedia = (index: number) => {
+    setMedia((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleOpenChange = (next: boolean) => {
@@ -85,30 +119,29 @@ export function PostComposerDialog({
   };
 
   const resolveMediaItems = async (): Promise<MediaItem[] | null> => {
-    if (!media) return [];
-    if (!media.file) {
-      return [{ publicId: media.publicId!, url: media.url, type: media.type!, duration: media.duration }];
+    if (media.length === 0) return [];
+
+    const filesToUpload = media.filter((m) => m.file).map((m) => m.file!);
+    let uploaded: MediaItem[] = [];
+    if (filesToUpload.length > 0) {
+      const uploadRes = await uploadMediaFiles(filesToUpload);
+      if (!uploadRes.success) {
+        toast.error(uploadRes.error);
+        return null;
+      }
+      uploaded = uploadRes.items;
     }
 
-    const formData = new FormData();
-    formData.append("file", media.file);
-    const uploadRes = await uploadToCloudinary(formData);
-    if (!uploadRes.success) {
-      toast.error(uploadRes.error || "Failed to upload media");
-      return null;
-    }
-    return [
-      {
-        publicId: uploadRes.data.publicId,
-        url: uploadRes.data.url,
-        type: uploadRes.data.resourceType,
-        duration: uploadRes.data.duration || 0,
-      },
-    ];
+    let uploadedIndex = 0;
+    return media.map((m) =>
+      m.file
+        ? uploaded[uploadedIndex++]
+        : { publicId: m.publicId!, url: m.url, type: m.type!, duration: m.duration }
+    );
   };
 
   const handleSubmit = async () => {
-    if (!content.trim() && !media) return;
+    if (!content.trim() && media.length === 0) return;
 
     setIsSubmitting(true);
     try {
@@ -126,7 +159,12 @@ export function PostComposerDialog({
 
       createPost(
         { content, media: mediaItems },
-        { onSuccess: () => onOpenChange(false) }
+        {
+          onSuccess: () => {
+            onOpenChange(false);
+            onCreated?.();
+          },
+        }
       );
     } catch (error) {
       console.error(error);
@@ -136,7 +174,7 @@ export function PostComposerDialog({
     }
   };
 
-  const canSubmit = content.trim().length > 0 || !!media;
+  const canSubmit = content.trim().length > 0 || media.length > 0;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -150,32 +188,30 @@ export function PostComposerDialog({
         <div className="px-6 pt-4 flex items-center gap-3">
           <UserAvatar
             src={avatarUrl}
-            alt={user?.displayName || "You"}
+            alt={displayName}
             fallback={getInitials(user?.displayName) || "ME"}
             size="md"
             className="shrink-0"
           />
           <div className="min-w-0">
-            <p className="text-[14px] font-semibold text-foreground truncate">
-              {user?.displayName || "You"}
-            </p>
-            <span className="inline-flex items-center gap-1 mt-0.5 text-[11.5px] font-medium text-muted-foreground bg-secondary/60 rounded-full px-2 py-0.5">
-              <Globe2 className="h-3 w-3" />
-              Anyone
-            </span>
+            <p className="text-[14px] font-semibold text-foreground truncate">{displayName}</p>
+            <AudienceMenu value={audience} onChange={setAudience} />
           </div>
         </div>
 
         <div className="px-6 pt-3 pb-1">
           <Textarea
+            ref={textareaRef}
             autoFocus
             placeholder="What's sparking your imagination today?"
+            maxLength={CONTENT_LIMIT}
             className="
             w-full
             min-w-0
             max-w-full
             min-h-32
             resize-none
+            overflow-hidden
             border-0
             bg-transparent
             dark:bg-transparent
@@ -192,24 +228,11 @@ export function PostComposerDialog({
             onChange={(e) => setContent(e.target.value)}
           />
 
-          {media && (
-            <div className="relative mt-2 mb-3 w-max max-w-full">
-              {/* Local blob: preview before upload — next/image can't optimize
-                  blob URLs, and the shrink-to-content sizing here needs the
-                  browser's native intrinsic-size behavior instead of fill. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={media.url}
-                alt="Attached media"
-                className="max-h-75 rounded-md object-cover border border-border"
-              />
-              <button
-                onClick={handleRemoveMedia}
-                className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-sm transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+          {media.length > 0 && (
+            <AttachmentPreview
+              items={media.map((m) => ({ url: m.url, isVideo: m.isVideo }))}
+              onRemove={handleRemoveMedia}
+            />
           )}
         </div>
 
@@ -218,28 +241,38 @@ export function PostComposerDialog({
             <input
               type="file"
               accept="image/*,video/*"
+              multiple
               className="hidden"
               ref={fileInputRef}
               onChange={handleFileSelect}
             />
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
-              title="Add photo/video"
+              title={media.length >= MAX_MEDIA_ITEMS ? `Up to ${MAX_MEDIA_ITEMS} files per post` : "Add photo/video"}
+              aria-label="Add photo/video"
+              disabled={media.length >= MAX_MEDIA_ITEMS}
               onClick={() => fileInputRef.current?.click()}
-              className="h-9 w-9 rounded-full text-vivid-blue hover:bg-vivid-blue/10 hover:text-vivid-blue transition-colors cursor-pointer"
+              className={cn(actionButtonClass, "disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent")}
             >
               <ImageIcon className="h-4.5 w-4.5" />
+            </button>
+            <button type="button" title="Add code block" aria-label="Add code block" className={actionButtonClass}>
+              <Code2 className="h-4.5 w-4.5" />
+            </button>
+            <button type="button" title="Add emoji" aria-label="Add emoji" className={actionButtonClass}>
+              <Smile className="h-4.5 w-4.5" />
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <ComposerCharCount length={content.length} limit={CONTENT_LIMIT} />
+            <Button
+              onClick={handleSubmit}
+              disabled={isSubmitting || !canSubmit}
+              className="bg-vivid-blue hover:bg-vivid-blue-hover text-white rounded-full px-6 h-9 font-bold text-[13.5px] transition-all"
+            >
+              {isSubmitting ? (isEdit ? "Saving…" : "Posting…") : isEdit ? "Save" : "Post"}
             </Button>
           </div>
-          <Button
-            onClick={handleSubmit}
-            disabled={isSubmitting || !canSubmit}
-            className="bg-vivid-blue hover:bg-vivid-blue-hover text-white rounded-full px-6 h-9 font-bold text-[13.5px] transition-all"
-          >
-            {isSubmitting ? (isEdit ? "Saving…" : "Posting…") : isEdit ? "Save" : "Post"}
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

@@ -16,8 +16,8 @@ export function BookmarkButton({ onClick }: BookmarkButtonProps) {
       onClick={onClick}
       aria-label="Bookmark post"
     >
-      <Bookmark className="h-4.5 w-4.5" />
-      Save
+      <Bookmark className="h-4.5 w-4.5 shrink-0" />
+      <span className="hidden sm:inline truncate">Save</span>
     </Button>
   );
 }

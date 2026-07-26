@@ -16,8 +16,8 @@ export function CommentButton({ onClick }: CommentButtonProps) {
       onClick={onClick}
       aria-label="Focus comment input"
     >
-      <MessageCircle className="h-4.5 w-4.5" />
-      Comment
+      <MessageCircle className="h-4.5 w-4.5 shrink-0" />
+      <span className="hidden sm:inline truncate">Comment</span>
     </Button>
   );
 }

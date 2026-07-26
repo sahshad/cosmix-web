@@ -2,9 +2,9 @@ import { PostFeedSkeleton } from '@/features/feed/components/post-card-skeleton'
 
 export default function Loading() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto animate-pulse">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto animate-pulse">
       {/* Left Column Feed Skeleton */}
-      <div className="space-y-8">
+      <div className="space-y-3 sm:space-y-8">
         {/* Welcome Card Skeleton */}
         <div className="h-30 rounded-4xl bg-secondary/50" />
 
@@ -21,7 +21,7 @@ export default function Loading() {
       </div>
 
       {/* Right Column Skeleton */}
-      <div className="space-y-8 hidden lg:block">
+      <div className="space-y-3 sm:space-y-8 hidden lg:block">
         <div className="h-14 rounded-4xl bg-secondary/50" />
         <div className="h-75 rounded-4xl bg-secondary/30" />
         <div className="h-75 rounded-4xl bg-secondary/30" />

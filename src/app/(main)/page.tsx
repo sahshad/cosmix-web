@@ -18,14 +18,14 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up min-w-0">
       {/* Main Feed */}
-      <div className="space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+      <div className="space-y-3 sm:space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1 min-w-0">
         <WelcomeCard name={user?.displayName || 'there'} />
         <CreatePost />
 
         {/* Posts Feed */}
-        <div className="space-y-8">
+        <div className="space-y-3 sm:space-y-8">
           {isLoading ? (
             <PostFeedSkeleton />
           ) : (

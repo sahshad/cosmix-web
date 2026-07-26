@@ -18,7 +18,7 @@ export function PostActions({
   onBookmark,
 }: PostActionsProps) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 min-w-0">
       <LikeButton isLiked={isLiked} onLike={onLike} />
       <CommentButton onClick={onCommentClick} />
       <ShareButton onClick={onShare} />

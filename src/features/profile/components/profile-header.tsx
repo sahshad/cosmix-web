@@ -46,7 +46,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const joinDate = formatJoinDate(profile.createdAt);
 
   return (
-    <Card className="border-0 p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-md bg-card overflow-hidden">
+    <Card className="-mx-3 sm:mx-0 border-0 p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-none sm:rounded-md bg-card overflow-hidden">
       {/* Banner */}
       <div className="relative h-44 sm:h-56 bg-secondary overflow-hidden group">
         {profile.coverImageUrl ? (
@@ -65,7 +65,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
       </div>
 
       {/* Profile Meta */}
-      <div className="px-8 relative pb-8">
+      <div className="px-4 sm:px-8 relative pb-8">
         <div className="flex justify-between items-end -mt-14 sm:-mt-16 mb-6">
           <div className="relative">
             <UserAvatar

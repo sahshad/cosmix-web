@@ -8,13 +8,29 @@ type ResourceType = "image" | "video" | "auto";
 interface FolderConfig {
   path: string;
   resourceType: ResourceType;
-  maxSizeBytes: number;
+  maxImageSizeBytes: number;
+  maxVideoSizeBytes: number;
 }
 
 export const CLOUDINARY_FOLDERS: Record<"posts" | "avatars" | "covers", FolderConfig> = {
-  posts: { path: "cosmix/posts", resourceType: "auto", maxSizeBytes: 50 * 1024 * 1024 },
-  avatars: { path: "cosmix/avatars", resourceType: "image", maxSizeBytes: 8 * 1024 * 1024 },
-  covers: { path: "cosmix/covers", resourceType: "image", maxSizeBytes: 8 * 1024 * 1024 },
+  posts: {
+    path: "cosmix/posts",
+    resourceType: "auto",
+    maxImageSizeBytes: 8 * 1024 * 1024,
+    maxVideoSizeBytes: 50 * 1024 * 1024,
+  },
+  avatars: {
+    path: "cosmix/avatars",
+    resourceType: "image",
+    maxImageSizeBytes: 8 * 1024 * 1024,
+    maxVideoSizeBytes: 0,
+  },
+  covers: {
+    path: "cosmix/covers",
+    resourceType: "image",
+    maxImageSizeBytes: 8 * 1024 * 1024,
+    maxVideoSizeBytes: 0,
+  },
 };
 
 export type CloudinaryFolder = keyof typeof CLOUDINARY_FOLDERS;
@@ -38,8 +54,12 @@ export interface CloudinaryUploadResult {
   bytes: number;
 }
 
+function formatMb(bytes: number): string {
+  return `${Math.floor(bytes / (1024 * 1024))}MB`;
+}
+
 function validateFile(file: File, folder: CloudinaryFolder): string | null {
-  const { resourceType, maxSizeBytes } = CLOUDINARY_FOLDERS[folder];
+  const { resourceType, maxImageSizeBytes, maxVideoSizeBytes } = CLOUDINARY_FOLDERS[folder];
   const isImage = file.type.startsWith("image/");
   const isVideo = file.type.startsWith("video/");
 
@@ -52,11 +72,39 @@ function validateFile(file: File, folder: CloudinaryFolder): string | null {
   if (resourceType === "auto" && !isImage && !isVideo) {
     return "Only image or video files are allowed";
   }
-  if (file.size > maxSizeBytes) {
-    return `File exceeds the ${Math.floor(maxSizeBytes / (1024 * 1024))}MB limit`;
+  if (isImage && file.size > maxImageSizeBytes) {
+    return `Images must be ${formatMb(maxImageSizeBytes)} or smaller`;
+  }
+  if (isVideo && file.size > maxVideoSizeBytes) {
+    return `Videos must be ${formatMb(maxVideoSizeBytes)} or smaller`;
   }
 
   return null;
+}
+
+/** Maps low-level Cloudinary/network errors to messages safe and useful to show a user. */
+function friendlyUploadError(error: unknown): string {
+  const message = (error instanceof Error ? error.message : String(error)).toLowerCase();
+
+  if (message.includes("timeout")) {
+    return "The upload timed out. Check your connection and try again.";
+  }
+  if (message.includes("too large") || message.includes("file size")) {
+    return "This file is too large to upload.";
+  }
+  if (message.includes("invalid image") || message.includes("invalid video") || message.includes("unsupported")) {
+    return "This file couldn't be processed. Try a different image or video.";
+  }
+  if (
+    message.includes("network") ||
+    message.includes("econnreset") ||
+    message.includes("enotfound") ||
+    message.includes("fetch failed")
+  ) {
+    return "Network error while uploading. Please check your connection and try again.";
+  }
+
+  return "Something went wrong while uploading. Please try again.";
 }
 
 export async function uploadFile(
@@ -107,7 +155,7 @@ export async function uploadFile(
     console.error("Cloudinary upload error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Upload failed",
+      error: friendlyUploadError(error),
     };
   }
 }

@@ -5,7 +5,7 @@ import { SectionHeader } from '@/components/shared/section-header';
 
 export function ExploreSidebar() {
     return (
-        <div className="space-y-8 hidden lg:block">
+        <div className="space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
             {/* Top Communities */}
             <PanelCard>
                 <SectionHeader icon={Star} label="Top Communities" iconColor="#8b5cf6" />

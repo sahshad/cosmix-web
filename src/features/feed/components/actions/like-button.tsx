@@ -18,8 +18,8 @@ export function LikeButton({ isLiked, onLike }: LikeButtonProps) {
       onClick={onLike}
       aria-label={isLiked ? "Unlike post" : "Like post"}
     >
-      <Heart className={cn("h-4.5 w-4.5", isLiked && "fill-current")} />
-      Like
+      <Heart className={cn("h-4.5 w-4.5 shrink-0", isLiked && "fill-current")} />
+      <span className="hidden sm:inline truncate">Like</span>
     </Button>
   );
 }

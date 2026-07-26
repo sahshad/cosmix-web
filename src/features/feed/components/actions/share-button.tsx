@@ -16,8 +16,8 @@ export function ShareButton({ onClick }: ShareButtonProps) {
       onClick={onClick}
       aria-label="Share post"
     >
-      <Share2 className="h-4.5 w-4.5" />
-      Share
+      <Share2 className="h-4.5 w-4.5 shrink-0" />
+      <span className="hidden sm:inline truncate">Share</span>
     </Button>
   );
 }
