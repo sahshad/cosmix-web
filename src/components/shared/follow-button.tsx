@@ -1,20 +1,27 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface FollowButtonProps {
   isFollowing?: boolean;
   onToggle?: (following: boolean) => void;
+  disabled?: boolean;
   className?: string;
 }
 
 export default function FollowButton({
   isFollowing: initialFollowing = false,
   onToggle,
+  disabled,
   className,
 }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(initialFollowing);
+
+  // Keeps the button in sync when isFollowing arrives asynchronously (e.g. after a profile fetch).
+  useEffect(() => {
+    setIsFollowing(initialFollowing);
+  }, [initialFollowing]);
 
   const handleClick = () => {
     const next = !isFollowing;
@@ -26,6 +33,7 @@ export default function FollowButton({
     <Button
       size="sm"
       onClick={handleClick}
+      disabled={disabled}
       className={`
         h-8
         rounded-full

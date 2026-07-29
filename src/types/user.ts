@@ -13,6 +13,10 @@ export type User = {
   location?: string;
   dateOfBirth: string;
   lastSeenAt?: string;
+  followersCount: number;
+  followingCount: number;
+  /** Whether the current authenticated user follows this user. Only set on single-user lookups (e.g. by username). */
+  isFollowing?: boolean;
   createdAt: string;
   updatedAt: string;
 };

@@ -1,18 +1,34 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
+import { isAxiosError } from 'axios';
 import { ProfileHeader, ProfileData, ProfileTabs, ProfileGallery } from '@/features/profile/components';
 import { TrendingPanel } from '@/components/widgets/trending-panel';
 import { SuggestedUsers } from '@/components/widgets/suggested-users';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
+import { useToggleFollow, useUserByUsername } from '@/features/profile/hooks/useUser';
 import { useUserPosts, useLikePost } from '@/features/feed/hooks/useFeed';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/shared';
 
-export default function ProfilePage() {
-  const { data: user, isLoading: isUserLoading } = useCurrentUser();
+export default function UserProfilePage() {
+  const { username } = useParams<{ username: string }>();
+  const { data: currentUser } = useCurrentUser();
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError,
+    error,
+  } = useUserByUsername(username);
   const { data: posts = [], isLoading: isPostsLoading } = useUserPosts(user?.id);
   const { mutate: toggleLike } = useLikePost();
+  const { mutate: toggleFollow, isPending: isFollowPending } = useToggleFollow();
   const [scrollToPostId, setScrollToPostId] = useState<number | string | null>(null);
+
+  const notFound = isError && isAxiosError(error) && error.response?.status === 404;
+  const isMe = !!currentUser && !!user && currentUser.id === user.id;
+  const isFollowing = !isMe && !!user?.isFollowing;
 
   const profile: ProfileData | null = user
     ? {
@@ -26,7 +42,7 @@ export default function ProfilePage() {
         createdAt: user.createdAt,
         followers: user.followersCount ?? 0,
         following: user.followingCount ?? 0,
-        isMe: true,
+        isMe,
         isVerified: user.isVerified ?? false,
       }
     : null;
@@ -36,6 +52,19 @@ export default function ProfilePage() {
     if (!post) return;
     toggleLike({ id: postId, isLiked: post.isLiked });
   };
+
+  const handleToggleFollow = () => {
+    if (!user) return;
+    toggleFollow({ userId: user.id, isFollowing });
+  };
+
+  if (notFound) {
+    return (
+      <div className="max-w-312.5 mx-auto px-3 py-3 sm:p-6">
+        <EmptyState message={`No one goes by @${username} here.`} />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
@@ -51,7 +80,12 @@ export default function ProfilePage() {
             </div>
           </div>
         ) : (
-          <ProfileHeader profile={profile} />
+          <ProfileHeader
+            profile={profile}
+            isFollowing={isFollowing}
+            isFollowPending={isFollowPending}
+            onToggleFollow={handleToggleFollow}
+          />
         )}
         <ProfileTabs
           posts={posts}

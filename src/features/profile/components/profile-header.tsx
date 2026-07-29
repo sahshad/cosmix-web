@@ -39,9 +39,17 @@ function formatJoinDate(dateString?: string): string | undefined {
 
 interface ProfileHeaderProps {
   profile: ProfileData;
+  isFollowing?: boolean;
+  isFollowPending?: boolean;
+  onToggleFollow?: (following: boolean) => void;
 }
 
-export function ProfileHeader({ profile }: ProfileHeaderProps) {
+export function ProfileHeader({
+  profile,
+  isFollowing,
+  isFollowPending,
+  onToggleFollow,
+}: ProfileHeaderProps) {
   const [editOpen, setEditOpen] = useState(false);
   const joinDate = formatJoinDate(profile.createdAt);
 
@@ -88,7 +96,11 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 Edit Profile
               </Button>
             ) : (
-              <FollowButton />
+              <FollowButton
+                isFollowing={isFollowing}
+                onToggle={onToggleFollow}
+                disabled={isFollowPending}
+              />
             )}
           </div>
         </div>

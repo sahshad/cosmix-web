@@ -14,6 +14,16 @@ export function useUpdateProfile() {
   });
 }
 
+export function useUserByUsername(username?: string) {
+  return useQuery({
+    queryKey: ["user", "username", username],
+    queryFn: () => userService.getByUsername(username as string),
+    select: (data) => data.user,
+    enabled: !!username,
+    retry: false,
+  });
+}
+
 export function useFollowers(userId?: string) {
   return useQuery({
     queryKey: ["followers", userId],

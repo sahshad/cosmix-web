@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { BadgeCheck, Pencil, Trash2 } from "lucide-react";
 import { ConfirmDialog, OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
@@ -54,7 +55,10 @@ export function PostCard({ post, onLike }: PostCardProps) {
     >
       {/* Header */}
       <div className="px-4 sm:px-6 flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0 cursor-pointer group/author">
+        <Link
+          href={`/profile/${post.user.username}`}
+          className="flex items-center gap-3 min-w-0 cursor-pointer group/author"
+        >
           <UserAvatar
             src={post.user?.avatarUrl}
             alt={post.user.displayName}
@@ -81,7 +85,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
               </p>
             </div>
           </div>
-        </div>
+        </Link>
         <OptionsMenu
           triggerClassName="-mt-1"
           items={
