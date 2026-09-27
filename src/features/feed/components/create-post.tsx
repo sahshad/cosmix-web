@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
-import { cn, dicebearUrl, getInitials } from "@/lib/utils";
+import { cn, dicebearUrl, getAvatarPalette, getInitials } from "@/lib/utils";
 import { PostComposerDialog } from "./post-composer-dialog";
 import { AttachmentPreview } from "./attachment-preview";
 import { ComposerCharCount } from "./composer-char-count";
@@ -31,8 +31,10 @@ export function CreatePost() {
 
   useAutoGrowTextarea(textareaRef, draft.content);
 
-  const avatarUrl = user?.avatarUrl ?? dicebearUrl("cosmix");
-  const displayName = user?.displayName || "You";
+  const avatarUrl = user?.avatarUrl;
+  const displayName = user?.displayName;
+  const authorPalette = getAvatarPalette(user?.username || user?.displayName);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -47,9 +49,10 @@ export function CreatePost() {
           <UserAvatar
             src={avatarUrl}
             alt={displayName}
-            fallback={getInitials(user?.displayName) || "ME"}
+            fallback={getInitials(user?.displayName)}
             size="md"
             className="shrink-0"
+            fallbackClassName={cn(authorPalette.bg, authorPalette.text, "font-semibold")}
           />
           <div className="flex-1 min-w-0 pt-0.5">
             <p className="text-[14px] font-semibold text-foreground truncate">{displayName}</p>

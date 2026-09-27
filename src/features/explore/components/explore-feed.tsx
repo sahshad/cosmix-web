@@ -61,7 +61,7 @@ import { PostCard, PostData } from '@/features/feed/components';
 //     },
 // ];
 
-export function ExploreFeed({posts}: { posts: PostData[]; }) {
+export function ExploreFeed({ posts, onLike }: { posts: PostData[]; onLike: (postId: number | string, isLiked: boolean) => void }) {
     return (
         <div>
             <h2 className="text-lg font-extrabold mb-4 flex items-center gap-2 text-foreground">
@@ -70,7 +70,7 @@ export function ExploreFeed({posts}: { posts: PostData[]; }) {
             </h2>
             <div className="space-y-8">
                 {posts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                    <PostCard key={post.id} post={post} onLike={(postId) => onLike(postId, post.isLiked)} />
                 ))}
             </div>
         </div>

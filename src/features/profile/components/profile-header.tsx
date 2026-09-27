@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import FollowButton from '@/components/shared/follow-button';
 import { EditProfileDialog } from './edit-profile-dialog';
+import { cn, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export interface ProfileData {
   displayName: string;
@@ -52,6 +53,7 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   const [editOpen, setEditOpen] = useState(false);
   const joinDate = formatJoinDate(profile.createdAt);
+  const authorPalette = getAvatarPalette(profile?.username || profile?.displayName);
 
   return (
     <Card className="-mx-3 sm:mx-0 border-0 p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-none sm:rounded-md bg-card overflow-hidden">
@@ -79,10 +81,10 @@ export function ProfileHeader({
             <UserAvatar
               src={profile.avatarUrl}
               alt={profile.displayName}
-              fallback={profile.displayName[0]}
+              fallback={getInitials(profile.displayName)}
               className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl rounded-[2.5rem] overflow-hidden bg-background"
               imageClassName="object-cover"
-              fallbackClassName="text-3xl"
+              fallbackClassName={cn(authorPalette.bg, authorPalette.text, "text-5xl")}
             />
             <div className="absolute bottom-2 right-2 h-6 w-6 bg-vivid-green border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
           </div>

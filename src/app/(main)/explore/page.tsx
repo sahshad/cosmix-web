@@ -9,10 +9,16 @@ import {
   ExploreSidebar,
 } from "@/features/explore/components";
 import { PostFeedSkeleton } from "@/features/feed/components/post-card-skeleton";
-import { useFeed } from "@/features/feed/hooks/useFeed";
+import { useFeed, useLikePost } from "@/features/feed/hooks/useFeed";
 
 export default function ExplorePage() {
   const { data: posts = [], isLoading } = useFeed(1, 20);
+  const { mutate: toggleLike } = useLikePost();
+
+  const handleLike = (postId: number | string, isLiked: boolean) => {
+    toggleLike({ id: postId, isLiked });
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
       {/* Main Content */}
@@ -23,7 +29,7 @@ export default function ExplorePage() {
         {isLoading ? (
           <PostFeedSkeleton />
         ) : (
-          <ExploreFeed posts={posts} />
+          <ExploreFeed posts={posts} onLike={handleLike} />
         )}
       </div>
 

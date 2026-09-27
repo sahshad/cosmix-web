@@ -9,11 +9,12 @@ import { cn } from '@/lib/utils';
 
 interface ProfileTabsProps {
   posts: PostData[];
-  onLike: (postId: number | string) => void;
+  onLike: (postId: number | string, isLiked: boolean) => void;
   isLoading?: boolean;
   /** Post to scroll to and briefly highlight (e.g. from clicking a gallery thumbnail). */
   scrollToPostId?: number | string | null;
   onScrolledToPost?: () => void;
+  isFetchingNextPage?: boolean;
 }
 
 const tabTriggerClass =
@@ -22,14 +23,19 @@ const tabTriggerClass =
   'data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-foreground data-[state=active]:border-vivid-blue ' +
   'dark:data-[state=active]:bg-transparent dark:data-[state=active]:border-vivid-blue';
 
-function PostsPanel({ posts, onLike, isLoading }: ProfileTabsProps) {
+function PostsPanel({ posts, onLike, isLoading, isFetchingNextPage }: ProfileTabsProps) {
   if (isLoading) return <PostFeedSkeleton count={2} className="space-y-6" />;
   if (posts.length === 0) return <EmptyState message="No posts yet." />;
   return (
     <div className="space-y-6">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} onLike={onLike} />
+        <PostCard key={post.id} post={post} onLike={(postId) => onLike(postId, post.isLiked)} />
       ))}
+      {isFetchingNextPage && (
+        <div className="py-4 text-center text-muted-foreground">
+          Loading more...
+        </div>
+      )}
     </div>
   );
 }

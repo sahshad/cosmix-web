@@ -38,9 +38,9 @@ export function ConfirmDialog({
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          {description && <DialogDescription className="px-2 py-3">{description}</DialogDescription>}
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex-row flex items-center justify-end gap-2">
           <Button
             type="button"
             variant="outline"

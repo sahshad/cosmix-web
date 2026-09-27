@@ -54,11 +54,43 @@ export function useToggleFollow() {
       }
       return { userId, isFollowing: !isFollowing };
     },
+    onMutate: async ({ userId, isFollowing }) => {
+      await queryClient.cancelQueries({ queryKey: ["user", "username"] });
+      await queryClient.cancelQueries({ queryKey: ["followers", userId] });
+      await queryClient.cancelQueries({ queryKey: ["following", userId] });
+
+      const previousUserQueries = queryClient.getQueriesData({ queryKey: ["user", "username"] });
+
+      previousUserQueries.forEach(([key, data]) => {
+        const userData = data as { user?: { id: string; isFollowing: boolean; followersCount: number } } | undefined;
+        if (userData?.user?.id === userId) {
+          queryClient.setQueryData(key, (old: unknown) => {
+            const oldUserData = old as { user?: { id: string; isFollowing: boolean; followersCount: number } } | undefined;
+            if (!oldUserData?.user) return old;
+            return {
+              ...(old as object),
+              user: {
+                ...oldUserData.user,
+                isFollowing: !isFollowing,
+                followersCount: isFollowing ? oldUserData.user.followersCount - 1 : oldUserData.user.followersCount + 1,
+              },
+            };
+          });
+        }
+      });
+
+      return { previousUserQueries };
+    },
     onSuccess: ({ userId }) => {
       queryClient.invalidateQueries({ queryKey: ["followers", userId] });
-      queryClient.invalidateQueries({ queryKey: ["following"] });
+      queryClient.invalidateQueries({ queryKey: ["following", userId] });
     },
-    onError: () => {
+    onError: (_err, _vars, context) => {
+      if (context?.previousUserQueries) {
+        context.previousUserQueries.forEach(([key, data]) => {
+          queryClient.setQueryData(key, data);
+        });
+      }
       toast.error("Failed to update follow status");
     },
   });

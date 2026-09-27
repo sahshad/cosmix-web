@@ -7,7 +7,7 @@ import { actionButtonClass } from "./styles";
 
 interface LikeButtonProps {
   isLiked: boolean;
-  onLike: () => void;
+  onLike: (isLiked: boolean) => void;
 }
 
 export function LikeButton({ isLiked, onLike }: LikeButtonProps) {
@@ -15,7 +15,7 @@ export function LikeButton({ isLiked, onLike }: LikeButtonProps) {
     <Button
       variant="ghost"
       className={cn(actionButtonClass, isLiked && "text-vivid-red hover:text-vivid-red")}
-      onClick={onLike}
+      onClick={() => onLike(isLiked)}
       aria-label={isLiked ? "Unlike post" : "Like post"}
     >
       <Heart className={cn("h-4.5 w-4.5 shrink-0", isLiked && "fill-current")} />

@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { EmptyState } from "@/components/shared";
 import { toast } from "sonner";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
-import { useComments, useCreateComment } from "../../hooks/useComments";
+import { useComments, useCreateComment, flattenCommentPages } from "../../hooks/useComments";
 import { User } from "@/types";
 import { CommentComposer } from "./comment-composer";
 import { CommentNode } from "./comment-node";
@@ -35,7 +35,7 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
     isFetchingNextPage,
   } = useComments(postId);
 
-  const comments = data?.pages.flatMap((p) => p.comments) ?? [];
+  const comments = flattenCommentPages(data);
 
   const { mutate: submitComment, isPending: isSubmittingComment } = useCreateComment(postId);
 

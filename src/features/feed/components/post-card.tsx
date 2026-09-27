@@ -19,7 +19,7 @@ import { useDeletePost } from "../hooks/useFeed";
 
 interface PostCardProps {
   post: PostData;
-  onLike?: (postId: number | string) => void;
+  onLike?: (postId: number | string, isLiked: boolean) => void;
 }
 
 export function PostCard({ post, onLike }: PostCardProps) {
@@ -134,7 +134,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
       <div className="px-3 sm:px-4 pt-1 min-w-0">
         <PostActions
           isLiked={post.isLiked}
-          onLike={() => onLike?.(post.id)}
+          onLike={() => onLike?.(post.id, post.isLiked)}
           onCommentClick={handleCommentClick}
         />
       </div>

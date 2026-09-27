@@ -31,7 +31,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', icon: Home, href: '/', matchAll: ['/', '/dashboard'] },
   { label: 'Explore', icon: Compass, href: '/explore' },
-  { label: 'Notifications', icon: Bell, href: '/notifications', badge: 3 },
+  // { label: 'Notifications', icon: Bell, href: '/notifications', badge: 3 },
   { label: 'Messages', icon: MessageCircle, href: '/messages', badge: 2 },
   { label: 'Communities', icon: Users, href: '/communities' },
   { label: 'Verified', icon: ShieldCheck, href: '/verified' },

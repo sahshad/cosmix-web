@@ -4,6 +4,8 @@ export { UserAvatar } from './user-avatar';
 export { OptionsMenu } from './options-menu';
 export type { OptionsMenuItem } from './options-menu';
 export { ConfirmDialog } from './confirm-dialog';
+export { NotificationDialog } from './notification-dialog';
+export { NotificationBell } from './notification-bell';
 export { InlineEditField } from './inline-edit-field';
 export { PanelCard } from './panel-card';
 export { EmptyState } from './empty-state';

@@ -39,6 +39,7 @@ export function useCurrentUser() {
     queryKey: ["me"],
     queryFn: () => authService.me(),
     select: (data) => data.user,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 

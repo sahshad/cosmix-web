@@ -48,17 +48,25 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  position = "center",
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean
+  showCloseButton?: boolean;
+  position?: "center" | "top-right";
 }) {
+  const isCenter = position === "center";
+  const isTopRight = position === "top-right";
+
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border border-border p-6 shadow-2xl duration-200 sm:max-w-lg max-h-[85dvh] overflow-y-auto",
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed z-50 rounded-2xl border border-border shadow-2xl duration-200",
+          isCenter &&
+            "top-[50%] left-[50%] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] sm:max-w-lg max-h-[85dvh] flex flex-col p-6",
+          isTopRight && "top-14 right-2 w-full max-w-[calc(100vw-1rem)] max-h-[85vh] flex flex-col p-2",
           className
         )}
         {...props}
@@ -67,7 +75,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-full p-1.5 opacity-70 transition-opacity hover:opacity-100 hover:bg-secondary focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none"
+            className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-full p-1.5 opacity-70 transition-opacity hover:opacity-100 hover:bg-secondary focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none z-20"
           >
             <XIcon className="size-4" />
             <span className="sr-only">Close</span>

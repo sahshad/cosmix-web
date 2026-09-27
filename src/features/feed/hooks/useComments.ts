@@ -6,59 +6,37 @@ import {
     QueryKey,
 } from '@tanstack/react-query';
 import { postService } from '../api/post.service';
-import { CommentResponse, PostPagination } from '../types';
+import { CommentResponse, PostPagination, GetCommentsResponse } from '../types';
 import { QUERY_KEYS } from '@/lib/constants';
 import { toast } from 'sonner';
+import { createInfiniteQueryOptions, flattenInfinitePages, updateInfiniteQueryCache } from '@/lib/infinite-query';
 
 const COMMENTS_PAGE_SIZE = 4;
 const REPLIES_LIMIT = 20;
 
-interface CommentsPage {
-    comments: CommentResponse[];
-    pagination?: PostPagination;
-}
-
-type CommentListCache = CommentResponse[] | { pages: CommentsPage[]; pageParams: unknown[] };
-
-// A comment-list cache entry is either a flat array (useReplies) or an
-// infinite-query { pages } object (useComments) — apply `fn` to whichever shape it is.
-const mapCommentList = (
-    old: CommentListCache | undefined,
-    fn: (comments: CommentResponse[]) => CommentResponse[]
-): CommentListCache | undefined => {
-    if (!old) return old;
-    if (Array.isArray(old)) return fn(old);
-    return {
-        ...old,
-        pages: old.pages.map((page) => ({ ...page, comments: fn(page.comments) })),
-    };
-};
+const getComments = (response: GetCommentsResponse) => response.comments ?? [];
+const getCommentsPagination = (response: GetCommentsResponse) => response.pagination;
 
 export const useComments = (postId: number | string) => {
-    return useInfiniteQuery({
+    return useInfiniteQuery(createInfiniteQueryOptions<CommentResponse, GetCommentsResponse>({
         queryKey: ['comments', postId],
-        queryFn: async ({ pageParam }: { pageParam: number }) => {
-            const { data } = await postService.getComments(postId, pageParam, COMMENTS_PAGE_SIZE);
-            return {
-                comments: data.comments ?? [],
-                pagination: data.pagination,
-            };
-        },
-        initialPageParam: 1,
-        getNextPageParam: (lastPage) => {
-            const p = lastPage.pagination;
-            if (!p || p.page >= p.totalPages) return undefined;
-            return p.page + 1;
-        },
-    });
+        fetchPage: (page, limit) => postService.getComments(postId, page, limit),
+        limit: COMMENTS_PAGE_SIZE,
+        getItems: getComments,
+        getPagination: getCommentsPagination,
+    }));
+};
+
+export const flattenCommentPages = (data: { pages: GetCommentsResponse[]; pageParams: number[] } | undefined): CommentResponse[] => {
+    return flattenInfinitePages(data, getComments);
 };
 
 export const useReplies = (commentId: string, enabled: boolean) => {
     return useQuery({
         queryKey: ['replies', commentId],
         queryFn: async () => {
-            const { data } = await postService.getReplies(commentId, 1, REPLIES_LIMIT);
-            return data.comments ?? [];
+            const response = await postService.getReplies(commentId, 1, REPLIES_LIMIT);
+            return response.comments ?? [];
         },
         enabled,
     });
@@ -69,8 +47,8 @@ export const useCreateComment = (postId: number | string) => {
 
     return useMutation({
         mutationFn: async ({ content, parentCommentId }: { content: string; parentCommentId?: string }) => {
-            const { data } = await postService.createComment(postId, content, parentCommentId);
-            return data.comment;
+            const response = await postService.createComment(postId, content, parentCommentId);
+            return response.comment;
         },
         onSuccess: (_comment, variables) => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.feed] });
@@ -97,16 +75,18 @@ export const useToggleCommentLike = (queryKey: QueryKey) => {
             await queryClient.cancelQueries({ queryKey });
             const previous = queryClient.getQueryData(queryKey);
 
-            const patch = (comment: CommentResponse): CommentResponse =>
-                comment.id === id
-                    ? {
-                        ...comment,
-                        isLiked: !isLiked,
-                        likesCount: isLiked ? comment.likesCount - 1 : comment.likesCount + 1,
-                    }
-                    : comment;
-
-            queryClient.setQueryData<CommentListCache>(queryKey, (old) => mapCommentList(old, (comments) => comments.map(patch)));
+            updateInfiniteQueryCache(
+                queryClient,
+                queryKey,
+                id,
+                getComments,
+                (comment) => comment.id,
+                (comment) => ({
+                    ...comment,
+                    isLiked: !isLiked,
+                    likesCount: isLiked ? comment.likesCount - 1 : comment.likesCount + 1,
+                })
+            );
 
             return { previous };
         },
@@ -123,18 +103,21 @@ export const useUpdateComment = (queryKey: QueryKey) => {
 
     return useMutation({
         mutationFn: async ({ id, content }: { id: string; content: string }) => {
-            const { data } = await postService.updateComment(id, content);
-            return data.comment;
+            const response = await postService.updateComment(id, content);
+            return response.comment;
         },
         onSuccess: (updated) => {
-            queryClient.setQueryData<CommentListCache>(queryKey, (old) =>
-                mapCommentList(old, (comments) =>
-                    comments.map((comment) =>
-                        comment.id === updated.id
-                            ? { ...comment, content: updated.content, updatedAt: updated.updatedAt }
-                            : comment
-                    )
-                )
+            updateInfiniteQueryCache(
+                queryClient,
+                queryKey,
+                updated.id,
+                getComments,
+                (comment) => comment.id,
+                (comment) => ({
+                    ...comment,
+                    content: updated.content,
+                    updatedAt: updated.updatedAt,
+                })
             );
         },
         onError: () => {
@@ -153,8 +136,13 @@ export const useDeleteComment = (queryKey: QueryKey) => {
         },
         onSuccess: (id) => {
             toast.success("Comment deleted");
-            queryClient.setQueryData<CommentListCache>(queryKey, (old) =>
-                mapCommentList(old, (comments) => comments.filter((comment) => comment.id !== id))
+            updateInfiniteQueryCache(
+                queryClient,
+                queryKey,
+                id,
+                getComments,
+                (comment) => comment.id,
+                () => null
             );
         },
         onError: () => {

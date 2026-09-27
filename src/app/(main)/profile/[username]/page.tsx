@@ -8,7 +8,8 @@ import { TrendingPanel } from '@/components/widgets/trending-panel';
 import { SuggestedUsers } from '@/components/widgets/suggested-users';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 import { useToggleFollow, useUserByUsername } from '@/features/profile/hooks/useUser';
-import { useUserPosts, useLikePost } from '@/features/feed/hooks/useFeed';
+import { useInfiniteUserPosts, useLikePost, flattenFeedPages } from '@/features/feed/hooks/useFeed';
+import { useInfiniteScroll } from '@/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared';
 
@@ -21,10 +22,25 @@ export default function UserProfilePage() {
     isError,
     error,
   } = useUserByUsername(username);
-  const { data: posts = [], isLoading: isPostsLoading } = useUserPosts(user?.id);
+  const { 
+    data, 
+    isLoading: isPostsLoading, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useInfiniteUserPosts(user?.id, 10);
   const { mutate: toggleLike } = useLikePost();
   const { mutate: toggleFollow, isPending: isFollowPending } = useToggleFollow();
   const [scrollToPostId, setScrollToPostId] = useState<number | string | null>(null);
+
+  const { listRef } = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    threshold: 400,
+  });
+
+  const posts = flattenFeedPages(data);
 
   const notFound = isError && isAxiosError(error) && error.response?.status === 404;
   const isMe = !!currentUser && !!user && currentUser.id === user.id;
@@ -47,10 +63,8 @@ export default function UserProfilePage() {
       }
     : null;
 
-  const handleLike = (postId: number | string) => {
-    const post = posts.find((p) => p.id === postId);
-    if (!post) return;
-    toggleLike({ id: postId, isLiked: post.isLiked });
+  const handleLike = (postId: number | string, isLiked: boolean) => {
+    toggleLike({ id: postId, isLiked });
   };
 
   const handleToggleFollow = () => {
@@ -69,7 +83,7 @@ export default function UserProfilePage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
       {/* Left Column */}
-      <div className="space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+      <div ref={listRef} className="space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         {isUserLoading || !profile ? (
           <div className="-mx-3 sm:mx-0 rounded-none sm:rounded-[2.5rem] bg-card shadow-[0_12px_45px_rgb(0,0,0,0.04)] overflow-hidden">
             <Skeleton className="h-44 sm:h-56 w-full rounded-none" />
@@ -91,6 +105,7 @@ export default function UserProfilePage() {
           posts={posts}
           onLike={handleLike}
           isLoading={isPostsLoading}
+          isFetchingNextPage={isFetchingNextPage}
           scrollToPostId={scrollToPostId}
           onScrolledToPost={() => setScrollToPostId(null)}
         />

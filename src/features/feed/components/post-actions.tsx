@@ -4,7 +4,7 @@ import { LikeButton, CommentButton, ShareButton, BookmarkButton } from "./action
 
 interface PostActionsProps {
   isLiked: boolean;
-  onLike: () => void;
+  onLike: (isLiked: boolean) => void;
   onCommentClick?: () => void;
   onShare?: () => void;
   onBookmark?: () => void;

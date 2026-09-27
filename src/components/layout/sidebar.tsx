@@ -36,7 +36,7 @@ import { useTheme } from 'next-themes';
 // import { useAuthStore } from '@/store/auth.store';
 import { NAV_ITEMS } from '@/lib/constants';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
-import { dicebearUrl } from '@/lib/utils';
+import { cn, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export function AppSidebar() {
   const { state, setOpenMobile } = useSidebar();
@@ -61,7 +61,8 @@ export function AppSidebar() {
   // const user = useAuthStore((state) => state.user);
   const displayName = user?.displayName || '';
   const userHandle = '@' + (user?.username || '');
-  const avatarUrl = user?.avatarUrl ?? dicebearUrl('cosmix');
+  const avatarUrl = user?.avatarUrl;
+  const authorPalette = getAvatarPalette(user?.username || user?.displayName);
 
   const renderMenuItems = () => (
     <SidebarMenu className="gap-1.5 px-3">
@@ -162,10 +163,10 @@ export function AppSidebar() {
             >
               <UserAvatar
                 src={avatarUrl}
-                alt="User"
-                fallback={displayName?.[0] || 'U'}
+                alt={displayName}
+                fallback={getInitials(displayName)}
                 className={`${isCollapsed ? 'h-8 w-8' : 'h-9 w-9'} shrink-0 ring-2 ring-transparent group-hover:ring-vivid-blue/30 transition-all`}
-                fallbackClassName="text-[10px]"
+                fallbackClassName={cn(authorPalette.bg, authorPalette.text, "font-semibold")}
               />
               {!isCollapsed && (
                 <div className="text-left min-w-0 flex-1">
