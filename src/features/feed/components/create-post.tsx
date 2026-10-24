@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentUser } from "@/features/auth/hooks/useAuth";
-import { cn, dicebearUrl, getAvatarPalette, getInitials } from "@/lib/utils";
+import { cn, getAvatarPalette, getInitials } from "@/lib/utils";
 import { PostComposerDialog } from "./post-composer-dialog";
 import { AttachmentPreview } from "./attachment-preview";
 import { ComposerCharCount } from "./composer-char-count";
@@ -44,7 +44,7 @@ export function CreatePost() {
 
   return (
     <>
-      <Card className="p-5 border-0 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-md bg-card">
+      <Card className="max-w-150 border border-border p-5 shadow-[0_12px_40px_rgb(0,0,0,0.06)] rounded-md bg-card">
         <div className="flex items-start gap-3">
           <UserAvatar
             src={avatarUrl}

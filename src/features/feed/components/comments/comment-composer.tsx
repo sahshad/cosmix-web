@@ -1,7 +1,7 @@
 "use client";
 
 import { RefObject } from "react";
-import { ArrowUp } from "lucide-react";
+import { Send } from "lucide-react";
 import { Spinner, UserAvatar } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +52,7 @@ export function CommentComposer({
       <div
         className={cn(
           "flex-1 min-w-0 flex items-center rounded-[8px] border border-border focus-within:border-foreground/35 transition-colors",
-          compact ? "px-2.5 py-1.5" : "px-3 py-2"
+          compact ? "px-2.5 py-1.5" : "px-3 py-2", 
         )}
       >
         <Textarea
@@ -78,14 +78,14 @@ export function CommentComposer({
         disabled={!value.trim() || isSubmitting}
         className={cn(
           "shrink-0 rounded-[6px] bg-vivid-blue text-white hover:bg-vivid-blue-hover disabled:bg-muted disabled:text-muted-foreground",
-          compact ? "h-6 w-6" : "h-7 w-7"
+          compact ? "h-8 w-8" : "h-9 w-9"
         )}
         aria-label="Send"
       >
         {isSubmitting ? (
           <Spinner size={compact ? "xs" : "sm"} />
         ) : (
-          <ArrowUp className={compact ? "h-3 w-3" : "h-3.5 w-3.5"} />
+          <Send className={compact ? "h-3 w-3" : "h-3.5 w-3.5"} />
         )}
       </Button>
     </div>

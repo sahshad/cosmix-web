@@ -21,7 +21,7 @@ export function PanelCard({ radius = "md", className, children }: PanelCardProps
   return (
     <Card
       className={cn(
-        "border-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] bg-card p-6",
+        "border border-border shadow-[0_12px_45px_rgb(0,0,0,0.04)] bg-card p-6",
         RADIUS_MAP[radius],
         className
       )}

@@ -18,9 +18,8 @@ interface ProfileTabsProps {
 }
 
 const tabTriggerClass =
-  'flex-1 h-auto rounded-none border-0 border-b-2 border-transparent bg-transparent px-1 py-3.5 font-bold text-[13px] uppercase tracking-wider text-muted-foreground shadow-none transition-colors ' +
-  'hover:text-foreground hover:bg-secondary/40 ' +
-  'data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-foreground data-[state=active]:border-vivid-blue ' +
+  'flex rounded-none border-0 border-b-2 border-transparent bg-transparent shadow-1px px-1 py-3.5 font-bold text-[13px] uppercase tracking-wider text-muted-foreground shadow-none transition-colors ' +
+  'data-[state=active]:bg-transparent  data-[state=active]:border-vivid-blue ' +
   'dark:data-[state=active]:bg-transparent dark:data-[state=active]:border-vivid-blue';
 
 function PostsPanel({ posts, onLike, isLoading, isFetchingNextPage }: ProfileTabsProps) {
@@ -112,7 +111,7 @@ export function ProfileTabs({
 
       {/* Desktop/tablet: standard tabs */}
       <Tabs value={desktopTab} onValueChange={setDesktopTab} className="w-full hidden sm:block">
-        <TabsList className="w-full h-auto rounded-none bg-transparent border-0 border-b border-border justify-start gap-0 p-0 shadow-none">
+        <TabsList className="w-full h-auto rounded-none bg-transparent justify-start gap-0 p-0 shadow-none">
           <TabsTrigger value="posts" className={tabTriggerClass}>
             Posts
           </TabsTrigger>

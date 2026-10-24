@@ -54,7 +54,7 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
   };
 
   return (
-    <div className="border-t border-border/60">
+    <div className="">
       <div className="px-5 sm:px-6 pt-4 pb-3 flex items-center justify-between">
         <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
           Most relevant
@@ -84,7 +84,6 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
                 comment={comment}
                 depth={0}
                 postId={postId}
-                ownerQueryKey={["comments", postId]}
                 composerUser={composerUser}
               />
             ))}
@@ -103,7 +102,7 @@ export function PostCommentSection({ postId, composerRef, onClose }: PostComment
         )}
       </div>
 
-      <div className="px-5 sm:px-6 py-3.5 border-t border-border/60">
+      <div className="px-5 sm:px-6 py-3.5 mt-5 border-t border-border/60">
         <CommentComposer
           avatarUser={composerUser}
           value={commentContent}

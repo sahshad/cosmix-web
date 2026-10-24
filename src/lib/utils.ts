@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/** Returns a copy of the object containing only the keys that have a defined value. */
+export function omitUndefined<T extends object>(value: T | undefined): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(value ?? {}).filter(([, entry]) => entry !== undefined)
+  ) as Partial<T>
+}
+
 export function dicebearUrl(seed: string): string {
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`
 }
@@ -50,10 +57,59 @@ export function formatRelativeTime(input: unknown): string {
   if (diffDay < 7) return `${diffDay}d`
 
   const diffWeek = Math.floor(diffDay / 7)
-  if (diffWeek < 4) return `${diffWeek}w`
+  if (diffDay < 30) return `${diffWeek}w`
 
   const diffMonth = Math.floor(diffDay / 30)
   if (diffMonth < 12) return `${diffMonth}mo`
 
   return `${Math.floor(diffDay / 365)}y`
+}
+
+const COMPACT_UNITS = [
+  { threshold: 1e12, suffix: "t" },
+  { threshold: 1e9, suffix: "b" },
+  { threshold: 1e6, suffix: "m" },
+  { threshold: 1e3, suffix: "k" },
+]
+
+export interface FormatCountOptions {
+  /** Caps the rendered value: anything above `max` renders as "<max>+". */
+  max?: number
+}
+
+function toCountNumber(value: unknown): number | null {
+  if (typeof value === "number") return Number.isFinite(value) ? value : null
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(/[\s,_]/g, ""))
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  return null
+}
+
+/**
+ * Formats a count compactly: 1234 -> "1.2k", 1500000 -> "1.5m", 999 -> "999".
+ * Values under 1000 are shown as-is, one decimal is used below ten units
+ * ("1.2k") and none from ten units up ("12k").
+ */
+export function formatCount(value: unknown, options: FormatCountOptions = {}): string {
+  const count = toCountNumber(value)
+  if (count === null) return "0"
+
+  const { max } = options
+  if (max !== undefined && count > max) return `${max}+`
+
+  const sign = count < 0 ? "-" : ""
+  const abs = Math.abs(count)
+
+  if (abs < 1000) return `${sign}${Math.round(abs)}`
+
+  for (let i = COMPACT_UNITS.length - 1; i >= 0; i--) {
+    const { threshold, suffix } = COMPACT_UNITS[i]
+    const scaled = abs / threshold
+    const rounded = Number(scaled.toFixed(scaled < 10 ? 1 : 0))
+    // Rounding can overflow into the next unit (999_999 -> 1000k -> 1m).
+    if (rounded < 1000) return `${sign}${rounded}${suffix}`
+  }
+
+  return `${sign}${Math.round(abs)}`
 }

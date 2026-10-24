@@ -1,7 +1,6 @@
 import {
   Home,
   Compass,
-  Bell,
   MessageCircle,
   Users,
   ShieldCheck,

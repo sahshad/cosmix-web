@@ -2,18 +2,22 @@ import React from 'react';
 import { Users, MoreHorizontal, Star, Activity } from 'lucide-react';
 import { PanelCard } from '@/components/shared/panel-card';
 import { SectionHeader } from '@/components/shared/section-header';
+import { cn, formatCount } from '@/lib/utils';
+interface ExploreSidebarProps {
+  className?: string
+}
 
-export function ExploreSidebar() {
+export function ExploreSidebar({className}:ExploreSidebarProps) {
     return (
-        <div className="space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+        <div className={cn("space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1", className)}>
             {/* Top Communities */}
             <PanelCard>
                 <SectionHeader icon={Star} label="Top Communities" iconColor="#8b5cf6" />
                 <div className="space-y-4">
                     {[
-                        { name: 'Frontend Devs', members: '124K', color: 'var(--brand-primary)' },
-                        { name: 'UI/UX Design', members: '89K', color: '#11a657' },
-                        { name: 'Startups', members: '56K', color: '#f8b301' },
+                        { name: 'Frontend Devs', members: 124000, color: 'var(--brand-primary)' },
+                        { name: 'UI/UX Design', members: 89000, color: '#11a657' },
+                        { name: 'Startups', members: 56000, color: '#f8b301' },
                     ].map((community) => (
                         <div key={community.name} className="flex items-center justify-between group cursor-pointer p-2 -mx-2 rounded-2xl hover:bg-secondary/40 transition-colors">
                             <div className="flex items-center gap-3">
@@ -22,7 +26,7 @@ export function ExploreSidebar() {
                                 </div>
                                 <div>
                                     <p className="font-bold text-[14px] text-foreground group-hover:text-primary transition-colors">{community.name}</p>
-                                    <p className="text-[12px] font-medium text-muted-foreground">{community.members} members</p>
+                                    <p className="text-[12px] font-medium text-muted-foreground">{formatCount(community.members)} members</p>
                                 </div>
                             </div>
                             <div className="h-8 w-8 rounded-full bg-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm">

@@ -67,12 +67,12 @@ export function InlineEditField({
           </Button>
         </div>
       ) : (
-        <div className="flex items-center justify-end gap-3 mt-1">
+        <div className="flex items-center justify-end gap-3 mt-2">
           <button
             type="button"
             onClick={onCancel}
             disabled={isSaving}
-            className="text-[11.5px] font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+            className="text-[11.5px] font-semibold text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
           >
             Cancel
           </button>
@@ -80,7 +80,7 @@ export function InlineEditField({
             type="button"
             onClick={onSave}
             disabled={isSaving || !value.trim()}
-            className="text-[11.5px] font-semibold text-vivid-blue hover:underline cursor-pointer disabled:opacity-50"
+            className="text-[11.5px] font-semibold hover:text-vivid-blue cursor-pointer disabled:opacity-50"
           >
             Save
           </button>

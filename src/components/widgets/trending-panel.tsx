@@ -3,19 +3,20 @@
 import { MoreHorizontal, TrendingUp } from 'lucide-react';
 import { PanelCard } from '@/components/shared/panel-card';
 import { SectionHeader } from '@/components/shared/section-header';
+import { formatCount } from '@/lib/utils';
 
 export interface TrendItem {
   tag: string;
-  posts: string;
+  posts: number;
   color?: string;
   rank: string;
 }
 
 const DEFAULT_TRENDS: TrendItem[] = [
-  { tag: 'ReactJS', posts: '284K', color: 'var(--brand-primary)', rank: '01' },
-  { tag: 'WebDev', posts: '156K', color: '#11a657', rank: '02' },
-  { tag: 'CosmixLaunch', posts: '89K', color: '#f8b301', rank: '03' },
-  { tag: 'DesignSys', posts: '45K', color: '#f84b4b', rank: '04' },
+  { tag: 'ReactJS', posts: 284000, color: 'var(--brand-primary)', rank: '01' },
+  { tag: 'WebDev', posts: 156000, color: '#11a657', rank: '02' },
+  { tag: 'CosmixLaunch', posts: 89000, color: '#f8b301', rank: '03' },
+  { tag: 'DesignSys', posts: 45000, color: '#f84b4b', rank: '04' },
 ];
 
 interface TrendingPanelProps {
@@ -45,7 +46,7 @@ export function TrendingPanel({
                   #{trend.tag}
                 </p>
                 <p className="text-[12px] font-medium text-muted-foreground mt-0.5">
-                  {trend.posts} posts
+                  {formatCount(trend.posts)} posts
                 </p>
               </div>
             </div>

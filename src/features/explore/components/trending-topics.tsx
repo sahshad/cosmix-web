@@ -1,12 +1,13 @@
 import React from "react";
 import { TrendingUp } from "lucide-react";
+import { formatCount } from "@/lib/utils";
 
 const trendingTopics = [
-  { tag: "CosmixLaunch", posts: "125K", color: "from-[#60a5fa] to-[#3b82f6]" },
-  { tag: "Nextjs14", posts: "89K", color: "from-[#4ade80] to-[#22c55e]" },
-  { tag: "UIUXDesign", posts: "45K", color: "from-[#facc15] to-[#eab308]" },
-  { tag: "WebDevelopment", posts: "32K", color: "from-[#fb7185] to-[#f43f5e]" },
-  { tag: "IndieHacker", posts: "28K", color: "from-[#a78bfa] to-[#8b5cf6]" },
+  { tag: "CosmixLaunch", posts: 125000, color: "from-[#60a5fa] to-[#3b82f6]" },
+  { tag: "Nextjs14", posts: 89000, color: "from-[#4ade80] to-[#22c55e]" },
+  { tag: "UIUXDesign", posts: 45000, color: "from-[#facc15] to-[#eab308]" },
+  { tag: "WebDevelopment", posts: 32000, color: "from-[#fb7185] to-[#f43f5e]" },
+  { tag: "IndieHacker", posts: 28000, color: "from-[#a78bfa] to-[#8b5cf6]" },
 ];
 
 export function TrendingTopics() {
@@ -28,7 +29,7 @@ export function TrendingTopics() {
                 #{topic.tag}
               </span>
               <span className="text-sm font-medium text-white/80">
-                {topic.posts} posts
+                {formatCount(topic.posts)} posts
               </span>
             </div>
           </div>

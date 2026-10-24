@@ -118,8 +118,8 @@ export default function UserProfilePage() {
         <TrendingPanel
           title="Trending in Cosmos"
           trends={[
-            { tag: 'CosmixDesign', posts: '12K', rank: '01' },
-            { tag: 'MatureWeb', posts: '8K', rank: '02' },
+            { tag: 'CosmixDesign', posts: 12000, rank: '01' },
+            { tag: 'MatureWeb', posts: 8000, rank: '02' },
           ]}
         />
       </div>

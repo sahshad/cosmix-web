@@ -6,7 +6,7 @@ import { ConfirmDialog, OptionsMenu, UserAvatar } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useRef, useState } from "react";
-import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
+import { cn, formatCount, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
 import { PostResponse as PostData } from "../types";
 export type { PostResponse } from "../types";
 export type { PostData };
@@ -51,7 +51,7 @@ export function PostCard({ post, onLike }: PostCardProps) {
   return (
     <Card
       data-post-id={post.id}
-      className="scroll-mt-20 border border-border shadow-none rounded-md bg-card overflow-hidden gap-0 py-4 sm:py-5 transition-shadow"
+      className="scroll-mt-20 max-w-150 border border-border shadow-none rounded-md bg-card overflow-hidden gap-0 py-4 sm:py-5 transition-shadow"
     >
       {/* Header */}
       <div className="px-4 sm:px-6 flex items-start justify-between gap-3">
@@ -121,10 +121,9 @@ export function PostCard({ post, onLike }: PostCardProps) {
 
       {/* Stats summary */}
       <div className="mt-4 px-4 sm:px-6 flex items-center justify-between text-[13px] text-muted-foreground">
-        <span>{post.likesCount.toLocaleString()} likes</span>
+        <span>{formatCount(post.likesCount)} likes</span>
         <span>
-          {post.commentsCount.toLocaleString()} comments ·{" "}
-          {(post.sharesCount ?? 0).toLocaleString()} shares
+          {formatCount(post.commentsCount)} comments · {formatCount(post.sharesCount ?? 0)} shares
         </span>
       </div>
 

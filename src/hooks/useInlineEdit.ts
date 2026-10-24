@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface MutateOptions {
   onSuccess: () => void;
@@ -20,6 +20,11 @@ export function useInlineEdit<TId extends string | number>(
 ) {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(initialContent);
+
+  // Keep the draft in sync with the persisted value (e.g. after a successful save).
+  useEffect(() => {
+    setContent(initialContent);
+  }, [initialContent]);
 
   const startEdit = () => setIsEditing(true);
 

@@ -7,28 +7,32 @@ import { SuggestedUsers } from '@/components/widgets/suggested-users';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 import { useUserPosts, useLikePost } from '@/features/feed/hooks/useFeed';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+import { useSidebar } from '@/components/ui/sidebar';
 
 export default function ProfilePage() {
   const { data: user, isLoading: isUserLoading } = useCurrentUser();
   const { data: posts = [], isLoading: isPostsLoading } = useUserPosts(user?.id);
   const { mutate: toggleLike } = useLikePost();
   const [scrollToPostId, setScrollToPostId] = useState<number | string | null>(null);
+  const { state: sidebarState } = useSidebar()
+
 
   const profile: ProfileData | null = user
     ? {
-        displayName: user.displayName ?? '',
-        username: user.username ?? '',
-        avatarUrl: user.avatarUrl ?? '',
-        coverImageUrl: user.coverImageUrl,
-        bio: user.bio,
-        location: user.location,
-        website: user.website,
-        createdAt: user.createdAt,
-        followers: user.followersCount ?? 0,
-        following: user.followingCount ?? 0,
-        isMe: true,
-        isVerified: user.isVerified ?? false,
-      }
+      displayName: user.displayName ?? '',
+      username: user.username ?? '',
+      avatarUrl: user.avatarUrl ?? '',
+      coverImageUrl: user.coverImageUrl,
+      bio: user.bio,
+      location: user.location,
+      website: user.website,
+      createdAt: user.createdAt,
+      followers: user.followersCount ?? 0,
+      following: user.followingCount ?? 0,
+      isMe: true,
+      isVerified: user.isVerified ?? false,
+    }
     : null;
 
   const handleLike = (postId: number | string) => {
@@ -38,9 +42,20 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up">
-      {/* Left Column */}
-      <div className="space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+    <div
+      className={cn(
+        'grid grid-cols-1 gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up min-w-0',
+        sidebarState === 'collapsed'
+          ? 'lg:grid-cols-[minmax(0,1fr)_480px]'
+          : 'lg:grid-cols-[minmax(0,1fr)_380px]'
+      )}
+    >
+      {/* Main - Profile & Tabs Data */}
+      <div
+        className={cn("space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+          sidebarState === 'collapsed' ? "px-8" : ""
+        )}
+      >
         {isUserLoading || !profile ? (
           <div className="-mx-3 sm:mx-0 rounded-none sm:rounded-[2.5rem] bg-card shadow-[0_12px_45px_rgb(0,0,0,0.04)] overflow-hidden">
             <Skeleton className="h-44 sm:h-56 w-full rounded-none" />
@@ -62,15 +77,19 @@ export default function ProfilePage() {
         />
       </div>
 
-      {/* Right Column */}
-      <div className="space-y-3 sm:space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+      {/* Right Sidebar - Gallery & Suggestion */}
+      <div
+        className={cn("space-y-3 sm:space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+          sidebarState === 'collapsed' ? "pl-6" : ""
+        )}
+      >
         <ProfileGallery posts={posts} onSelectPost={setScrollToPostId} />
         <SuggestedUsers title="Picks for You" iconColor="var(--brand-primary)" />
         <TrendingPanel
           title="Trending in Cosmos"
           trends={[
-            { tag: 'CosmixDesign', posts: '12K', rank: '01' },
-            { tag: 'MatureWeb', posts: '8K', rank: '02' },
+            { tag: 'CosmixDesign', posts: 12000, rank: '01' },
+            { tag: 'MatureWeb', posts: 8000, rank: '02' },
           ]}
         />
       </div>

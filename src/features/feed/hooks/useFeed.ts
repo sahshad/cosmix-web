@@ -2,42 +2,35 @@ import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tansta
 import { postService } from '../api/post.service';
 import { MediaItem, PostResponse as PostData, GetPostsResponse } from '../types';
 import { toast } from 'sonner';
-import { createInfiniteQueryOptions, flattenInfinitePages } from '@/lib/infinite-query';
+import { omitUndefined } from '@/lib/utils';
+import { applyOptimisticUpdate, createInfiniteQueryOptions, flattenInfinitePages, updateCachedItems } from '@/lib/infinite-query';
 
 const POST_LIST_KEY_PREFIXES = ['feed', 'user-posts'];
 
 const getPosts = (response: GetPostsResponse) => response.posts ?? [];
 const getPostsPagination = (response: GetPostsResponse) => response.pagination;
 
+const setPosts = (response: GetPostsResponse, posts: PostData[]): GetPostsResponse => ({
+    ...response,
+    posts,
+});
+
+/** Every cache that can hold a post: the feed, a profile's posts, both paginated and flat. */
+const POST_LIST_KEYS = POST_LIST_KEY_PREFIXES.map((prefix) => [prefix]);
+
 const patchPostInLists = (
     queryClient: ReturnType<typeof useQueryClient>,
     id: number | string,
-    updater: (post: PostData) => PostData
+    updater: (post: PostData) => PostData | null
 ) => {
-    POST_LIST_KEY_PREFIXES.forEach((prefix) => {
-        // Handle flat array queries (useFeed, useUserPosts)
-        queryClient.setQueriesData<PostData[]>({ queryKey: [prefix] }, (old) =>
-            Array.isArray(old) ? old.map((post) => (post.id === id ? updater(post) : post)) : old
-        );
-
-        // Handle infinite query data structure - match all variations
-        // Feed: ['feed', 'infinite', limit]
-        // User posts: ['user-posts', userId, 'infinite', limit]
-        queryClient.setQueriesData<{ pages: GetPostsResponse[]; pageParams: number[] }>(
-            { queryKey: [prefix], exact: false },
-            (old) => {
-                if (!old || !old.pages) return old;
-                return {
-                    ...old,
-                    pages: old.pages.map((page) => ({
-                        ...page,
-                        posts: page.posts.map((post) =>
-                            post.id === id ? updater(post) : post
-                        ),
-                    })),
-                };
-            }
-        );
+    POST_LIST_KEYS.forEach((queryKey) => {
+        updateCachedItems<PostData, GetPostsResponse>(queryClient, queryKey, {
+            itemId: id,
+            getItems: getPosts,
+            setItems: setPosts,
+            getItemId: (post) => post.id,
+            updater,
+        });
     });
 };
 
@@ -109,7 +102,7 @@ export const useLikePost = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, isLiked }: { id: number | string, isLiked: boolean }) => {
+        mutationFn: async ({ id, isLiked }: { id: number | string; isLiked: boolean }) => {
             if (isLiked) {
                 await postService.unlikePost(id);
             } else {
@@ -118,22 +111,22 @@ export const useLikePost = () => {
             return { id, isLiked: !isLiked };
         },
         onMutate: async ({ id, isLiked }) => {
-            await Promise.all(POST_LIST_KEY_PREFIXES.map((prefix) => queryClient.cancelQueries({ queryKey: [prefix] })));
-
-            const previous = POST_LIST_KEY_PREFIXES.map((prefix) => [prefix, queryClient.getQueriesData({ queryKey: [prefix] })] as const);
-
-            patchPostInLists(queryClient, id, (post) => ({
-                ...post,
-                isLiked: !isLiked,
-                likesCount: isLiked ? post.likesCount - 1 : post.likesCount + 1,
-            }));
-
-            return { previous };
-        },
-        onError: (_err, _variables, context) => {
-            context?.previous?.forEach(([, entries]) => {
-                entries.forEach(([key, data]) => queryClient.setQueryData(key, data));
+            const restore = await applyOptimisticUpdate<PostData, GetPostsResponse>(queryClient, POST_LIST_KEYS, {
+                itemId: id,
+                getItems: getPosts,
+                setItems: setPosts,
+                getItemId: (post) => post.id,
+                updater: (post) => ({
+                    ...post,
+                    isLiked: !isLiked,
+                    likesCount: Math.max(0, isLiked ? post.likesCount - 1 : post.likesCount + 1),
+                }),
             });
+
+            return { restore };
+        },
+        onError: (_error, _variables, context) => {
+            context?.restore?.();
             toast.error("Failed to like post");
         }
     });
@@ -145,15 +138,19 @@ export const useUpdatePost = () => {
     return useMutation({
         mutationFn: async ({ id, content, media }: { id: number | string; content: string; media?: MediaItem[] }) => {
             const response = await postService.updatePost(id, content, media);
-            return response.post as PostData;
+            // The response may be partial or use a different envelope, so keep
+            // what we sent as a fallback for the fields we need to reflect.
+            return { id, content, post: response?.post };
         },
-        onSuccess: (updated) => {
+        onSuccess: ({ id, content, post }) => {
             toast.success("Post updated");
-            patchPostInLists(queryClient, updated.id, (post) => ({
-                ...post,
-                content: updated.content,
-                media: updated.media,
-                updatedAt: updated.updatedAt,
+            patchPostInLists(queryClient, id, (existing) => ({
+                ...existing,
+                ...omitUndefined(post),
+                id: existing.id,
+                content: post?.content ?? content,
+                media: post?.media ?? existing.media,
+                updatedAt: post?.updatedAt !== undefined ? post.updatedAt : existing.updatedAt,
             }));
         },
         onError: () => {
@@ -170,9 +167,12 @@ export const useDeletePost = () => {
             await postService.deletePost(id);
             return { id };
         },
-        onSuccess: () => {
+        onSuccess: ({ id }) => {
             toast.success("Post deleted");
-            POST_LIST_KEY_PREFIXES.forEach((prefix) => queryClient.invalidateQueries({ queryKey: [prefix] }));
+            patchPostInLists(queryClient, id, () => null);
+            POST_LIST_KEYS.forEach((queryKey) => {
+                queryClient.invalidateQueries({ queryKey });
+            });
         },
         onError: () => {
             toast.error("Failed to delete post");

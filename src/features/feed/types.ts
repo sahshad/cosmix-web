@@ -34,6 +34,7 @@ export interface PostResponse {
     commentsCount: number;
     isOwner: boolean;
     createdAt: string;
+    /** Empty string until the post has been edited. */
     updatedAt: string;
 }
 
@@ -44,6 +45,7 @@ export interface CommentResponse {
     user: User;
     content: string;
     createdAt: string;
+    /** Empty string until the comment has been edited. */
     updatedAt: string;
     likesCount: number;
     repliesCount: number;

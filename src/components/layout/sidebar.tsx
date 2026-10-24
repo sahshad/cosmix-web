@@ -36,7 +36,7 @@ import { useTheme } from 'next-themes';
 // import { useAuthStore } from '@/store/auth.store';
 import { NAV_ITEMS } from '@/lib/constants';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
-import { cn, getAvatarPalette, getInitials } from '@/lib/utils';
+import { cn, formatCount, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export function AppSidebar() {
   const { state, setOpenMobile } = useSidebar();
@@ -98,7 +98,7 @@ export function AppSidebar() {
                     <span className="text-[14px] truncate">{item.label}</span>
                     {item.badge && (
                       <SidebarMenuBadge className="bg-vivid-red text-white font-bold opacity-100 group-hover:scale-110 transition-transform">
-                        {item.badge}
+                        {formatCount(item.badge)}
                       </SidebarMenuBadge>
                     )}
                   </>

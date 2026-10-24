@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { QueryKey } from "@tanstack/react-query";
-import { Heart, Pencil, Trash2 } from "lucide-react";
+import { Heart, Pencil, Reply, Trash2 } from "lucide-react";
 import { ConfirmDialog, InlineEditField, OptionsMenu, UserAvatar } from "@/components/shared";
 import { toast } from "sonner";
 import { CommentResponse } from "../../types";
-import { cn, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
+import { cn, formatCount, formatRelativeTime, getAvatarPalette, getInitials } from "@/lib/utils";
 import {
   useCreateComment,
   useDeleteComment,
@@ -23,11 +22,10 @@ interface CommentNodeProps {
   comment: CommentResponse;
   depth: number;
   postId: number | string;
-  ownerQueryKey: QueryKey;
   composerUser: Partial<User>;
 }
 
-export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUser }: CommentNodeProps) {
+export function CommentNode({ comment, depth, postId, composerUser }: CommentNodeProps) {
   const [repliesOpen, setRepliesOpen] = useState(false);
   const [replyBoxOpen, setReplyBoxOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
@@ -35,11 +33,11 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
 
   const palette = getAvatarPalette(comment.user?.username || comment.user?.displayName);
 
-  const { mutate: toggleLike } = useToggleCommentLike(ownerQueryKey);
+  const { mutate: toggleLike } = useToggleCommentLike();
   const { mutate: submitReply, isPending: isSubmittingReply } = useCreateComment(postId);
   const { data: replies = [], isLoading: isLoadingReplies } = useReplies(comment.id, repliesOpen);
-  const { mutate: updateComment, isPending: isUpdating } = useUpdateComment(ownerQueryKey);
-  const { mutate: deleteComment, isPending: isDeleting } = useDeleteComment(ownerQueryKey);
+  const { mutate: updateComment, isPending: isUpdating } = useUpdateComment();
+  const { mutate: deleteComment, isPending: isDeleting } = useDeleteComment();
   const {
     isEditing,
     content: editContent,
@@ -73,7 +71,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
 
   return (
     <div className={depth > 0 ? "mt-3 ml-4 pl-3.5 border-l border-border" : ""}>
-      <div className="flex items-start gap-2.5">
+      <div className="flex items-start">
         <UserAvatar
           src={comment.user?.avatarUrl}
           alt={comment.user?.displayName}
@@ -82,7 +80,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
           fallbackClassName={cn(palette.bg, palette.text, "font-semibold")}
         />
         <div className="flex-1 min-w-0">
-          <div className={cn("rounded-sm bg-secondary/50", bubblePad)}>
+          <div className={cn("", bubblePad)}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className={cn("font-semibold text-foreground truncate", nameSize)}>
@@ -91,6 +89,16 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                 <span className={cn("text-muted-foreground shrink-0", handleSize)}>
                   @{comment.user?.username}
                 </span>
+                <span className="text-muted-foreground/50 text-[4px] self-center">●</span>
+                <span className="text-muted-foreground text-[11px]">
+                  {formatRelativeTime(comment.createdAt)}
+                </span>
+                {comment.updatedAt && (
+                  <>
+                    <span className="text-muted-foreground/50 text-[4px] self-center">●</span>
+                    <span className="text-muted-foreground text-[11px] shrink-0">Edited</span>
+                  </>
+                )}
               </div>
               {comment.isOwner && !isEditing && (
                 <OptionsMenu
@@ -120,7 +128,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                 rows={2}
                 variant="link"
                 className="mt-1.5"
-                textareaClassName={cn("rounded-none border-0 bg-transparent p-0", textSize)}
+                textareaClassName={cn("rounded-none border-0 bg-transparent p-2 rounded-sm", textSize)}
               />
             ) : (
               <p className={cn("text-foreground leading-relaxed wrap-break-word mt-0.5", textSize)}>
@@ -130,9 +138,9 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
           </div>
 
           <div className="flex items-center gap-3 mt-1 ml-1">
-            <span className="text-muted-foreground text-[11px]">
+            {/* <span className="text-muted-foreground text-[11px]">
               {formatRelativeTime(comment.createdAt)}
-            </span>
+            </span> */}
             <button
               type="button"
               onClick={() => toggleLike({ id: comment.id, isLiked: comment.isLiked })}
@@ -142,7 +150,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
               )}
             >
               <Heart className={cn("h-3 w-3", comment.isLiked && "fill-current")} />
-              {comment.likesCount}
+              {formatCount(comment.likesCount)}
             </button>
             {depth < 2 && (
               <button
@@ -150,7 +158,7 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                 onClick={() => setReplyBoxOpen((v) => !v)}
                 className="text-[11.5px] font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
               >
-                Reply
+                <Reply className="h-4 w-4"/>
               </button>
             )}
             {comment.repliesCount > 0 && (
@@ -159,14 +167,14 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                 onClick={() => setRepliesOpen((v) => !v)}
                 className="text-[11.5px] font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
               >
-                {repliesOpen ? "Hide" : "View"} {comment.repliesCount}{" "}
+                {repliesOpen ? "Hide" : "View"} {formatCount(comment.repliesCount)}{" "}
                 {comment.repliesCount === 1 ? "reply" : "replies"}
               </button>
             )}
           </div>
 
           {replyBoxOpen && (
-            <div className="mt-2">
+            <div className="mt-5">
               <CommentComposer
                 avatarUser={composerUser}
                 value={replyText}
@@ -191,7 +199,6 @@ export function CommentNode({ comment, depth, postId, ownerQueryKey, composerUse
                     comment={reply}
                     depth={depth + 1}
                     postId={postId}
-                    ownerQueryKey={["replies", comment.id]}
                     composerUser={composerUser}
                   />
                 ))

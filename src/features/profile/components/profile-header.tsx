@@ -7,14 +7,14 @@ import {
   MapPin,
   Link as LinkIcon,
   CheckCircle2,
-  Edit,
+  Pencil,
 } from 'lucide-react';
 import { UserAvatar } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import FollowButton from '@/components/shared/follow-button';
 import { EditProfileDialog } from './edit-profile-dialog';
-import { cn, getAvatarPalette, getInitials } from '@/lib/utils';
+import { cn, formatCount, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export interface ProfileData {
   displayName: string;
@@ -56,7 +56,7 @@ export function ProfileHeader({
   const authorPalette = getAvatarPalette(profile?.username || profile?.displayName);
 
   return (
-    <Card className="-mx-3 sm:mx-0 border-0 p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-none sm:rounded-md bg-card overflow-hidden">
+    <Card className="max-w-150 -mx-3 sm:mx-0 border border-border p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-none sm:rounded-md bg-card overflow-hidden">
       {/* Banner */}
       <div className="relative h-44 sm:h-56 bg-secondary overflow-hidden group">
         {profile.coverImageUrl ? (
@@ -76,25 +76,25 @@ export function ProfileHeader({
 
       {/* Profile Meta */}
       <div className="px-4 sm:px-8 relative pb-8">
-        <div className="flex justify-between items-end -mt-14 sm:-mt-16 mb-6">
+        <div className="flex justify-between items-end -mt-20 sm:-mt-24 mb-6">
           <div className="relative">
             <UserAvatar
               src={profile.avatarUrl}
               alt={profile.displayName}
               fallback={getInitials(profile.displayName)}
-              className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl rounded-[2.5rem] overflow-hidden bg-background"
+              className="h-28 w-28 sm:h-36 sm:w-36 border-[6px] border-background shadow-2xl overflow-hidden bg-background"
               imageClassName="object-cover"
               fallbackClassName={cn(authorPalette.bg, authorPalette.text, "text-5xl")}
             />
-            <div className="absolute bottom-2 right-2 h-6 w-6 bg-vivid-green border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" />
+            {/* <div className="absolute bottom-2 right-2 h-5 w-5 bg-vivid-green border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" /> */}
           </div>
-          <div className="pb-2">
+          <div className="sm:pb-2">
             {profile.isMe ? (
               <Button
                 onClick={() => setEditOpen(true)}
-                className="h-8 rounded-full border border-border bg-secondary text-foreground hover:bg-secondary/80 font-extrabold px-4 transition-all shadow-md active:scale-95 text-[11px] uppercase tracking-wider"
+                className="h-10 rounded-full border border-border font-extrabold px-4 transition-all shadow-md active:scale-95 text-[11px] uppercase tracking-wider cursor-pointer"
               >
-                <Edit className="h-3 w-3 mr-1.5" />
+                <Pencil className="h-3 w-3" />
                 Edit Profile
               </Button>
             ) : (
@@ -161,17 +161,17 @@ export function ProfileHeader({
           <div className="flex gap-8 pt-2">
             <button className="flex items-center gap-1.5 group">
               <span className="text-base font-bold text-foreground group-hover:underline">
-                {profile.following.toLocaleString()}
+                {formatCount(profile.following)}
               </span>
-              <span className="text-[13px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 Following
               </span>
             </button>
             <button className="flex items-center gap-1.5 group">
               <span className="text-base font-bold text-foreground group-hover:underline">
-                {profile.followers.toLocaleString()}
+                {formatCount(profile.followers)}
               </span>
-              <span className="text-[13px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 Followers
               </span>
             </button>
