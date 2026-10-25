@@ -28,7 +28,7 @@ export default function DashboardPage() {
     threshold: 400,
   });
   const { state: sidebarState } = useSidebar()
-  
+
   const posts = flattenFeedPages(data);
   const handleLike = (postId: number | string, isLiked: boolean) => {
     toggleLike({ id: postId, isLiked });
@@ -38,6 +38,7 @@ export default function DashboardPage() {
     <div
       className={cn(
         'grid grid-cols-1 gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up min-w-0',
+        'transition-[grid-template-columns] duration-500 ease-in-out',
         sidebarState === 'collapsed'
           ? 'lg:grid-cols-[minmax(0,1fr)_480px]'
           : 'lg:grid-cols-[minmax(0,1fr)_380px]'
@@ -46,8 +47,11 @@ export default function DashboardPage() {
 
       {/* Main - Gereeting & Feed */}
       <div ref={listRef}
-        className={cn("space-y-3 sm:space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1 min-w-0",
-          sidebarState === 'collapsed' ? "px-8" : "")}
+        className={cn(
+          "space-y-3 sm:space-y-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1 min-w-0",
+          'transition-[padding] duration-500 ease-in-out',
+          sidebarState === 'collapsed' ? "px-8" : ""
+        )}
       >
         <WelcomeCard name={user?.displayName || 'there'} />
         <CreatePost />
@@ -75,7 +79,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Right Sidebar - Trending & Top pick */}
-      <RightSidebar className={sidebarState === 'collapsed' ? "pl-6" : ""} />
+      <RightSidebar className={cn(
+        'transition-[padding] duration-500 ease-in-out',
+        sidebarState === 'collapsed' ? "pl-6" : ""
+      )} />
     </div>
   );
 }

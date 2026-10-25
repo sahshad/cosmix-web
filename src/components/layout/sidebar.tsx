@@ -33,7 +33,6 @@ import { Separator } from '@/components/ui/separator';
 import { useLogout } from '@/features/auth/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-// import { useAuthStore } from '@/store/auth.store';
 import { NAV_ITEMS } from '@/lib/constants';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
 import { cn, formatCount, getAvatarPalette, getInitials } from '@/lib/utils';
@@ -58,7 +57,6 @@ export function AppSidebar() {
     }
   };
 
-  // const user = useAuthStore((state) => state.user);
   const displayName = user?.displayName || '';
   const userHandle = '@' + (user?.username || '');
   const avatarUrl = user?.avatarUrl;
@@ -114,7 +112,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-border/50 bg-card/60 backdrop-blur-xl animate-fade-in-left transition-all duration-300"
+      className="border-r border-border/50 bg-card/60 backdrop-blur-xl animate-fade-in-left transition-[width] duration-500 ease-in-out"
     >
       <SidebarHeader
         className={`pt-6 pb-2 px-4 transition-all duration-300 ${isCollapsed ? 'flex flex-col items-center gap-6' : 'gap-4'}`}

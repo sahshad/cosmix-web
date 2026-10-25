@@ -45,6 +45,7 @@ export default function ProfilePage() {
     <div
       className={cn(
         'grid grid-cols-1 gap-3 sm:gap-8 px-3 py-3 sm:p-6 max-w-312.5 mx-auto lg:h-svh animate-fade-in-up min-w-0',
+        'transition-[grid-template-colums] duration-500 ease-in-out',
         sidebarState === 'collapsed'
           ? 'lg:grid-cols-[minmax(0,1fr)_480px]'
           : 'lg:grid-cols-[minmax(0,1fr)_380px]'
@@ -52,7 +53,9 @@ export default function ProfilePage() {
     >
       {/* Main - Profile & Tabs Data */}
       <div
-        className={cn("space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+        className={cn(
+          "space-y-3 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+          'transition-[padding] duration-500 ease-in-out',
           sidebarState === 'collapsed' ? "px-8" : ""
         )}
       >
@@ -79,7 +82,9 @@ export default function ProfilePage() {
 
       {/* Right Sidebar - Gallery & Suggestion */}
       <div
-        className={cn("space-y-3 sm:space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+        className={cn(
+          "space-y-3 sm:space-y-8 hidden lg:block lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1",
+          'transition-[padding] duration-500 ease-in-out',
           sidebarState === 'collapsed' ? "pl-6" : ""
         )}
       >
