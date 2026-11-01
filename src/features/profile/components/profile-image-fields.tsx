@@ -84,7 +84,7 @@ export function ProfileImageFields({
             src={avatarUrl}
             alt={displayName}
             fallback={displayName ? displayName[0] : '?'}
-            className="h-16 w-16 rounded-2xl border-[3px] border-background shadow-lg"
+            className="h-16 w-16 rounded-full border-[3px] border-background shadow-lg"
             imageClassName="object-cover"
             fallbackClassName="rounded-2xl text-xl"
           />

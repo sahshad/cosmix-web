@@ -35,8 +35,8 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={false} className="p-0 gap-0">
-        <DialogHeader className="sticky top-0 z-20 bg-background flex-row items-start justify-between gap-4 space-y-0 px-6 pt-5 pb-4 border-b border-border">
+      <DialogContent showCloseButton={false} className="p-0 gap-0 max-h-[90dvh] overflow-hidden flex flex-col">
+        <DialogHeader className="shrink-0 bg-background flex-row items-start justify-between gap-4 space-y-0 px-6 pt-5 pb-4 border-b border-border">
             <DialogTitle>Edit profile</DialogTitle>
           <DialogClose
             className="shrink-0 p-1.5 text-muted-foreground opacity-70 transition-opacity hover:opacity-100 hover:text-foreground"
@@ -47,8 +47,8 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
           </DialogClose>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit} className="contents">
-        <div className="space-y-5 px-6 py-5">
+        <form onSubmit={form.handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain space-y-5 px-6 py-5">
           <ProfileImageFields
             displayName={form.displayName}
             avatarUrl={form.avatarUrl}
@@ -164,7 +164,7 @@ export function EditProfileDialog({ open, onOpenChange }: EditProfileDialogProps
           </div>
         </div>
 
-          <DialogFooter className="sticky bottom-0 z-20 bg-background px-6 py-4 border-t border-border">
+          <DialogFooter className="shrink-0 bg-background px-6 py-4 border-t border-border">
             <Button
               type="button"
               variant="outline"

@@ -4,9 +4,9 @@ import {
   Settings,
   LogOut,
   MoreHorizontal,
-  Share2,
   Moon,
   Sun,
+  WandSparklesIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -75,7 +75,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive}
-              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden text-muted-foreground hover:text-foreground hover:bg-transparent active:bg-transparent font-medium data-[active=true]:bg-vivid-blue/6 data-[active=true]:text-vivid-blue data-[active=true]:hover:text-vivid-blue data-[active=true]:font-semibold ${isCollapsed ? 'justify-center p-0' : ''}`}
+              className={`h-11 rounded-xl transition-all duration-300 relative group overflow-hidden text-muted-foreground hover:text-foreground hover:bg-transparent active:bg-transparent font-medium data-[active=true]:bg-vivid-blue/6 data-[active=true]:text-vivid-blue data-[active=true]:hover:text-vivid-blue data-[active=true]:font-semibold ${isCollapsed ? 'justify-center p-0 mt-1' : ''}`}
               tooltip={item.label}
               onClick={() => setOpenMobile(false)}
             >
@@ -85,7 +85,7 @@ export function AppSidebar() {
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-5 bg-vivid-blue rounded-full" />
+                  <div className={isCollapsed ? "absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-4 rounded-full":"absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-5 bg-vivid-blue rounded-full"} />
                 )}
                 <Icon
                   className={`h-5 w-5 shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'
@@ -138,7 +138,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter
-        className={`px-3 bg-transparent flex flex-col transition-all duration-300 ${isCollapsed ? 'items-center gap-6' : ''}`}
+        className={`px-3 bg-transparent flex flex-col transition-all duration-300 ${isCollapsed ? 'items-center gap-3' : ''}`}
       >
         <SidebarMenu className={isCollapsed ? 'items-center' : ''}>
           <SidebarMenuItem>
@@ -147,7 +147,7 @@ export function AppSidebar() {
                 tooltip="Create Post"
                 className="h-10 w-10 p-0 flex items-center justify-center rounded-xl bg-foreground text-background hover:bg-vivid-blue hover:text-white mx-auto shadow-md transition-all"
               >
-                <Share2 className="h-5 w-5" />
+                <WandSparklesIcon className="h-5 w-5" />
               </SidebarMenuButton>
             )}
           </SidebarMenuItem>
