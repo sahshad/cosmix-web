@@ -5,8 +5,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { authService } from '@/features/auth/api/auth.service';
 import { useAuthStore } from '@/features/auth/store';
+import { MESSAGING_QUERY_KEYS } from '@/features/messaging/lib/query-keys';
 import { getRealtimeSocket } from '../lib/realtime-socket';
-import type { RealtimeMessage, RealtimeNotificationMessage } from '../types';
+import type {
+  RealtimeChatMessageMessage,
+  RealtimeMessage,
+  RealtimeNotificationMessage,
+} from '../types';
 
 const NOTIFICATIONS_QUERY_KEY = ['notifications'];
 
@@ -20,7 +25,15 @@ function isNotificationMessage(
   );
 }
 
-export function useRealtimeNotifications(): void {
+function isChatMessage(message: RealtimeMessage): message is RealtimeChatMessageMessage {
+  return (
+    message.type === 'chat.message' &&
+    typeof message.data === 'object' &&
+    message.data !== null
+  );
+}
+
+export function useRealtimeEvents(): void {
   const token = useAuthStore((state) => state.token);
   const queryClient = useQueryClient();
 
@@ -44,20 +57,32 @@ export function useRealtimeNotifications(): void {
     }
 
     const unsubscribe = socket.subscribe((message) => {
-      if (!isNotificationMessage(message)) return;
+      if (isNotificationMessage(message)) {
+        const notification = message.data;
 
-      const notification = message.data;
+        queryClient.setQueryData<{ count: number }>(
+          [...NOTIFICATIONS_QUERY_KEY, 'unread-count'],
+          (current) => (current ? { count: current.count + 1 } : current)
+        );
 
-      queryClient.setQueryData<{ count: number }>(
-        [...NOTIFICATIONS_QUERY_KEY, 'unread-count'],
-        (current) => (current ? { count: current.count + 1 } : current)
-      );
+        void queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
 
-      void queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
+        toast(notification.title, {
+          description: notification.body || undefined,
+        });
+        return;
+      }
 
-      toast(notification.title, {
-        description: notification.body || undefined,
-      });
+      if (isChatMessage(message)) {
+        const { conversationId } = message.data;
+
+        void queryClient.invalidateQueries({
+          queryKey: MESSAGING_QUERY_KEYS.messages(conversationId),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: MESSAGING_QUERY_KEYS.conversations,
+        });
+      }
     });
 
     socket.connect(token);

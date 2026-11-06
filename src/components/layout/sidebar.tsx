@@ -35,11 +35,13 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { NAV_ITEMS } from '@/lib/constants';
 import { useCurrentUser } from '@/features/auth/hooks/useAuth';
+import { useUnreadCount } from '@/features/messaging/hooks/useMessaging';
 import { cn, formatCount, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export function AppSidebar() {
   const { state, setOpenMobile } = useSidebar();
   const { data: user } = useCurrentUser();
+  const { data: unreadMessages = 0 } = useUnreadCount();
   const router = useRouter();
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
@@ -69,6 +71,7 @@ export function AppSidebar() {
         const isActive = item.matchAll
           ? item.matchAll.includes(pathname)
           : pathname === item.href;
+        const badge = item.href === '/messages' ? unreadMessages : (item.badge ?? 0);
 
         return (
           <SidebarMenuItem key={item.href}>
@@ -94,9 +97,9 @@ export function AppSidebar() {
                 {!isCollapsed && (
                   <>
                     <span className="text-[14px] truncate">{item.label}</span>
-                    {item.badge && (
+                    {badge > 0 && (
                       <SidebarMenuBadge className="bg-vivid-red text-white font-bold opacity-100 group-hover:scale-110 transition-transform">
-                        {formatCount(item.badge)}
+                        {formatCount(badge)}
                       </SidebarMenuBadge>
                     )}
                   </>

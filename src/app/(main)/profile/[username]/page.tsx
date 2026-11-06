@@ -48,6 +48,7 @@ export default function UserProfilePage() {
 
   const profile: ProfileData | null = user
     ? {
+        id: user.id,
         displayName: user.displayName ?? '',
         username: user.username ?? '',
         avatarUrl: user.avatarUrl ?? '',

@@ -2,21 +2,26 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   Calendar,
   MapPin,
   Link as LinkIcon,
   CheckCircle2,
+  MessageCircle,
   Pencil,
 } from 'lucide-react';
-import { UserAvatar } from '@/components/shared';
+import { Spinner, UserAvatar } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import FollowButton from '@/components/shared/follow-button';
+import { useCreateDirectConversation } from '@/features/messaging/hooks/useMessaging';
+import { useMessagingStore } from '@/features/messaging/store';
 import { EditProfileDialog } from './edit-profile-dialog';
 import { cn, formatCount, getAvatarPalette, getInitials } from '@/lib/utils';
 
 export interface ProfileData {
+  id: string;
   displayName: string;
   username: string;
   avatarUrl: string;
@@ -52,8 +57,20 @@ export function ProfileHeader({
   onToggleFollow,
 }: ProfileHeaderProps) {
   const [editOpen, setEditOpen] = useState(false);
+  const router = useRouter();
+  const createConversation = useCreateDirectConversation();
   const joinDate = formatJoinDate(profile.createdAt);
   const authorPalette = getAvatarPalette(profile?.username || profile?.displayName);
+
+  const handleMessage = () => {
+    createConversation.mutate(profile.id, {
+      onSuccess: ({ conversation }) => {
+        if (!conversation) return;
+        useMessagingStore.getState().setPendingConversation(conversation);
+        router.push('/messages');
+      },
+    });
+  };
 
   return (
     <Card className="max-w-150 -mx-3 sm:mx-0 border border-border p-0 shadow-[0_12px_45px_rgb(0,0,0,0.04)] rounded-none sm:rounded-md bg-card overflow-hidden">
@@ -88,7 +105,24 @@ export function ProfileHeader({
             />
             {/* <div className="absolute bottom-2 right-2 h-5 w-5 bg-vivid-green border-4 border-background rounded-full shadow-[0_0_15px_rgba(17,166,87,0.3)]" /> */}
           </div>
-          <div className="sm:pb-2">
+          <div className="flex items-center gap-2 sm:pb-2">
+            {!profile.isMe && isFollowing && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleMessage}
+                disabled={createConversation.isPending}
+                className="h-8 rounded-full bg-vivid-blue px-4 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-md shadow-vivid-blue/20 transition-all hover:bg-vivid-blue/90 active:scale-95"
+              >
+                {createConversation.isPending ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <MessageCircle className="h-3.5 w-3.5" />
+                )}
+                Message
+              </Button>
+            )}
+
             {profile.isMe ? (
               <Button
                 onClick={() => setEditOpen(true)}

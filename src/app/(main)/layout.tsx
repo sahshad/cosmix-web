@@ -6,11 +6,11 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { CenteredLoader } from "@/components/shared"
 import { useCurrentUser } from "@/features/auth/hooks/useAuth"
 import { useAuthStore } from "@/features/auth/store"
-import { useRealtimeNotifications } from "@/features/realtime/hooks/useRealtime"
+import { useRealtimeEvents } from "@/features/realtime/hooks/useRealtime"
 import { useEffect } from "react"
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  useRealtimeNotifications()
+  useRealtimeEvents()
 
   const { isLoading, data: user } = useCurrentUser()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
